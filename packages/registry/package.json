@@ -1,0 +1,26 @@
+{
+  "name": "@quark/registry",
+  "version": "0.0.0",
+  "private": false,
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    }
+  },
+  "files": ["**/*.js", "**/*.d.ts", "README.md"],
+  "publishConfig": { "access": "public" },
+  "dependencies": {
+    "@quark/use-storage": "workspace:*",
+    "@quark/types": "workspace:*",
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

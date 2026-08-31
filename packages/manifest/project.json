@@ -1,0 +1,19 @@
+{
+  "name": "manifest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/manifest/src",
+  "projectType": "library",
+  "tags": ["type:context", "scope:manifest"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/manifest",
+        "main": "packages/manifest/src/index.ts",
+        "tsConfig": "packages/manifest/tsconfig.lib.json",
+        "assets": ["packages/manifest/*.md"]
+      }
+    }
+  }
+}

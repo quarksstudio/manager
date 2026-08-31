@@ -1,0 +1,26 @@
+{
+  "name": "registry",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/registry/src",
+  "projectType": "library",
+  "tags": ["type:adapter", "scope:registry"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/registry",
+        "main": "packages/registry/src/index.ts",
+        "tsConfig": "packages/registry/tsconfig.lib.json",
+        "assets": ["packages/registry/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/registry/jest.config.cts"
+      }
+    }
+  }
+}

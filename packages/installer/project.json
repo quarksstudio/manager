@@ -1,0 +1,19 @@
+{
+  "name": "installer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/installer/src",
+  "projectType": "library",
+  "tags": ["type:context", "scope:installation"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/installer",
+        "main": "packages/installer/src/index.ts",
+        "tsConfig": "packages/installer/tsconfig.lib.json",
+        "assets": ["packages/installer/*.md"]
+      }
+    }
+  }
+}

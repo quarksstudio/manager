@@ -1,0 +1,23 @@
+{
+  "name": "@quark/cli",
+  "version": "0.0.0",
+  "private": false,
+  "license": "MIT",
+  "type": "module",
+  "main": "./main.js",
+  "bin": {
+    "quark": "./main.js"
+  },
+  "files": [
+    "main.js",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@quark/actions": "workspace:*",
+    "@quark/tester": "workspace:*",
+    "commander": "^15.0.0"
+  }
+}

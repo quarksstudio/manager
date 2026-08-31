@@ -1,0 +1,27 @@
+{
+  "name": "targz",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/targz/src",
+  "projectType": "library",
+  "tags": ["type:adapter", "scope:shared"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/targz",
+        "main": "packages/targz/src/index.ts",
+        "tsConfig": "packages/targz/tsconfig.lib.json",
+        "generatePackageJson": true,
+        "assets": ["packages/targz/*.md", "packages/targz/package.json"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/targz/jest.config.cts"
+      }
+    }
+  }
+}

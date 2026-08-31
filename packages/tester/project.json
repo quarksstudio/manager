@@ -1,0 +1,28 @@
+{
+  "name": "tester",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/tester/src",
+  "projectType": "library",
+  "tags": ["type:service", "scope:certification"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/tester",
+        "main": "packages/tester/src/index.ts",
+        "tsConfig": "packages/tester/tsconfig.lib.json",
+        "generatePackageJson": true,
+        "assets": [
+          "packages/tester/*.md",
+          "packages/tester/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": { "jestConfig": "packages/tester/jest.config.cts" }
+    }
+  }
+}

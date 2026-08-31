@@ -1,0 +1,35 @@
+{
+  "name": "@quark/tester",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "bin": {
+    "quark-tester": "./cli.js"
+  },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "fast-check": "^4.3.0",
+    "tar": "^7.4.3",
+    "tslib": "^2.3.0",
+    "yaml": "^2.9.0",
+    "zod": "^3.25.76"
+  }
+}

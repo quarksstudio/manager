@@ -1,0 +1,19 @@
+{
+  "name": "local-store",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/local-store/src",
+  "projectType": "library",
+  "tags": ["type:adapter", "scope:installation"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/local-store",
+        "main": "packages/local-store/src/index.ts",
+        "tsConfig": "packages/local-store/tsconfig.lib.json",
+        "assets": ["packages/local-store/*.md"]
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "use-storage",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/use-storage/src",
+  "projectType": "library",
+  "tags": ["type:adapter", "scope:shared"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/use-storage",
+        "main": "packages/use-storage/src/index.ts",
+        "tsConfig": "packages/use-storage/tsconfig.lib.json",
+        "assets": ["packages/use-storage/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/use-storage/jest.config.cts"
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+name: Publish NPM packages
+
+on:
+  push:
+    tags:
+      - 'manager-v*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Build and pack without publishing
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.21.0
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+
+      - run: npm install --global npm@latest
+      - run: pnpm install --frozen-lockfile
+      - name: Reject generated JavaScript in source directories
+        run: test -z "$(find apps packages -type f -path '*/src/*' \( -name '*.js' -o -name '*.js.map' \) -print -quit)"
+      - run: pnpm format:check
+      - run: pnpm exec nx run-many -t lint test build --all
+      - run: node tools/prepare-npm-packages.mjs
+      - name: Pack or publish in dependency order
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            node tools/publish-npm-packages.mjs --dry-run
+          else
+            node tools/publish-npm-packages.mjs
+          fi

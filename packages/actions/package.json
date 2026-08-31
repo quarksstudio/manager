@@ -1,0 +1,38 @@
+{
+  "name": "@quark/actions",
+  "version": "0.0.0",
+  "private": false,
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@quark/tester": "workspace:*",
+    "@quark/use-storage": "workspace:*",
+    "@quark/registry": "workspace:*",
+    "@quark/installer": "workspace:*",
+    "@quark/local-store": "workspace:*",
+    "@quark/permissions": "workspace:*",
+    "@quark/targz": "workspace:*",
+    "ink": "^7.0.2",
+    "react": "^19.0.0",
+    "ini": "^7.0.0",
+    "tslib": "^2.3.0",
+    "yaml": "^2.9.0"
+  }
+}

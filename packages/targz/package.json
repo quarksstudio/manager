@@ -1,0 +1,30 @@
+{
+  "name": "@quark/targz",
+  "version": "0.0.1",
+  "private": false,
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@quark/tester": "workspace:*",
+    "tar": "^7.4.3",
+    "tslib": "^2.3.0",
+    "yaml": "^2.9.0"
+  }
+}

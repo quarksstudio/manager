@@ -1,0 +1,24 @@
+{
+  "name": "@quark/use-storage",
+  "version": "0.0.1",
+  "private": false,
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "files": ["**/*.js", "**/*.d.ts", "README.md"],
+  "publishConfig": { "access": "public" },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

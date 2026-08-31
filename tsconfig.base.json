@@ -1,0 +1,32 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "paths": {
+      "@quark/types": ["./packages/types/src/index.ts"],
+      "@quark/types/*": ["./packages/types/src/*"],
+      "@quark/actions": ["./packages/actions/src/index.ts"],
+      "@quark/registry": ["./packages/registry/src/index.ts"],
+      "@quark/manifest": ["./packages/manifest/src/index.ts"],
+      "@quark/installer": ["./packages/installer/src/index.ts"],
+      "@quark/runtime": ["./packages/runtime/src/index.ts"],
+      "@quark/permissions": ["./packages/permissions/src/index.ts"],
+      "@quark/local-store": ["./packages/local-store/src/index.ts"],
+      "@quark/use-storage": ["./packages/use-storage/src/index.ts"],
+      "@quark/targz": ["./packages/targz/src/index.ts"],
+      "@quark/tester": ["./packages/tester/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

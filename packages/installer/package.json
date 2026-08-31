@@ -1,0 +1,35 @@
+{
+  "name": "@quark/installer",
+  "version": "0.0.1",
+  "private": false,
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    }
+  },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@quark/local-store": "workspace:*",
+    "@quark/manifest": "workspace:*",
+    "@quark/permissions": "workspace:*",
+    "@quark/registry": "workspace:*",
+    "@quark/types": "workspace:*",
+    "@quark/targz": "workspace:*",
+    "react": "^19.0.0",
+    "tar": "^7.4.3",
+    "tslib": "^2.3.0"
+  }
+}
