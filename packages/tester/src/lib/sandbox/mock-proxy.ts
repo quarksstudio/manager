@@ -196,14 +196,22 @@ export async function runMockInterceptionCanary(): Promise<boolean> {
     SSL_CERT_FILE: proxy.caFile,
   };
   try {
-    await execFileAsync('node', [
-      '-e',
-      `fetch('${url}').then(r=>{if(r.status!==200)process.exit(1)}).catch(()=>process.exit(1))`,
-    ], { env, timeout: 5_000 });
-    await execFileAsync('python3', [
-      '-c',
-      `import urllib.request; assert urllib.request.urlopen('${url}', timeout=3).status == 200`,
-    ], { env, timeout: 5_000 });
+    await execFileAsync(
+      'node',
+      [
+        '-e',
+        `fetch('${url}').then(r=>{if(r.status!==200)process.exit(1)}).catch(()=>process.exit(1))`,
+      ],
+      { env, timeout: 5_000 },
+    );
+    await execFileAsync(
+      'python3',
+      [
+        '-c',
+        `import urllib.request; assert urllib.request.urlopen('${url}', timeout=3).status == 200`,
+      ],
+      { env, timeout: 5_000 },
+    );
     return (await proxy.stop()).length === 0;
   } catch {
     await proxy.stop().catch(() => []);

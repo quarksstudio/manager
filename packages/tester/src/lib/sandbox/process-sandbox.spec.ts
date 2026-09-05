@@ -50,4 +50,23 @@ describe('ProcessSandbox HTTP interception', () => {
       }),
     ).rejects.toThrow('observed 0');
   });
+
+  it('honors an explicit mock cardinality', async () => {
+    const url = 'https://service.example.test/repeat';
+    const result = await new ProcessSandbox().execute({
+      command: `node -e "Promise.all([fetch('${url}'),fetch('${url}')]).then(r => console.log(JSON.stringify({output:{statuses:r.map(x=>x.status)}})))"`,
+      cwd,
+      input: {},
+      timeoutMs: 10_000,
+      allowNetwork: false,
+      httpMocks: [
+        {
+          request: { method: 'GET', url },
+          response: { status: 204 },
+          times: 2,
+        },
+      ],
+    });
+    expect(result.output).toEqual({ statuses: [204, 204] });
+  });
 });

@@ -1,6 +1,7 @@
 export function getJsonPath(value: unknown, expression: string): unknown {
   if (expression === '$') return value;
-  if (!expression.startsWith('$.')) throw new Error(`Unsupported JSONPath: ${expression}`);
+  if (!expression.startsWith('$.'))
+    throw new Error(`Unsupported JSONPath: ${expression}`);
   const tokens = expression.slice(2).match(/[^.[\]]+|\[(\d+)\]/g);
   if (!tokens) throw new Error(`Invalid JSONPath: ${expression}`);
   let current: unknown = value;

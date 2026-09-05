@@ -11,8 +11,14 @@ describe('runtime-neutral manifests', () => {
   ])('accepts the %s runtime', async (runtime, testCommand) => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), 'runtime-manifest-'));
     try {
-      await fs.writeFile(path.join(root, 'skill.yml'), `name: demo\nversion: 1.0.0\ndescription: demo\nruntime: ${runtime}\ntestCommand: ${testCommand}\nmapper_files:\n  ".":\n    agents: {}\n`);
-      await expect(readManifest(root)).resolves.toMatchObject({ runtime, testCommand });
+      await fs.writeFile(
+        path.join(root, 'skill.yml'),
+        `name: demo\nversion: 1.0.0\ndescription: demo\nruntime: ${runtime}\ntestCommand: ${testCommand}\nmapper_files:\n  ".":\n    agents: {}\n`,
+      );
+      await expect(readManifest(root)).resolves.toMatchObject({
+        runtime,
+        testCommand,
+      });
     } finally {
       await fs.rm(root, { recursive: true, force: true });
     }

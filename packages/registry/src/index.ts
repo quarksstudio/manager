@@ -24,6 +24,7 @@ export {
   type LoginOptions,
   type LoginStrategy,
 } from './auth-login';
+export { registerAuditorPasskey, signAuditDecision } from './auditor-webauthn';
 export {
   useCurrentUser,
   useAuthLogin,

@@ -30,6 +30,37 @@ The runner writes one language-neutral JSON input document to stdin. The command
 
 HTTP and tool mocks are exposed as JSON through `MANAGER_HTTP_MOCKS` and `MANAGER_TOOL_MOCKS`, so they can be consumed with `JSON.parse` in Node or `json.loads` in Python. Production Tier 3/4 callers must inject a Docker or WASM-style `SandboxAdapter` for the selected runtime. The tester verifies evidence; server-only code owns payment validation, signing, timestamping, audit authorization, and certificate issuance.
 
+## Generated test variants
+
+The tester never decides which variants run: the runner generates them and
+passes the already-generated prompts through `TestRunnerOptions.extraTests`:
+
+```typescript
+interface ExtraTest {
+  baseTestId: string;
+  input: { prompt: string };
+}
+```
+
+Each extra test reuses the promise `assertions` of its base test; all of them
+must pass. Tier 3 adds a random 20–30% and Tier 4 a 30–50% of the declared
+tests (ceil), selected with a fixed seed. The runner that generates variants is
+the same LLM engine that executes the tests (e.g. Hermes Agent); see
+`server/docs/llm-test-variants.md`.
+
+## Coverage classification and determinism ratio
+
+Tier 3 does not cover LLM-generated free text. `VerificationResult` separates
+coverage into:
+
+- `deterministicCoverage` — checks over artifacts and non-LLM fields
+  (`file_created`, `file_match`, `schema`, `equals` on non-LLM data,
+  `http_mocks` consumed, `trajectory_sequence`, `max_steps_not_exceeded`,
+  security scan). This is the tier 3 gate.
+- `llmCoverage` — `regex`/`equals` over agent-generated output (informative).
+- `determinismRatio` — `deterministicChecks / totalChecks` (static), plus an
+  empirical figure from re-runs that reproduce identical artifact results.
+
 ## Server-managed execution
 
 Production certification must use `requestServerCertification`. It calls the authenticated server certification endpoint; the server publishes the certification event and launches the configured Cloud Run Job container. The manager never receives Docker credentials or controls the container runtime directly.

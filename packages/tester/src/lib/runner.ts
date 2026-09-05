@@ -73,9 +73,7 @@ async function run(
     const sandbox = options.sandbox ?? new ProcessSandbox();
     if (options.forceIsolatedSandbox && !sandbox.strongNetworkIsolation)
       throw new Error('Configured sandbox does not provide strong isolation');
-    const workspace = await fs.mkdtemp(
-      path.join(os.tmpdir(), 'quark-tester-'),
-    );
+    const workspace = await fs.mkdtemp(path.join(os.tmpdir(), 'quark-tester-'));
     try {
       await fs.cp(root, workspace, {
         recursive: true,
