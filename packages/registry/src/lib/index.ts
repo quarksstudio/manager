@@ -1,5 +1,6 @@
 import * as Packages from './Packages';
 import * as Auth from './Auth';
+import * as Gateway from './Gateway';
 import { apiRequest, type ApiFetchOptions } from './api-fetch';
 
 export class Client {
@@ -10,6 +11,7 @@ export class Client {
 
   public Auth = {};
   public Packages = {};
+  public Gateway = {};
 
   constructor(token = '') {
     this.token = token;
@@ -22,6 +24,14 @@ export class Client {
     );
 
     this.Auth = Object.entries(Auth).reduce(
+      (acc, [name, fn]) => ({
+        ...acc,
+        [name]: fn.bind(this),
+      }),
+      {},
+    );
+
+    this.Gateway = Object.entries(Gateway).reduce(
       (acc, [name, fn]) => ({
         ...acc,
         [name]: fn.bind(this),

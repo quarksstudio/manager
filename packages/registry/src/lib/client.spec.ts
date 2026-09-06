@@ -22,6 +22,9 @@ describe('registry client', () => {
     expect(typeof (client.Auth as Record<string, unknown>)['me']).toBe(
       'function',
     );
+    expect(
+      typeof (client.Gateway as Record<string, unknown>)['createSubscription'],
+    ).toBe('function');
   });
 
   it('sends client headers with a bearer token', () => {
@@ -59,5 +62,85 @@ describe('registry client', () => {
     )._headers();
 
     expect(headers['Authorization']).toBeUndefined();
+  });
+
+  it('creates subscriptions through the selected gateway system', async () => {
+    Client.API = 'https://registry.test/v1';
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ id: 'sub_123' }), {
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    const client = new Client('token');
+
+    await (
+      client.Gateway as {
+        createSubscription(
+          system: string,
+          input: {
+            packageId: string;
+            planId: string;
+            role: 'author';
+            paymentMethodId: string;
+          },
+          idempotencyKey: string,
+        ): Promise<unknown>;
+      }
+    ).createSubscription(
+      'mercadopago',
+      {
+        packageId: 'pkg_123',
+        planId: 'plan_123',
+        role: 'author',
+        paymentMethodId: 'pm_123',
+      },
+      'request_123',
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://registry.test/v1/subscriptions',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.any(Headers),
+      }),
+    );
+    const request = fetchMock.mock.calls[0][1] as RequestInit;
+    expect(new Headers(request.headers).get('Idempotency-Key')).toBe(
+      'request_123',
+    );
+    expect(request.body).toBe(
+      JSON.stringify({
+        packageId: 'pkg_123',
+        planId: 'plan_123',
+        role: 'author',
+        paymentMethodId: 'pm_123',
+        system: 'mercadopago',
+        productId: 'plan_123',
+        paymentSourceId: 'pm_123',
+      }),
+    );
+    fetchMock.mockRestore();
+  });
+
+  it('encodes gateway systems and subscription identifiers', async () => {
+    Client.API = 'https://registry.test/v1';
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ id: 'sub_123' }), {
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    const client = new Client();
+
+    await (
+      client.Gateway as {
+        getSubscription(system: string, id: string): Promise<unknown>;
+      }
+    ).getSubscription('provider/test', 'sub/123');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://registry.test/v1/subscriptions/sub%2F123',
+      expect.any(Object),
+    );
+    fetchMock.mockRestore();
   });
 });

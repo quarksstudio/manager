@@ -10,7 +10,7 @@ const useSkill = (pathProject: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const filePath = useMemo(
-    () => join(pathProject, '.skillLock'),
+    () => join(pathProject, 'skill.lock.yml'),
     [pathProject],
   );
 
