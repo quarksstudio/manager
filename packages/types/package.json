@@ -13,8 +13,14 @@
       "default": "./src/index.js"
     }
   },
-  "files": ["**/*.js", "**/*.d.ts", "README.md"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "tslib": "^2.3.0"
   }

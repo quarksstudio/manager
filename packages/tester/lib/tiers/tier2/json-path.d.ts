@@ -1,1 +1,4 @@
-export declare function getJsonPath(value: unknown, expression: string): unknown;
+export declare function getJsonPath(
+  value: unknown,
+  expression: string,
+): unknown;

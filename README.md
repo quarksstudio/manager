@@ -22,19 +22,19 @@ tools/
 
 Todos usan `private: false` y `publishConfig.access: "public"`:
 
-| Paquete | Dependencias internas @quark |
-|---------|------------------------------|
-| `@quark/actions` | tester, use-storage, registry, installer, local-store, permissions, targz |
-| `@quark/installer` | local-store, manifest, permissions, registry, types, targz |
-| `@quark/local-store` | types |
-| `@quark/manifest` | — |
-| `@quark/permissions` | manifest |
-| `@quark/registry` | use-storage, types |
-| `@quark/runtime` | manifest, permissions, types |
-| `@quark/targz` | tester |
-| `@quark/tester` | — |
-| `@quark/types` | — |
-| `@quark/use-storage` | — |
+| Paquete              | Dependencias internas @quark                                              |
+| -------------------- | ------------------------------------------------------------------------- |
+| `@quark/actions`     | tester, use-storage, registry, installer, local-store, permissions, targz |
+| `@quark/installer`   | local-store, manifest, permissions, registry, types, targz                |
+| `@quark/local-store` | types                                                                     |
+| `@quark/manifest`    | —                                                                         |
+| `@quark/permissions` | manifest                                                                  |
+| `@quark/registry`    | use-storage, types                                                        |
+| `@quark/runtime`     | manifest, permissions, types                                              |
+| `@quark/targz`       | tester                                                                    |
+| `@quark/tester`      | —                                                                         |
+| `@quark/types`       | —                                                                         |
+| `@quark/use-storage` | —                                                                         |
 
 ### Flujo de publicación
 

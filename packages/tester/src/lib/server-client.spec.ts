@@ -4,19 +4,17 @@ describe('server certification client', () => {
   afterEach(() => jest.restoreAllMocks());
 
   it('asks the server to launch the container workflow', async () => {
-    const fetchMock = jest
-      .spyOn(global, 'fetch')
-      .mockResolvedValue(
-        new Response(
-          JSON.stringify({
-            messageId: 'm1',
-            packageId: 'pkg',
-            versionId: '1.0.0',
-            productId: 'tier-3',
-          }),
-          { status: 202, headers: { 'content-type': 'application/json' } },
-        ),
-      );
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          messageId: 'm1',
+          packageId: 'pkg',
+          versionId: '1.0.0',
+          productId: 'tier-3',
+        }),
+        { status: 202, headers: { 'content-type': 'application/json' } },
+      ),
+    );
     const result = await requestServerCertification({
       serverUrl: 'https://api.example.test',
       packageId: 'pkg',

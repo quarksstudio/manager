@@ -16,9 +16,7 @@ function gatewayPath(system: string, path: string): string {
 }
 
 function idempotencyHeaders(idempotencyKey?: string): Record<string, string> {
-  return idempotencyKey
-    ? { 'Idempotency-Key': idempotencyKey }
-    : {};
+  return idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {};
 }
 
 export async function tokenizePaymentMethod(
@@ -59,9 +57,7 @@ export async function getSubscription(
   system: string,
   subscriptionId: string,
 ): Promise<Subscription> {
-  return this._fetch(
-    `subscriptions/${encodeURIComponent(subscriptionId)}`,
-  );
+  return this._fetch(`subscriptions/${encodeURIComponent(subscriptionId)}`);
 }
 
 export async function cancelSubscription(
@@ -70,13 +66,10 @@ export async function cancelSubscription(
   subscriptionId: string,
   idempotencyKey?: string,
 ): Promise<Subscription> {
-  return this._fetch(
-    `subscriptions/${encodeURIComponent(subscriptionId)}`,
-    {
-      method: 'DELETE',
-      headers: idempotencyHeaders(idempotencyKey),
-    },
-  );
+  return this._fetch(`subscriptions/${encodeURIComponent(subscriptionId)}`, {
+    method: 'DELETE',
+    headers: idempotencyHeaders(idempotencyKey),
+  });
 }
 
 export async function execute(

@@ -11,11 +11,14 @@ interface Ceremony<T> {
   options: T;
 }
 
-export async function registerAuditorPasskey(apiBase: string): Promise<{ credentialId: string }> {
-  const ceremony = await apiFetch<Ceremony<PublicKeyCredentialCreationOptionsJSON>>(
-    `${apiBase}/v1/certifications/auditor/credentials/options`,
-    { method: 'POST' },
-  );
+export async function registerAuditorPasskey(
+  apiBase: string,
+): Promise<{ credentialId: string }> {
+  const ceremony = await apiFetch<
+    Ceremony<PublicKeyCredentialCreationOptionsJSON>
+  >(`${apiBase}/v1/certifications/auditor/credentials/options`, {
+    method: 'POST',
+  });
   const response = await startRegistration({ optionsJSON: ceremony.options });
   return apiFetch(`${apiBase}/v1/certifications/auditor/credentials/verify`, {
     method: 'POST',
@@ -31,11 +34,15 @@ export async function signAuditDecision(
   const path = [target.packageId, target.versionId, target.productId]
     .map(encodeURIComponent)
     .join('/');
-  const ceremony = await apiFetch<Ceremony<PublicKeyCredentialRequestOptionsJSON>>(
-    `${apiBase}/v1/certifications/${path}/decision/options`,
-    { method: 'POST', body: JSON.stringify(decision) },
-  );
-  const assertion = await startAuthentication({ optionsJSON: ceremony.options });
+  const ceremony = await apiFetch<
+    Ceremony<PublicKeyCredentialRequestOptionsJSON>
+  >(`${apiBase}/v1/certifications/${path}/decision/options`, {
+    method: 'POST',
+    body: JSON.stringify(decision),
+  });
+  const assertion = await startAuthentication({
+    optionsJSON: ceremony.options,
+  });
   return apiFetch(`${apiBase}/v1/certifications/${path}/decision`, {
     method: 'POST',
     body: JSON.stringify({

@@ -3,8 +3,13 @@
   "version": "0.0.0",
   "private": false,
   "license": "MIT",
-  "files": ["**/*", "README.md"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "**/*",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

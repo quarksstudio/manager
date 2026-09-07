@@ -81,5 +81,6 @@
   },
   "sync": {
     "disabledTaskSyncGenerators": ["@nx/js:typescript-sync"]
-  }
+  },
+  "analytics": true
 }

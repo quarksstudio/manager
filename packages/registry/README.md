@@ -21,6 +21,7 @@ operations:
 The payment provider must tokenize card details on the client side. Card
 numbers and security codes must never be sent to this client or persisted by
 the manager.
+
 # @quark/registry
 
 Cliente del registry, autenticación y hooks React. También expone `registerAuditorPasskey` y `signAuditDecision`, que ejecutan las ceremonias WebAuthn S4 contra los endpoints del servidor sin manejar claves privadas en JavaScript.

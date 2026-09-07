@@ -13,10 +13,7 @@
         "main": "packages/tester/src/index.ts",
         "tsConfig": "packages/tester/tsconfig.lib.json",
         "generatePackageJson": true,
-        "assets": [
-          "packages/tester/*.md",
-          "packages/tester/package.json"
-        ]
+        "assets": ["packages/tester/*.md", "packages/tester/package.json"]
       }
     },
     "test": {
