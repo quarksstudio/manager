@@ -11,6 +11,16 @@
       "types": "./src/index.d.ts",
       "require": "./src/index.js",
       "default": "./src/index.js"
+    },
+    "./client": {
+      "types": "./src/client/index.d.ts",
+      "require": "./src/client/index.js",
+      "default": "./src/client/index.js"
+    },
+    "./models": {
+      "types": "./src/models/index.d.ts",
+      "require": "./src/models/index.js",
+      "default": "./src/models/index.js"
     }
   },
   "files": [

@@ -1,5 +1,5 @@
 {
-  "name": "@quark/ui",
+  "name": "@quark/ui-app",
   "version": "0.0.0",
   "private": false,
   "license": "MIT",
@@ -11,6 +11,8 @@
     "access": "public"
   },
   "dependencies": {
+    "@quark/registry": "workspace:*",
+    "@quark/ui": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "6.30.3"

@@ -19,6 +19,9 @@ describe('registry client', () => {
     expect(typeof (client.Packages as Record<string, unknown>)['get']).toBe(
       'function',
     );
+    expect(
+      typeof (client.Packages as Record<string, unknown>)['getReadme'],
+    ).toBe('function');
     expect(typeof (client.Auth as Record<string, unknown>)['me']).toBe(
       'function',
     );
@@ -50,6 +53,27 @@ describe('registry client', () => {
     );
     expect(fetchMock).toHaveBeenCalledWith(
       'https://registry.test/v1/package/%40scope%2Fskill',
+      expect.any(Object),
+    );
+    fetchMock.mockRestore();
+  });
+
+  it('fetches the readme for a package version', async () => {
+    Client.API = 'https://registry.test/v1';
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ content: '# docs' }), {
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    const client = new Client();
+    const readme = await (
+      client.Packages as {
+        getReadme(name: string, version: string): Promise<unknown>;
+      }
+    ).getReadme('@scope/skill', '1.0.0');
+    expect(readme).toEqual({ content: '# docs' });
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://registry.test/v1/package/%40scope%2Fskill/1.0.0/readme',
       expect.any(Object),
     );
     fetchMock.mockRestore();

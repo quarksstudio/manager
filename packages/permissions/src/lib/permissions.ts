@@ -1,5 +1,5 @@
 import type { Manifest } from '@quark/manifest';
-import { createInterface } from 'readline/promises';
+import { createInterface } from 'node:readline/promises';
 import { PermissionPolicy } from '../domain';
 
 export interface UserPolicy {

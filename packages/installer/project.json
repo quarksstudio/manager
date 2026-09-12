@@ -6,6 +6,20 @@
   "tags": ["type:context", "scope:installation"],
   "targets": {
     "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-lib"],
+      "outputs": ["{workspaceRoot}/dist/packages/installer"],
+      "cache": true,
+      "inputs": [
+        "production",
+        "^production",
+        "{workspaceRoot}/tools/build-cli.mjs"
+      ],
+      "options": {
+        "command": "node tools/build-cli.mjs installer"
+      }
+    },
+    "build-lib": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {

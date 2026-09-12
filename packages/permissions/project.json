@@ -14,6 +14,11 @@
         "tsConfig": "packages/permissions/tsconfig.lib.json",
         "assets": ["packages/permissions/*.md"]
       }
+    },
+    "build-lib": {
+      "executor": "nx:noop",
+      "dependsOn": ["build"],
+      "outputs": ["{workspaceRoot}/dist/packages/permissions"]
     }
   }
 }

@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
 import { promises as fs } from 'fs';
-import * as os from 'os';
+import os from 'os';
 import * as path from 'path';
 
 import { Client } from '@quark/registry';
@@ -15,12 +15,63 @@ describe('recursive installer', () => {
     workspace = await fs.mkdtemp(
       path.join(os.tmpdir(), 'recursive-installer-'),
     );
+    jest.spyOn(os, 'homedir').mockReturnValue(workspace);
     Client.API = 'https://registry.test/v1';
   });
 
   afterEach(async () => {
     jest.restoreAllMocks();
     await fs.rm(workspace, { recursive: true, force: true });
+  });
+
+  it('migrates the actions line-based lockfile while keeping pinned versions', async () => {
+    const archives = new Map<string, { buffer: Buffer; hash: string }>();
+    archives.set('legacy@1.0.0', await archive('legacy', '1.0.0'));
+    mockRegistry(archives, { legacy: ['1.0.0', '2.0.0'] });
+    const target = path.join(workspace, 'target');
+    await fs.mkdir(target);
+    await fs.writeFile(path.join(target, 'skill.lock.yml'), 'legacy@1.0.0\n');
+    const result = await install(undefined, {
+      targetInstallDir: target,
+      cacheDir: path.join(workspace, 'cache'),
+    });
+    const lock = parseYaml<SkillLockfile>(
+      await fs.readFile(result.lockfilePath, 'utf8'),
+    );
+    expect(lock.dependencies).toEqual({ legacy: 'legacy@1.0.0' });
+    expect(lock.packages['legacy@1.0.0'].integrity).toMatch(/^sha256-/);
+  });
+
+  it('adds multiple roots together and preserves previously installed roots', async () => {
+    const archives = new Map<string, { buffer: Buffer; hash: string }>();
+    for (const name of ['first', 'second', 'third'])
+      archives.set(`${name}@1.0.0`, await archive(name, '1.0.0'));
+    mockRegistry(archives, {
+      first: ['1.0.0'],
+      second: ['1.0.0'],
+      third: ['1.0.0'],
+    });
+    const options = {
+      targetInstallDir: path.join(workspace, 'target'),
+      cacheDir: path.join(workspace, 'cache'),
+      force: true,
+    };
+    await install(['first@1.0.0', 'second@1.0.0'], options);
+    const result = await install('third@1.0.0', options);
+    const lock = parseYaml<SkillLockfile>(
+      await fs.readFile(result.lockfilePath, 'utf8'),
+    );
+    expect(Object.keys(lock.dependencies).sort()).toEqual([
+      'first',
+      'second',
+      'third',
+    ]);
+    const restored = await install(undefined, options);
+    expect(restored.rootLocators.sort()).toEqual([
+      'first@1.0.0',
+      'second@1.0.0',
+      'third@1.0.0',
+    ]);
   });
 
   it('installs dependencies recursively and writes an exact lockfile', async () => {

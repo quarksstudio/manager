@@ -1,3 +1,4 @@
+import { createStorage } from '@quark/use-storage';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Client } from './lib';
@@ -15,6 +16,15 @@ import {
   type AuthStep,
   type LoginOptions,
 } from './auth-login';
+import {
+  certificationsForVersion,
+  highestVersion,
+  type Certification,
+  type PackageDetails,
+  type PackageReadme,
+  type PackageVersion,
+  type UpdatePackageMetadataInput,
+} from './package-details';
 
 export interface RegistryQuery<T> {
   data: T | null;
@@ -26,6 +36,9 @@ export interface RegistryQuery<T> {
 interface RegistryPackages {
   search(query?: string): Promise<Array<[string, string]>>;
   get<T = Record<string, unknown>>(name: string): Promise<T>;
+  getReadme<T = PackageReadme>(name: string, version: string): Promise<T>;
+  downloadBundle(name: string, version: string): Promise<Response>;
+  update(body: Record<string, unknown>, isNew?: boolean): Promise<unknown>;
 }
 
 interface RegistryAuth {
@@ -226,6 +239,94 @@ export function useFetchPackage<T = Record<string, unknown>>(
   return useRegistryQuery(load, !!name);
 }
 
+export function usePackageReadme(
+  name: string,
+  version?: string,
+): RegistryQuery<PackageReadme> {
+  const client = useRegistryClient();
+  const load = useCallback(
+    () => client.Packages.getReadme<PackageReadme>(name, version as string),
+    [client, name, version],
+  );
+  return useRegistryQuery(load, !!name && !!version);
+}
+
+export type UsePackageCertificationsReturn = {
+  data: Certification[] | null;
+  versions: PackageVersion[];
+  latestVersion?: string;
+  loading: boolean;
+  error: unknown;
+  refetch: () => void;
+};
+
+export function usePackageCertifications(
+  name: string,
+  version?: string,
+): UsePackageCertificationsReturn {
+  const {
+    data: detail,
+    loading,
+    error,
+    refetch,
+  } = useFetchPackage<PackageDetails>(name);
+  const versions = detail?.versions ?? [];
+  const target = version ?? highestVersion(versions)?.version;
+  return {
+    data: target ? certificationsForVersion(detail, target) : null,
+    versions,
+    latestVersion: highestVersion(versions)?.version,
+    loading,
+    error,
+    refetch,
+  };
+}
+
+export interface UseUpdatePackageMetadataReturn {
+  save: (input: UpdatePackageMetadataInput) => Promise<void>;
+  status: 'idle' | 'saving' | 'success' | 'error';
+  error: Error | null;
+  reset: () => void;
+}
+
+export function useUpdatePackageMetadata(): UseUpdatePackageMetadataReturn {
+  const client = useRegistryClient();
+  const [status, setStatus] = useState<'idle' | 'saving' | 'success' | 'error'>(
+    'idle',
+  );
+  const [error, setError] = useState<Error | null>(null);
+
+  const save = useCallback(
+    async (input: UpdatePackageMetadataInput) => {
+      setStatus('saving');
+      setError(null);
+      try {
+        await client.Packages.update({
+          id: input.id,
+          description: input.description,
+          tags: input.tags,
+          authors: input.authors,
+        });
+        setStatus('success');
+      } catch (reason) {
+        const failure =
+          reason instanceof Error ? reason : new Error(String(reason));
+        setError(failure);
+        setStatus('error');
+        throw failure;
+      }
+    },
+    [client],
+  );
+
+  const reset = useCallback(() => {
+    setStatus('idle');
+    setError(null);
+  }, []);
+
+  return { save, status, error, reset };
+}
+
 function mergeUnique(
   first: PackageSearchItem[],
   second: PackageSearchItem[],
@@ -279,4 +380,29 @@ function useRegistryQuery<T>(
   }, [enabled, load, request]);
 
   return { data, error, loading, refetch };
+}
+
+/** Authentication state only; terminal lifecycle belongs to the caller. */
+export function useAuthLogout() {
+  const client = useRegistryClient();
+  const [status, setStatus] = useState<
+    'idle' | 'running' | 'success' | 'error'
+  >('idle');
+  const [error, setError] = useState<Error | null>(null);
+  const logout = useCallback(async () => {
+    setStatus('running');
+    setError(null);
+    try {
+      await client.Auth.logout();
+      await createStorage({ namespace: 'app' }).removeItem('auth:session');
+      setStatus('success');
+    } catch (reason) {
+      const failure =
+        reason instanceof Error ? reason : new Error(String(reason));
+      setError(failure);
+      setStatus('error');
+      throw failure;
+    }
+  }, [client]);
+  return { logout, status, error };
 }

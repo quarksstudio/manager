@@ -6,6 +6,20 @@
   "tags": ["type:adapter", "scope:installation"],
   "targets": {
     "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-lib"],
+      "outputs": ["{workspaceRoot}/dist/packages/local-store"],
+      "cache": true,
+      "inputs": [
+        "production",
+        "^production",
+        "{workspaceRoot}/tools/build-cli.mjs"
+      ],
+      "options": {
+        "command": "node tools/build-cli.mjs local-store"
+      }
+    },
+    "build-lib": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {

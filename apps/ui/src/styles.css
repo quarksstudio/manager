@@ -1,4 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* You can add global styles to this file, and also import other style files */
+@import '@quark/ui/web/styles.css';
+
+/* Scan the shared presentation library so its utility classes are generated. */
+@source '../../../packages/ui/src/web';

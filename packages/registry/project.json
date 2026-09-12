@@ -6,13 +6,17 @@
   "tags": ["type:adapter", "scope:registry"],
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-lib"],
+      "outputs": ["{workspaceRoot}/dist/packages/registry"],
+      "cache": true,
+      "inputs": [
+        "production",
+        "^production",
+        "{workspaceRoot}/tools/build-cli.mjs"
+      ],
       "options": {
-        "outputPath": "dist/packages/registry",
-        "main": "packages/registry/src/index.ts",
-        "tsConfig": "packages/registry/tsconfig.lib.json",
-        "assets": ["packages/registry/*.md"]
+        "command": "node tools/build-cli.mjs registry"
       }
     },
     "test": {
@@ -20,6 +24,17 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "packages/registry/jest.config.cts"
+      }
+    },
+    "build-lib": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["use-storage:build", "types:build"],
+      "options": {
+        "outputPath": "dist/packages/registry",
+        "main": "packages/registry/src/index.ts",
+        "tsConfig": "packages/registry/tsconfig.lib.json",
+        "assets": ["packages/registry/*.md"]
       }
     }
   }

@@ -22,6 +22,11 @@
       "options": {
         "jestConfig": "packages/targz/jest.config.cts"
       }
+    },
+    "build-lib": {
+      "executor": "nx:noop",
+      "dependsOn": ["build"],
+      "outputs": ["{workspaceRoot}/dist/packages/targz"]
     }
   }
 }

@@ -1,0 +1,199 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.371 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  :root {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .quark-prose {
+    color: var(--foreground);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+  .quark-prose > *:first-child {
+    margin-top: 0;
+  }
+  .quark-prose > *:last-child {
+    margin-bottom: 0;
+  }
+  .quark-prose h1,
+  .quark-prose h2,
+  .quark-prose h3,
+  .quark-prose h4,
+  .quark-prose h5,
+  .quark-prose h6 {
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 1.5em 0 0.5em;
+  }
+  .quark-prose h1 {
+    font-size: 1.5rem;
+  }
+  .quark-prose h2 {
+    font-size: 1.25rem;
+  }
+  .quark-prose h3 {
+    font-size: 1.075rem;
+  }
+  .quark-prose p {
+    margin: 0.75em 0;
+  }
+  .quark-prose a {
+    color: var(--primary);
+    text-underline-offset: 3px;
+    text-decoration: underline;
+  }
+  .quark-prose a:hover {
+    opacity: 0.8;
+  }
+  .quark-prose ul,
+  .quark-prose ol {
+    margin: 0.75em 0;
+    padding-left: 1.5em;
+    display: grid;
+    gap: 0.35em;
+  }
+  .quark-prose ul {
+    list-style: disc;
+  }
+  .quark-prose ol {
+    list-style: decimal;
+  }
+  .quark-prose li::marker {
+    color: var(--muted-foreground);
+  }
+  .quark-prose strong {
+    font-weight: 600;
+  }
+  .quark-prose blockquote {
+    margin: 0.75em 0;
+    border-left: 3px solid var(--border);
+    padding-left: 1em;
+    color: var(--muted-foreground);
+  }
+  .quark-prose hr {
+    margin: 1.5em 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+  .quark-prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.85em;
+    background: var(--muted);
+    border-radius: 0.25rem;
+    padding: 0.15em 0.35em;
+  }
+  .quark-prose pre {
+    margin: 0.75em 0;
+    border-radius: 0.5rem;
+    background: var(--muted);
+    padding: 1em;
+    overflow-x: auto;
+  }
+  .quark-prose pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 0.85em;
+    line-height: 1.6;
+  }
+  .quark-prose table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin: 0.75em 0;
+    font-size: 0.875rem;
+  }
+  .quark-prose th,
+  .quark-prose td {
+    border: 1px solid var(--border);
+    padding: 0.45em 0.75em;
+    text-align: left;
+  }
+  .quark-prose th {
+    background: var(--muted);
+    font-weight: 600;
+  }
+  .quark-prose img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+}

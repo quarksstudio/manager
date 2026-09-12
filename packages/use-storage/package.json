@@ -4,13 +4,13 @@
   "private": false,
   "license": "MIT",
   "type": "commonjs",
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "require": "./index.js",
-      "default": "./index.js"
+      "types": "./src/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
     }
   },
   "files": [

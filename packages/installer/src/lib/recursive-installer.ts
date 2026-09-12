@@ -68,15 +68,36 @@ const LOCKFILE = 'skill.lock.yml';
 const LEGACY_LOCKFILES = ['skills.lock.yml', 'skills-lock.yml'];
 
 export async function install(
-  packageSelector?: string,
+  packageSelector?: string | string[],
   options: RecursiveInstallOptions = {},
 ): Promise<InstallResult> {
   const target = path.resolve(options.targetInstallDir ?? process.cwd());
   await fs.mkdir(target, { recursive: true });
   const previous = await readLockfile(target);
-  const requested = packageSelector
-    ? [parseSelector(packageSelector)]
-    : Object.entries(await readRootDependencies(target));
+  const selectors =
+    typeof packageSelector === 'string' ? [packageSelector] : packageSelector;
+  const requested = selectors?.length
+    ? [
+        ...new Map([
+          ...Object.entries(previous.dependencies).map(
+            ([name, locator]): [string, string] => [
+              name,
+              previous.packages[locator]?.version ?? '*',
+            ],
+          ),
+          ...selectors.map(parseSelector),
+        ]).entries(),
+      ]
+    : Object.entries(
+        Object.keys(previous.dependencies).length
+          ? Object.fromEntries(
+              Object.entries(previous.dependencies).map(([name, locator]) => [
+                name,
+                previous.packages[locator]?.version ?? '*',
+              ]),
+            )
+          : await readRootDependencies(target),
+      );
   if (!requested.length) throw new Error('No dependencies to install');
 
   const workspace = await fs.mkdtemp(path.join(os.tmpdir(), 'quark-resolve-'));
@@ -178,7 +199,7 @@ export async function install(
         );
     const locked = lockedLocator && previous.packages[lockedLocator];
     const metadata =
-      !options.force && locked
+      !options.force && locked && satisfies(locked.version, range)
         ? await exactMetadata(name, locked.version)
         : await chooseVersion(name, range, options.force);
     if (!metadata) throw new Error(`No version of ${name} satisfies ${range}`);
@@ -316,9 +337,36 @@ async function readRootDependencies(
 async function readLockfile(target: string): Promise<SkillLockfile> {
   for (const filename of [LOCKFILE, ...LEGACY_LOCKFILES]) {
     try {
-      const value = parseYaml<Partial<SkillLockfile>>(
-        await fs.readFile(path.join(target, filename), 'utf8'),
-      );
+      const raw = await fs.readFile(path.join(target, filename), 'utf8');
+      if (!raw.trim()) return migrateFlatLock({});
+      const parsed = parseYaml<unknown>(raw);
+      // Older actions wrote one name@version per line, despite the .yml suffix.
+      if (typeof parsed === 'string') {
+        const entries: Record<string, LockedPackage> = {};
+        for (const line of raw
+          .split(/\r?\n/)
+          .map((value) => value.trim())
+          .filter(Boolean)) {
+          const [name, version] = parseSelector(line);
+          if (
+            !name ||
+            !/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(version)
+          ) {
+            throw new Error(`Invalid legacy lockfile entry: ${line}`);
+          }
+          entries[name] = {
+            version,
+            resolved: packageUrl(name, version, '/bundle'),
+            integrity: '',
+            isCertified: false,
+            mappedFiles: [],
+          };
+        }
+        return migrateFlatLock(entries);
+      }
+      if (!parsed || typeof parsed !== 'object')
+        throw new Error(`Invalid lockfile: ${filename}`);
+      const value = parsed as Partial<SkillLockfile>;
       if (value.lockfileVersion === 1 && value.dependencies && value.packages)
         return value as SkillLockfile;
       const flat = value.dependencies as unknown as Record<

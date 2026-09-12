@@ -14,6 +14,15 @@ export interface ApiFetchOptions extends RequestInit {
   useCache?: boolean;
 }
 
+export class ApiError extends Error {
+  status: number;
+  constructor(status: number, statusText: string) {
+    super(`API request failed with status ${status}: ${statusText}`);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
 interface CachedResponse {
   body: string;
   headers: Array<[string, string]>;
@@ -64,9 +73,7 @@ export async function apiRequest(
     notifySessionChange();
   }
   if (!response.ok) {
-    throw new Error(
-      `API request failed with status ${response.status}: ${response.statusText}`,
-    );
+    throw new ApiError(response.status, response.statusText);
   }
   if (cacheable) {
     await cache

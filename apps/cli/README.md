@@ -32,4 +32,4 @@ pnpm nx build cli
 pnpm nx serve cli
 ```
 
-The executable is emitted to `dist/apps/cli`. The command implementation delegates workflows to `@quark/actions` rather than accessing the registry directly.
+The executable is emitted to `dist/apps/cli`. Commands are imported directly from the owning packages through their `/CLI` exports. Shared presentation is provided by `@quark/ui/CLI`.

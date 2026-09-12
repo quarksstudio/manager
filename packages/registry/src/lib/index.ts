@@ -1,10 +1,16 @@
+import { registryConfiguration } from '../configuration';
 import * as Packages from './Packages';
 import * as Auth from './Auth';
 import * as Gateway from './Gateway';
 import { apiRequest, type ApiFetchOptions } from './api-fetch';
 
 export class Client {
-  static API = '';
+  static get API(): string {
+    return registryConfiguration.api;
+  }
+  static set API(value: string) {
+    registryConfiguration.api = value;
+  }
   static version = '1.0.0';
 
   private token = '';

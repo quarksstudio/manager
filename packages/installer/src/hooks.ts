@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import {
   install,
@@ -15,7 +15,7 @@ export interface UseInstallState {
   installing: boolean;
   result: InstallResult | null;
   run: (
-    packageSelector?: string,
+    packageSelector?: string | string[],
     options?: InstallOptions,
   ) => Promise<InstallResult>;
   reset: () => void;
@@ -24,20 +24,22 @@ export interface UseInstallState {
 export function useInstall(
   defaultOptions: InstallOptions = {},
 ): UseInstallState {
+  const optionsRef = useRef(defaultOptions);
+  optionsRef.current = defaultOptions;
   const [installing, setInstalling] = useState(false);
   const [result, setResult] = useState<InstallResult | null>(null);
   const [error, setError] = useState<unknown>();
 
   const run = useCallback(
     async (
-      packageSelector?: string,
+      packageSelector?: string | string[],
       options: InstallOptions = {},
     ): Promise<InstallResult> => {
       setInstalling(true);
       setError(undefined);
       try {
         const installed = await install(packageSelector, {
-          ...defaultOptions,
+          ...optionsRef.current,
           ...options,
         });
         setResult(installed);
@@ -49,7 +51,7 @@ export function useInstall(
         setInstalling(false);
       }
     },
-    [defaultOptions],
+    [],
   );
 
   const reset = useCallback(() => {

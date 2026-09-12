@@ -11,12 +11,18 @@
       "types": "./src/index.d.ts",
       "require": "./src/index.js",
       "default": "./src/index.js"
+    },
+    "./CLI": {
+      "types": "./src/CLI/index.d.ts",
+      "import": "./src/CLI/index.mjs",
+      "default": "./src/CLI/index.mjs"
     }
   },
   "files": [
     "**/*.js",
     "**/*.d.ts",
-    "README.md"
+    "README.md",
+    "**/*.mjs"
   ],
   "publishConfig": {
     "access": "public"
@@ -30,6 +36,8 @@
     "@quark/targz": "workspace:*",
     "react": "^19.0.0",
     "tar": "^7.4.3",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@quark/ui": "workspace:*",
+    "ink": "^7.0.2"
   }
 }

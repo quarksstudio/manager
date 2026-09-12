@@ -1,0 +1,48 @@
+{
+  "name": "@quark/ui",
+  "version": "0.0.0",
+  "private": false,
+  "license": "MIT",
+  "type": "commonjs",
+  "exports": {
+    "./CLI": {
+      "types": "./src/CLI/index.d.ts",
+      "import": "./src/CLI/index.mjs",
+      "default": "./src/CLI/index.mjs"
+    },
+    "./hooks": {
+      "types": "./src/hooks/index.d.ts",
+      "import": "./src/hooks/index.mjs",
+      "default": "./src/hooks/index.mjs"
+    },
+    "./web": {
+      "types": "./src/web/index.d.ts",
+      "import": "./src/web/index.mjs",
+      "default": "./src/web/index.mjs"
+    },
+    "./web/styles.css": "./src/web/styles.css"
+  },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "**/*.css",
+    "README.md",
+    "**/*.mjs"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@quark/registry": "workspace:*",
+    "@quark/use-storage": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dompurify": "^3.2.4",
+    "ink": "^7.0.2",
+    "lucide-react": "^0.542.0",
+    "marked": "^15.0.7",
+    "react": "^19.0.0",
+    "tailwind-merge": "^3.0.2",
+    "tslib": "^2.3.0"
+  }
+}

@@ -2,9 +2,16 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
-    "moduleResolution": "node10",
-    "types": ["jest", "node"]
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["jest", "node"],
+    "jsx": "react-jsx",
+    "esModuleInterop": true
   },
-  "include": ["jest.config.cts", "src/**/*.spec.ts", "src/**/*.d.ts"]
+  "include": [
+    "jest.config.cts",
+    "src/**/*.spec.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx"
+  ]
 }

@@ -12,4 +12,7 @@ export interface PackageInterface {
   payment?: PaymentInterface | null;
   createdAt: Date;
   updatedAt: Date;
+  downloads?: number;
+  downloadsSince?: string;
+  canEditMetadata?: boolean;
 }

@@ -15,6 +15,15 @@ const uninstallMock = uninstall as jest.MockedFunction<typeof uninstall>;
 describe('useInstall', () => {
   beforeEach(() => jest.clearAllMocks());
 
+  it('keeps run stable across renders with fresh default options', () => {
+    const { result, rerender } = renderHook(() =>
+      useInstall({ targetInstallDir: '/target' }),
+    );
+    const run = result.current.run;
+    rerender();
+    expect(result.current.run).toBe(run);
+  });
+
   it('runs an installation and exposes its result', async () => {
     const installed = {
       targetInstallDir: '/target',

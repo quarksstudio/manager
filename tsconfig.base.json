@@ -16,7 +16,7 @@
     "paths": {
       "@quark/types": ["./packages/types/src/index.ts"],
       "@quark/types/*": ["./packages/types/src/*"],
-      "@quark/actions": ["./packages/actions/src/index.ts"],
+      "@quark/config": ["./packages/config/src/index.ts"],
       "@quark/registry": ["./packages/registry/src/index.ts"],
       "@quark/manifest": ["./packages/manifest/src/index.ts"],
       "@quark/installer": ["./packages/installer/src/index.ts"],
@@ -25,7 +25,22 @@
       "@quark/local-store": ["./packages/local-store/src/index.ts"],
       "@quark/use-storage": ["./packages/use-storage/src/index.ts"],
       "@quark/targz": ["./packages/targz/src/index.ts"],
-      "@quark/tester": ["./packages/tester/src/index.ts"]
+      "@quark/tester": ["./packages/tester/src/index.ts"],
+      "@quark/publisher": ["./packages/publisher/src/index.ts"],
+      "@quark/registry/upload": [
+        "./packages/registry/src/infrastructure/upload-package-archive.ts"
+      ],
+      "@quark/installer/CLI": ["./packages/installer/src/CLI/index.ts"],
+      "@quark/registry/CLI": ["./packages/registry/src/CLI/index.ts"],
+      "@quark/config/CLI": ["./packages/config/src/CLI/index.ts"],
+      "@quark/local-store/CLI": ["./packages/local-store/src/CLI/index.ts"],
+      "@quark/publisher/CLI": ["./packages/publisher/src/CLI/index.ts"],
+      "@quark/tester/CLI": ["./packages/tester/src/CLI/index.ts"],
+      "@quark/ui/CLI": ["./packages/ui/src/CLI/index.ts"],
+      "@quark/ui/hooks": ["./packages/ui/src/hooks/index.ts"],
+      "@quark/ui/web": ["./packages/ui/src/web/index.ts"],
+      "@quark/ui/web/styles.css": ["./packages/ui/src/web/styles.css"],
+      "ink": ["./node_modules/ink/build/index.d.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

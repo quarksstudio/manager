@@ -16,8 +16,12 @@
     "access": "public"
   },
   "dependencies": {
-    "@quark/actions": "workspace:*",
     "@quark/tester": "workspace:*",
-    "commander": "^15.0.0"
+    "commander": "^15.0.0",
+    "@quark/installer": "workspace:*",
+    "@quark/registry": "workspace:*",
+    "@quark/config": "workspace:*",
+    "@quark/local-store": "workspace:*",
+    "@quark/publisher": "workspace:*"
   }
 }

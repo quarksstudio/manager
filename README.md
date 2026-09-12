@@ -22,19 +22,18 @@ tools/
 
 Todos usan `private: false` y `publishConfig.access: "public"`:
 
-| Paquete              | Dependencias internas @quark                                              |
-| -------------------- | ------------------------------------------------------------------------- |
-| `@quark/actions`     | tester, use-storage, registry, installer, local-store, permissions, targz |
-| `@quark/installer`   | local-store, manifest, permissions, registry, types, targz                |
-| `@quark/local-store` | types                                                                     |
-| `@quark/manifest`    | —                                                                         |
-| `@quark/permissions` | manifest                                                                  |
-| `@quark/registry`    | use-storage, types                                                        |
-| `@quark/runtime`     | manifest, permissions, types                                              |
-| `@quark/targz`       | tester                                                                    |
-| `@quark/tester`      | —                                                                         |
-| `@quark/types`       | —                                                                         |
-| `@quark/use-storage` | —                                                                         |
+| Paquete              | Dependencias internas @quark                               |
+| -------------------- | ---------------------------------------------------------- |
+| `@quark/installer`   | local-store, manifest, permissions, registry, types, targz |
+| `@quark/local-store` | types                                                      |
+| `@quark/manifest`    | —                                                          |
+| `@quark/permissions` | manifest                                                   |
+| `@quark/registry`    | use-storage, types                                         |
+| `@quark/runtime`     | manifest, permissions, types                               |
+| `@quark/targz`       | tester                                                     |
+| `@quark/tester`      | —                                                          |
+| `@quark/types`       | —                                                          |
+| `@quark/use-storage` | —                                                          |
 
 ### Flujo de publicación
 
@@ -65,3 +64,34 @@ Cada paquete en `dist/packages/<pkg>/` debe contener su entrada raíz en la **ra
 ## Calidad
 
 `ci.yml` garantiza en cada push/PR: `pnpm install --frozen-lockfile`, rechazo de JS generado en `src/`, `format:check`, y `lint`/`test`/`build`.
+
+## CLI presentation
+
+Each owning package exposes commands and screens through `@quark/<package>/CLI`:
+`installer`, `registry`, `config`, `local-store`, `publisher`, and `tester`.
+`apps/cli` imports these subpaths directly. Shared presentation lives in
+`@quark/ui/CLI`. Each React component has its own file under `src/CLI`.
+Business entrypoints do not re-export CLI code; lint enforces that boundary.
+
+CLI subpaths are ESM entrypoints because Ink uses top-level await. Business
+entrypoints remain CommonJS. `build-lib` emits JavaScript and declarations;
+`build` also creates the ESM CLI bundle, sharing the owning business module.
+Run `pnpm test:cli-architecture` to validate boundaries and component structure.
+After building the CLI and its dependencies, run `pnpm test:cli-artifacts` to
+check compiled exports and command help in an isolated temporary fixture.
+
+## Web presentation
+
+`packages/ui` also ships `@quark/ui/web` and `@quark/ui/web/styles.css` (ESM,
+Ink-free) with the package-detail page components. `apps/ui` renders them at
+`/packages/:packageName` and talks to the registry through `@quark/registry`
+(`configureRegistry(import.meta.env.VITE_REGISTRY_API_URL ?? '/v1')`).
+
+The web surface may depend on `@quark/registry` but never on `@quark/*` others
+or the Ink `./CLI` tree; CLI files are blocked from `./web` in turn
+(`no-restricted-imports` in `eslint.config.mjs`). The Nx build cycle between
+`cli-ui` and `registry` is avoided with explicit `dependsOn` and a
+`src/CLI/**` exclusion in the `registry` library tsconfig; `build-web` runs
+after `build-lib` because the TSC clean step would wipe the bundled web entry.
+Run `pnpm test:web-architecture` and `pnpm test:cli-artifacts` (which asserts
+the web bundle exposes `PackageDetails` and never loads Ink).

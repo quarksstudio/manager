@@ -6,6 +6,11 @@ export declare function getVersion(
   name: string,
   version: string,
 ): Promise<any>;
+export declare function getReadme(
+  this: any,
+  name: string,
+  version: string,
+): Promise<any>;
 export declare function downloadBundle(
   this: any,
   name: string,

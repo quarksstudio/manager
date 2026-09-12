@@ -146,7 +146,8 @@ export function filterPackages(
 
 async function loadCatalog(): Promise<Record<string, PackageSearchItem>> {
   if (memoryCatalog) return memoryCatalog;
-  catalogPromise ??= createStorage({ namespace: 'package-catalog' })
+  if (catalogPromise) return catalogPromise;
+  catalogPromise = createStorage({ namespace: 'package-catalog' })
     .getItem<Record<string, PackageSearchItem>>(CATALOG_KEY)
     .then((catalog) => {
       memoryCatalog = catalog ?? {};

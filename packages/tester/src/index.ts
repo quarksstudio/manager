@@ -32,3 +32,12 @@ export type {
   ServerCertificationOptions,
   ServerCertificationResult,
 } from './lib/types';
+
+export { runLocalTests } from './infrastructure/local-tests';
+export {
+  createRunLocalTests,
+  normalizeTier,
+  type TestOptions,
+  type TestResult,
+  type LocalTestDependencies,
+} from './application/run-local-tests';

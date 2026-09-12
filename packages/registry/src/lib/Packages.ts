@@ -18,6 +18,16 @@ export async function getVersion(
   );
 }
 
+export async function getReadme(
+  this: any,
+  name: string,
+  version: string,
+): Promise<any> {
+  return this._fetch(
+    `package/${encodeURIComponent(name)}/${encodeURIComponent(version)}/readme`,
+  );
+}
+
 export async function downloadBundle(
   this: any,
   name: string,

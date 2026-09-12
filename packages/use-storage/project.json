@@ -21,6 +21,11 @@
       "options": {
         "jestConfig": "packages/use-storage/jest.config.cts"
       }
+    },
+    "build-lib": {
+      "executor": "nx:noop",
+      "dependsOn": ["build"],
+      "outputs": ["{workspaceRoot}/dist/packages/use-storage"]
     }
   }
 }

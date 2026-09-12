@@ -84,3 +84,10 @@ The public entry points are `runSkillTests`, `runAgentTests`, `inspectPackageArc
 pnpm nx build tester
 pnpm nx test tester
 ```
+
+## CLI
+
+Screens and command adapters live in `src/CLI`, one React component per file.
+Import them through `@quark/tester/CLI`; the main entrypoint keeps its
+business API and does not load CLI presentation. Shared Ink components and
+terminal helpers come from `@quark/ui/CLI`.

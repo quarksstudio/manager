@@ -1,3 +1,4 @@
+import type { Certification } from './Certification';
 export interface VersionInterface {
   version: string;
   repoUrl: string;
@@ -7,6 +8,7 @@ export interface VersionInterface {
   reports: number;
   token?: string;
   files: string[];
+  certifications?: Certification[];
 }
 export interface VersionProps extends Omit<
   VersionInterface,

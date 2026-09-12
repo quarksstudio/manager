@@ -11,12 +11,23 @@
       "types": "./src/index.d.ts",
       "require": "./src/index.js",
       "default": "./src/index.js"
+    },
+    "./upload": {
+      "types": "./src/infrastructure/upload-package-archive.d.ts",
+      "require": "./src/infrastructure/upload-package-archive.js",
+      "default": "./src/infrastructure/upload-package-archive.js"
+    },
+    "./CLI": {
+      "types": "./src/CLI/index.d.ts",
+      "import": "./src/CLI/index.mjs",
+      "default": "./src/CLI/index.mjs"
     }
   },
   "files": [
     "**/*.js",
     "**/*.d.ts",
-    "README.md"
+    "README.md",
+    "**/*.mjs"
   ],
   "publishConfig": {
     "access": "public"
@@ -25,7 +36,9 @@
     "@simplewebauthn/browser": "^13.2.2",
     "@quark/use-storage": "workspace:*",
     "@quark/types": "workspace:*",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@quark/ui": "workspace:*",
+    "ink": "^7.0.2"
   },
   "peerDependencies": {
     "react": "^19.0.0"

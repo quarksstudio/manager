@@ -46,7 +46,7 @@ export type {
 export { PackageNotFound, uninstall, type UninstallStep } from './uninstaller';
 
 export async function install(
-  packageSelector?: string,
+  packageSelector?: string | string[],
   options: InstallOptions = {},
 ): Promise<InstallResult> {
   return installRecursive(packageSelector, options);

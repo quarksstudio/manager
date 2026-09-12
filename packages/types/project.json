@@ -14,6 +14,11 @@
         "tsConfig": "packages/types/tsconfig.lib.json",
         "assets": ["packages/types/*.md"]
       }
+    },
+    "build-lib": {
+      "executor": "nx:noop",
+      "dependsOn": ["build"],
+      "outputs": ["{workspaceRoot}/dist/packages/types"]
     }
   }
 }

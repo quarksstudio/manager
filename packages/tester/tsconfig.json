@@ -1,19 +1,26 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "esnext",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "importHelpers": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noPropertyAccessFromIndexSignature": true
+    "noPropertyAccessFromIndexSignature": true,
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "moduleResolution": "bundler"
   },
   "files": [],
   "include": [],
   "references": [
-    { "path": "./tsconfig.lib.json" },
-    { "path": "./tsconfig.spec.json" }
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
   ]
 }
