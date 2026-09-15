@@ -68,6 +68,10 @@ function publishManifest(source, allPackages, group) {
   const manifest = structuredClone(source);
   delete manifest.private;
   manifest.license ??= 'MIT';
+  manifest.repository ??= {
+    type: 'git',
+    url: 'https://github.com/quarksstudio/manager',
+  };
   if (group === 'packages') {
     if (!manifest.exports) {
       manifest.main ??= './index.js';
