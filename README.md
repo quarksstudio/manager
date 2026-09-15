@@ -6,8 +6,8 @@ Monorepo Nx que contiene el **cliente** del ecosistema Quark: la CLI, la interfa
 
 ```
 apps/
-  cli/    @quark/cli             # CLI de Quark
-  ui/     @quark/ui              # Interfaz web
+  cli/    @quarks.studio/cli             # CLI de Quark
+  ui/     @quarks.studio/ui              # Interfaz web
 packages/                        # librerías publicables a NPM (ver abajo)
 tools/
   prepare-npm-packages.mjs       # construye los tarballs de publicación en dist/
@@ -22,23 +22,23 @@ tools/
 
 Todos usan `private: false` y `publishConfig.access: "public"`:
 
-| Paquete              | Dependencias internas @quark                                |
-| -------------------- | ----------------------------------------------------------- |
-| `@quark/config`      | ui, use-storage                                             |
-| `@quark/installer`   | local-store, manifest, permissions, registry, types, targz  |
-| `@quark/local-store` | types                                                       |
-| `@quark/manifest`    | —                                                           |
-| `@quark/permissions` | manifest                                                    |
-| `@quark/publisher`   | registry, targz, tester, ui                                 |
-| `@quark/registry`    | use-storage, types                                          |
-| `@quark/runtime`     | manifest, permissions, types                                |
-| `@quark/targz`       | tester                                                      |
-| `@quark/tester`      | —                                                           |
-| `@quark/types`       | —                                                           |
-| `@quark/ui`          | registry, use-storage                                       |
-| `@quark/use-storage` | —                                                           |
-| `@quark/cli`         | config, installer, local-store, publisher, registry, tester |
-| `@quark/ui-app`      | —                                                           |
+| Paquete                      | Dependencias internas @quarks.studio                        |
+| ---------------------------- | ----------------------------------------------------------- |
+| `@quarks.studio/config`      | ui, use-storage                                             |
+| `@quarks.studio/installer`   | local-store, manifest, permissions, registry, types, targz  |
+| `@quarks.studio/local-store` | types                                                       |
+| `@quarks.studio/manifest`    | —                                                           |
+| `@quarks.studio/permissions` | manifest                                                    |
+| `@quarks.studio/publisher`   | registry, targz, tester, ui                                 |
+| `@quarks.studio/registry`    | use-storage, types                                          |
+| `@quarks.studio/runtime`     | manifest, permissions, types                                |
+| `@quarks.studio/targz`       | tester                                                      |
+| `@quarks.studio/tester`      | —                                                           |
+| `@quarks.studio/types`       | —                                                           |
+| `@quarks.studio/ui`          | registry, use-storage                                       |
+| `@quarks.studio/use-storage` | —                                                           |
+| `@quarks.studio/cli`         | config, installer, local-store, publisher, registry, tester |
+| `@quarks.studio/ui-app`      | —                                                           |
 
 ### Versionado
 
@@ -62,7 +62,7 @@ El flujo ejecuta `lint`, `test` y `build` de todos los proyectos y luego:
 
 ### Contrato de estructura del build
 
-Cada paquete en `dist/packages/<pkg>/` debe contener su entrada raíz en la **raíz** del dist, coincidiendo con su `main`/`types`; en paquetes **subpath-only** sin `main` raíz (p. ej. `@quark/ui`, que expone `./CLI`, `./hooks` y `./web`), `prepare-npm-packages.mjs` valida cada target de `exports` en vez de la raíz:
+Cada paquete en `dist/packages/<pkg>/` debe contener su entrada raíz en la **raíz** del dist, coincidiendo con su `main`/`types`; en paquetes **subpath-only** sin `main` raíz (p. ej. `@quarks.studio/ui`, que expone `./CLI`, `./hooks` y `./web`), `prepare-npm-packages.mjs` valida cada target de `exports` en vez de la raíz:
 
 - `main: ./index.js` y `types: ./index.d.ts` en la raíz; o `exports` que apunten a archivos emitidos por el build.
 
@@ -80,10 +80,10 @@ Cada paquete en `dist/packages/<pkg>/` debe contener su entrada raíz en la **ra
 
 ## CLI presentation
 
-Each owning package exposes commands and screens through `@quark/<package>/CLI`:
+Each owning package exposes commands and screens through `@quarks.studio/<package>/CLI`:
 `installer`, `registry`, `config`, `local-store`, `publisher`, and `tester`.
 `apps/cli` imports these subpaths directly. Shared presentation lives in
-`@quark/ui/CLI`. Each React component has its own file under `src/CLI`.
+`@quarks.studio/ui/CLI`. Each React component has its own file under `src/CLI`.
 Business entrypoints do not re-export CLI code; lint enforces that boundary.
 
 CLI subpaths are ESM entrypoints because Ink uses top-level await. Business
@@ -95,12 +95,12 @@ check compiled exports and command help in an isolated temporary fixture.
 
 ## Web presentation
 
-`packages/ui` also ships `@quark/ui/web` and `@quark/ui/web/styles.css` (ESM,
+`packages/ui` also ships `@quarks.studio/ui/web` and `@quarks.studio/ui/web/styles.css` (ESM,
 Ink-free) with the package-detail page components. `apps/ui` renders them at
-`/packages/:packageName` and talks to the registry through `@quark/registry`
+`/packages/:packageName` and talks to the registry through `@quarks.studio/registry`
 (`configureRegistry(import.meta.env.VITE_REGISTRY_API_URL ?? '/v1')`).
 
-The web surface may depend on `@quark/registry` but never on `@quark/*` others
+The web surface may depend on `@quarks.studio/registry` but never on `@quarks.studio/*` others
 or the Ink `./CLI` tree; CLI files are blocked from `./web` in turn
 (`no-restricted-imports` in `eslint.config.mjs`). The Nx build cycle between
 `cli-ui` and `registry` is avoided with explicit `dependsOn` and a

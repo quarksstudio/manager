@@ -1,8 +1,14 @@
 import React, { useEffect } from 'react';
 import { useApp } from 'ink';
 import { listSkillCache, type CachedSkillArtifact } from '../index';
-import { EXIT_CODES } from '@quark/ui/CLI';
-import { EmptyState, Result, Screen, StatusLine, Table } from '@quark/ui/CLI';
+import { EXIT_CODES } from '@quarks.studio/ui/CLI';
+import {
+  EmptyState,
+  Result,
+  Screen,
+  StatusLine,
+  Table,
+} from '@quarks.studio/ui/CLI';
 
 interface CacheListScreenProps {
   json?: boolean;

@@ -1,4 +1,7 @@
-import type { PackageInterface, VersionInterface } from '@quark/types/models';
+import type {
+  PackageInterface,
+  VersionInterface,
+} from '@quarks.studio/types/models';
 
 export async function search(this: any, str = ''): Promise<any> {
   return this._fetch(`package?query=${encodeURIComponent(str)}`);

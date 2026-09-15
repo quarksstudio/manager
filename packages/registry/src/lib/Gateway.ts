@@ -5,7 +5,7 @@ import type {
   PaymentMethodTokenInput,
   Subscription,
   TokenizedPaymentMethod,
-} from '@quark/types/models';
+} from '@quarks.studio/types/models';
 
 function gatewayPath(system: string, path: string): string {
   if (!system.trim()) {

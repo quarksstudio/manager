@@ -7,7 +7,7 @@ import * as tar from 'tar';
 
 import { check, pack, unpack, validateSchema } from './index';
 
-describe('@quark/targz', () => {
+describe('@quarks.studio/targz', () => {
   let workspace: string;
   let source: string;
   let output: string;

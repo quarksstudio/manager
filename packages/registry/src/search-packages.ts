@@ -1,4 +1,4 @@
-import { createStorage } from '@quark/use-storage';
+import { createStorage } from '@quarks.studio/use-storage';
 
 import { apiFetch } from './lib/api-fetch';
 import { Client } from './lib';

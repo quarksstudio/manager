@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { renderAction } from '@quark/ui/CLI';
+import { renderAction } from '@quarks.studio/ui/CLI';
 import { PublishScreen } from './PublishScreen';
-import type { CertificationTier } from '@quark/tester';
+import type { CertificationTier } from '@quarks.studio/tester';
 
 export interface PublishOptions {
   tier?: CertificationTier;

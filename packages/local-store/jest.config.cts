@@ -7,7 +7,7 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'html'],
   moduleNameMapper: {
-    '^@quark/ui/CLI$': '<rootDir>/../ui/src/CLI/index.ts',
+    '^@quarks.studio/ui/CLI$': '<rootDir>/../ui/src/CLI/index.ts',
   },
   coverageDirectory: '../../coverage/packages/local-store',
 };

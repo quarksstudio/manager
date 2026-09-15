@@ -1,4 +1,4 @@
-import { sortVersions, type PackageVersion } from '@quark/registry';
+import { sortVersions, type PackageVersion } from '@quarks.studio/registry';
 
 import { formatDate } from '../../lib/format';
 import { Badge } from '../ui/badge';

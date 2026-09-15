@@ -5,7 +5,7 @@ import { join } from 'path';
 
 import * as INI from 'ini';
 
-import { createStorage } from '@quark/use-storage';
+import { createStorage } from '@quarks.studio/use-storage';
 
 import {
   DEFAULT_AI_MODELS,

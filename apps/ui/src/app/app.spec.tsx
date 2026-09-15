@@ -3,7 +3,7 @@ import { MemoryRouter, useLocation } from 'react-router-dom';
 
 import App from './app';
 
-jest.mock('@quark/ui/web', () => ({
+jest.mock('@quarks.studio/ui/web', () => ({
   PackageDetails: function MockPackageDetails({
     packageName,
     initialVersion,

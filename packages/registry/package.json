@@ -1,5 +1,5 @@
 {
-  "name": "@quark/registry",
+  "name": "@quarks.studio/registry",
   "version": "0.1.0",
   "private": false,
   "license": "MIT",
@@ -34,10 +34,10 @@
   },
   "dependencies": {
     "@simplewebauthn/browser": "^13.2.2",
-    "@quark/use-storage": "workspace:*",
-    "@quark/types": "workspace:*",
+    "@quarks.studio/use-storage": "workspace:*",
+    "@quarks.studio/types": "workspace:*",
     "tslib": "^2.3.0",
-    "@quark/ui": "workspace:*",
+    "@quarks.studio/ui": "workspace:*",
     "ink": "^7.0.2"
   },
   "peerDependencies": {

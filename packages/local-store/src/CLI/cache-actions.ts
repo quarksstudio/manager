@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderAction } from '@quark/ui/CLI';
+import { renderAction } from '@quarks.studio/ui/CLI';
 import { CacheListScreen } from './CacheListScreen';
 import { CacheVerifyScreen } from './CacheVerifyScreen';
 import { CacheCleanScreen } from './CacheCleanScreen';

@@ -1,7 +1,9 @@
 import { loginWithEmulator } from './local-login';
 import { apiFetch } from './lib/api-fetch';
 const setItem = jest.fn();
-jest.mock('@quark/use-storage', () => ({ createStorage: () => ({ setItem }) }));
+jest.mock('@quarks.studio/use-storage', () => ({
+  createStorage: () => ({ setItem }),
+}));
 jest.mock('./lib', () => ({ Client: { API: '/v1' } }));
 jest.mock('./lib/api-fetch', () => ({
   AUTH_SESSION_KEY: 'auth:session',

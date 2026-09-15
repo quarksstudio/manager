@@ -1,5 +1,5 @@
 import { validatePermissions } from './permissions';
-import type { Manifest } from '@quark/manifest';
+import type { Manifest } from '@quarks.studio/manifest';
 
 describe('permissions policy engine', () => {
   const sampleManifest: Manifest = {

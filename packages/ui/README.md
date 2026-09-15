@@ -1,13 +1,13 @@
-# @quark/ui
+# @quarks.studio/ui
 
 Shared presentation layer for Quark. It ships three entry points, all built
 with one React component per file:
 
-- `@quark/ui/CLI` — Ink terminal components for Quark commands. There is no
-  root entry (`@quark/ui`); the package exposes only subpaths.
-- `@quark/ui/hooks` — the shared hooks (`src/hooks`).
-- `@quark/ui/web` — browser components for the manager application, including
-  `PackageDetails` and `@quark/ui/web/styles.css` (Tailwind 4 + shadcn tokens).
+- `@quarks.studio/ui/CLI` — Ink terminal components for Quark commands. There is no
+  root entry (`@quarks.studio/ui`); the package exposes only subpaths.
+- `@quarks.studio/ui/hooks` — the shared hooks (`src/hooks`).
+- `@quarks.studio/ui/web` — browser components for the manager application, including
+  `PackageDetails` and `@quarks.studio/ui/web/styles.css` (Tailwind 4 + shadcn tokens).
 
 ## CLI
 
@@ -32,16 +32,16 @@ All implementations live in `src/web`. The bundle is produced by
 ## Shared hooks
 
 All in-use hooks live in `src/hooks` (plus the cache infrastructure in
-`src/lib/storage.ts`) and are re-exported by `@quark/ui/hooks` and
-`@quark/ui/web`:
+`src/lib/storage.ts`) and are re-exported by `@quarks.studio/ui/hooks` and
+`@quarks.studio/ui/web`:
 
 - `usePackageDetailsView`, `usePackageDownload`,
   `usePackageMetadataEditor`: the package detail page state.
 - `useCachedQuery`, `useReadmeCached`: cache-first queries on
-  `@quark/use-storage` for the web surface.
+  `@quarks.studio/use-storage` for the web surface.
 
-The web surface may depend on `@quark/registry` but must never reach
-`@quark/registry/CLI`, other `@quark/*` packages, or the Ink `./CLI` tree;
+The web surface may depend on `@quarks.studio/registry` but must never reach
+`@quarks.studio/registry/CLI`, other `@quarks.studio/*` packages, or the Ink `./CLI` tree;
 the reverse boundary is enforced for CLI files too (see `eslint.config.mjs`
 and `tools/web-architecture.spec.mjs`).
 
@@ -53,9 +53,9 @@ pnpm nx test cli-ui
 pnpm node tools/web-architecture.spec.mjs
 ```
 
-The directory is `packages/ui` and the package is `@quark/ui`. Its Nx project
+The directory is `packages/ui` and the package is `@quarks.studio/ui`. Its Nx project
 name remains `cli-ui` because `ui` identifies the application in `apps/ui`
-(package `@quark/ui-app`).
+(package `@quarks.studio/ui-app`).
 
 ## Structure
 
@@ -66,7 +66,7 @@ src/CLI/
 ├── theme.ts
 ├── types.ts
 └── index.ts          # Explicit public exports (Ink only)
-src/hooks/            # Shared hooks (entry for @quark/ui/hooks)
+src/hooks/            # Shared hooks (entry for @quarks.studio/ui/hooks)
 src/lib/
 └── storage.ts        # apiCache, packageCacheKey, readmeCacheKey
 src/web/
@@ -79,4 +79,4 @@ src/web/
 ```
 
 Internal imports reference their defining files directly. The public exports
-of `@quark/ui/CLI`, `@quark/ui/hooks` and `@quark/ui/web` remain explicit.
+of `@quarks.studio/ui/CLI`, `@quarks.studio/ui/hooks` and `@quarks.studio/ui/web` remain explicit.

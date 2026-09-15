@@ -1,19 +1,19 @@
 import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { runSkillTests } from '@quark/tester';
-import { pack } from '@quark/targz';
+import { runSkillTests } from '@quarks.studio/tester';
+import { pack } from '@quarks.studio/targz';
 import { publishPackage } from './default-publisher';
 import { VerificationFailure } from '../domain/publication';
 
-jest.mock('@quark/tester', () => ({
+jest.mock('@quarks.studio/tester', () => ({
   runSkillTests: jest.fn(),
   runAgentTests: jest.fn(),
 }));
-jest.mock('@quark/registry/upload', () => ({
+jest.mock('@quarks.studio/registry/upload', () => ({
   uploadPackageArchive: jest.fn(),
 }));
-jest.mock('@quark/targz', () => ({
+jest.mock('@quarks.studio/targz', () => ({
   pack: jest.fn(),
   parseYaml: JSON.parse,
   stringifyYaml: JSON.stringify,

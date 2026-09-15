@@ -7,7 +7,7 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import { PackageDetails, usePackageDetailsView } from '@quark/ui/web';
+import { PackageDetails, usePackageDetailsView } from '@quarks.studio/ui/web';
 
 function LatestVersionRoute() {
   const { packageName = '' } = useParams();

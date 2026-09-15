@@ -1,4 +1,4 @@
-import { createStorage } from '@quark/use-storage';
+import { createStorage } from '@quarks.studio/use-storage';
 
 import { loginWithProvider, submitManualLoginCode } from './auth-login';
 import { apiFetch } from './lib/api-fetch';
@@ -17,7 +17,7 @@ jest.mock('./lib/api-fetch', () => ({
   AUTH_SESSION_KEY: 'auth:session',
   apiFetch: jest.fn(),
 }));
-jest.mock('@quark/use-storage', () => ({
+jest.mock('@quarks.studio/use-storage', () => ({
   createStorage: jest.fn(() => ({ setItem })),
 }));
 jest.mock('child_process', () => ({ spawn }));

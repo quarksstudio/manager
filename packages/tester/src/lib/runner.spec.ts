@@ -19,7 +19,7 @@ const sandbox: SandboxAdapter = {
   },
 };
 
-describe('@quark/tester runner', () => {
+describe('@quarks.studio/tester runner', () => {
   let root: string;
 
   beforeEach(async () => {

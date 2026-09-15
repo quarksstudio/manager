@@ -3,14 +3,14 @@ import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-import { apiFetch, apiRequest, Client } from '@quark/registry';
-import { cacheSkill, readCachedSkill } from '@quark/local-store';
+import { apiFetch, apiRequest, Client } from '@quarks.studio/registry';
+import { cacheSkill, readCachedSkill } from '@quarks.studio/local-store';
 import {
   parseYaml,
   stringifyYaml,
   unpack,
   type SkillsManifest,
-} from '@quark/targz';
+} from '@quarks.studio/targz';
 
 export interface RecursiveInstallOptions {
   force?: boolean;

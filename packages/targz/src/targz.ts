@@ -7,7 +7,7 @@ import * as tar from 'tar';
 
 import { readAndValidateManifest } from './manifest';
 import { parse } from 'yaml';
-import { structuralAudit, type PackageManifest } from '@quark/tester';
+import { structuralAudit, type PackageManifest } from '@quarks.studio/tester';
 
 const MANIFESTS = ['skill.yml', 'agent.yml', 'skills.yml'] as const;
 

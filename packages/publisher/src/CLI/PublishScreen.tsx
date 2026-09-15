@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Text, useApp } from 'ink';
-import type { CertificationTier } from '@quark/tester';
+import type { CertificationTier } from '@quarks.studio/tester';
 import {
   publishPackage,
   VerificationFailure,
@@ -8,8 +8,13 @@ import {
   type PublishProgress,
 } from '../index';
 
-import { EXIT_CODES } from '@quark/ui/CLI';
-import { Result, Screen, StepList, type WorkflowStep } from '@quark/ui/CLI';
+import { EXIT_CODES } from '@quarks.studio/ui/CLI';
+import {
+  Result,
+  Screen,
+  StepList,
+  type WorkflowStep,
+} from '@quarks.studio/ui/CLI';
 
 interface PublishScreenProps {
   sourceDir?: string;

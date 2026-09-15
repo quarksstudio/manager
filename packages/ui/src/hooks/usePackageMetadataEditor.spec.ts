@@ -10,7 +10,7 @@ let mockUser = { id: 'alice' };
 let mockStatus = 'idle';
 let mockSaveError: Error | null = null;
 
-jest.mock('@quark/registry', () => ({
+jest.mock('@quarks.studio/registry', () => ({
   useCurrentUser: () => ({ data: mockUser }),
   useUpdatePackageMetadata: () => ({
     save: mockSaveMetadata,

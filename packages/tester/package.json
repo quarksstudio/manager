@@ -1,5 +1,5 @@
 {
-  "name": "@quark/tester",
+  "name": "@quarks.studio/tester",
   "version": "0.1.0",
   "private": false,
   "license": "MIT",
@@ -37,7 +37,7 @@
     "tslib": "^2.3.0",
     "yaml": "^2.9.0",
     "zod": "^3.25.76",
-    "@quark/ui": "workspace:*",
+    "@quarks.studio/ui": "workspace:*",
     "ink": "^7.0.2"
   },
   "peerDependencies": {

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Box, Text, useApp } from 'ink';
 import { useSearchPackages } from '../index';
 
-import { EmptyState, Result, Screen, StatusLine } from '@quark/ui/CLI';
+import { EmptyState, Result, Screen, StatusLine } from '@quarks.studio/ui/CLI';
 
 interface SearchScreenProps {
   query: string;

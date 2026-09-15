@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderAction } from '@quark/ui/CLI';
+import { renderAction } from '@quarks.studio/ui/CLI';
 import { AddScreen } from './AddScreen';
 import { InstallScreen } from './InstallScreen';
 

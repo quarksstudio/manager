@@ -1,12 +1,12 @@
-# @quark/publisher
+# @quarks.studio/publisher
 
 Publicación de skills y agentes sin React ni Ink. `domain` define contratos y
 errores; `application` coordina el flujo mediante puertos; `infrastructure`
 conecta filesystem, tester, empaquetado y transporte del registry.
 
 ```ts
-import { publishPackage } from '@quark/publisher';
-import { configureRegistry } from '@quark/registry/upload';
+import { publishPackage } from '@quarks.studio/publisher';
+import { configureRegistry } from '@quarks.studio/registry/upload';
 
 configureRegistry('https://registry.example/api');
 const result = await publishPackage({ sourceDir: './my-skill', dryRun: true });
@@ -30,6 +30,6 @@ Validación: `pnpm nx test publisher` y `pnpm nx build publisher`.
 ## CLI
 
 Screens and command adapters live in `src/CLI`, one React component per file.
-Import them through `@quark/publisher/CLI`; the main entrypoint keeps its
+Import them through `@quarks.studio/publisher/CLI`; the main entrypoint keeps its
 business API and does not load CLI presentation. Shared Ink components and
-terminal helpers come from `@quark/ui/CLI`.
+terminal helpers come from `@quarks.studio/ui/CLI`.

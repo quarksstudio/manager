@@ -1,4 +1,4 @@
-# @quark/permissions
+# @quarks.studio/permissions
 
 Políticas y consentimiento para capacidades solicitadas por skills. Compara el manifiesto con `UserPolicy`, devuelve permisos concedidos/denegados y ofrece el prompt utilizado por CLI.
 

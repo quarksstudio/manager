@@ -7,10 +7,10 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'html'],
   moduleNameMapper: {
-    '^@quark/ui/CLI$': '<rootDir>/../ui/src/CLI/index.ts',
+    '^@quarks.studio/ui/CLI$': '<rootDir>/../ui/src/CLI/index.ts',
 
-    '^@quark/use-storage$': '<rootDir>/../use-storage/src/index.ts',
-    '^@quark/types$': '<rootDir>/../types/src/index.ts',
+    '^@quarks.studio/use-storage$': '<rootDir>/../use-storage/src/index.ts',
+    '^@quarks.studio/types$': '<rootDir>/../types/src/index.ts',
   },
   coverageDirectory: '../../coverage/packages/config',
 };

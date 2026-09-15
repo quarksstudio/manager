@@ -36,7 +36,7 @@ jest.mock('./lib', () => {
   };
 });
 
-jest.mock('@quark/use-storage', () => ({
+jest.mock('@quarks.studio/use-storage', () => ({
   createStorage: () => ({ removeItem: mockRemoveSession }),
 }));
 const mockRemoveSession = jest.fn();

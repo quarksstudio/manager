@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useRegistryClient } from '@quark/registry';
+import { useRegistryClient } from '@quarks.studio/registry';
 
 function downloadFileName(packageName: string, version: string): string {
   const safe = packageName

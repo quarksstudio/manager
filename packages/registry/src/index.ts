@@ -54,7 +54,7 @@ export {
   type PackageReadme,
   type UpdatePackageMetadataInput,
 } from './package-details';
-export type { Certification } from '@quark/types/models';
+export type { Certification } from '@quarks.studio/types/models';
 
 export default function client(e = '') {
   return new Client(e);

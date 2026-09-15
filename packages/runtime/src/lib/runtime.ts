@@ -1,7 +1,10 @@
 import * as child_process from 'child_process';
 import * as fs from 'fs';
-import { resolveEntrypoint, type Manifest } from '@quark/manifest';
-import { validatePermissions, type UserPolicy } from '@quark/permissions';
+import { resolveEntrypoint, type Manifest } from '@quarks.studio/manifest';
+import {
+  validatePermissions,
+  type UserPolicy,
+} from '@quarks.studio/permissions';
 import { SkillExecution, type RuntimeKind } from '../domain';
 import { ExecuteSkillHandler, type ProcessRunner } from '../application';
 

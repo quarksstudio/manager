@@ -3,7 +3,7 @@ import {
   useCurrentUser,
   useUpdatePackageMetadata,
   type PackageDetails,
-} from '@quark/registry';
+} from '@quarks.studio/registry';
 
 const MAX_DESCRIPTION = 500;
 const MAX_TAG_LENGTH = 32;

@@ -66,11 +66,11 @@ test('multiple components, including private nested components, are rejected', a
 
 test('business cannot import, re-export or dynamically load presentation', async () => {
   for (const code of [
-    "import { Screen } from '@quark/ui/CLI';",
+    "import { Screen } from '@quarks.studio/ui/CLI';",
     "export * from '../CLI';",
-    "export { Publish } from '@quark/publisher/CLI';",
+    "export { Publish } from '@quarks.studio/publisher/CLI';",
     "const cli = require('../CLI');",
-    "const cli = import('@quark/ui/CLI');",
+    "const cli = import('@quarks.studio/ui/CLI');",
   ]) {
     assert.ok(
       (
@@ -88,7 +88,7 @@ test('CLI may consume shared presentation', async () => {
   assert.equal(
     (
       await violations(
-        "import { Screen } from '@quark/ui/CLI';",
+        "import { Screen } from '@quarks.studio/ui/CLI';",
         'packages/installer/src/CLI/Screen.tsx',
         'no-restricted-syntax',
       )

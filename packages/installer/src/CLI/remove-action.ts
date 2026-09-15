@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderAction } from '@quark/ui/CLI';
+import { renderAction } from '@quarks.studio/ui/CLI';
 import RemoveScreen from './RemoveScreen';
 
 export default function Remove(name: string, where: string): void {

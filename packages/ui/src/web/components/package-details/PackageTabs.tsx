@@ -1,5 +1,8 @@
 import { BookOpen, Layers, Settings, ShieldCheck } from 'lucide-react';
-import { certificationsForVersion, type PackageDetails } from '@quark/registry';
+import {
+  certificationsForVersion,
+  type PackageDetails,
+} from '@quarks.studio/registry';
 
 import { Tabs } from '../ui/tabs';
 import { TabsList } from '../ui/tabs-list';

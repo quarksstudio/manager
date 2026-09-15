@@ -1,12 +1,12 @@
-# @quark/ui
+# @quarks.studio/ui
 
 Compiled static web application for the Quark manager interface.
 
-The application provides the browser-facing skill catalogue and management experience. It consumes the manager registry APIs through the shared client packages and uses `@quark/use-storage` for browser-safe persisted state.
+The application provides the browser-facing skill catalogue and management experience. It consumes the manager registry APIs through the shared client packages and uses `@quarks.studio/use-storage` for browser-safe persisted state.
 
 The registry endpoint is configured at runtime via `configureRegistry(...)`
 using `VITE_REGISTRY_API_URL` (default `/v1`). The library styles come from
-`@quark/ui/web/styles.css`; the app scans `packages/ui/src/web` with Tailwind
+`@quarks.studio/ui/web/styles.css`; the app scans `packages/ui/src/web` with Tailwind
 4 (`@source`) so shared components produce their utility classes.
 
 ## Routes

@@ -2,7 +2,7 @@ import { publishPackage } from './index';
 import {
   configureRegistry,
   uploadPackageArchive,
-} from '@quark/registry/upload';
+} from '@quarks.studio/registry/upload';
 
 jest.mock('react', () => {
   throw new Error('Headless publication must not load React');

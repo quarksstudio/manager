@@ -1,4 +1,4 @@
-# @quark/runtime
+# @quarks.studio/runtime
 
 Dominio y aplicación para ejecutar un skill ya instalado. Resuelve el entrypoint validado, construye la ejecución y mantiene el runtime separado de instalación, publicación y certificación.
 

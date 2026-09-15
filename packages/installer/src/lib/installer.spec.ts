@@ -3,7 +3,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as tar from 'tar';
 import { createHash } from 'crypto';
-import { Client } from '@quark/registry';
+import { Client } from '@quarks.studio/registry';
 import { installSkill } from './installer';
 
 describe('installer', () => {

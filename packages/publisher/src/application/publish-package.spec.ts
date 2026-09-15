@@ -1,4 +1,4 @@
-import type { VerificationResult } from '@quark/tester';
+import type { VerificationResult } from '@quarks.studio/tester';
 import { createPublishPackage } from './publish-package';
 import type { PublisherDependencies } from './ports';
 import {

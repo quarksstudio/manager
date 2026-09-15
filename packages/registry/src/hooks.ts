@@ -1,4 +1,4 @@
-import { createStorage } from '@quark/use-storage';
+import { createStorage } from '@quarks.studio/use-storage';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Client } from './lib';

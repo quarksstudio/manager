@@ -3,8 +3,8 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import * as path from 'path';
 
-import { Client } from '@quark/registry';
-import { pack, parseYaml } from '@quark/targz';
+import { Client } from '@quarks.studio/registry';
+import { pack, parseYaml } from '@quarks.studio/targz';
 
 import { install, type SkillLockfile } from './recursive-installer';
 

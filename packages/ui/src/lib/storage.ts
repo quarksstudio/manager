@@ -1,4 +1,4 @@
-import { createStorage } from '@quark/use-storage';
+import { createStorage } from '@quarks.studio/use-storage';
 
 export const CACHE_TTL_MS = 60 * 60 * 1000;
 

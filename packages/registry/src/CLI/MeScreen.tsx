@@ -2,7 +2,13 @@ import React, { useEffect } from 'react';
 import { useApp } from 'ink';
 
 import { useCurrentUser } from '../index';
-import { KeyValue, Panel, Result, Screen, StatusLine } from '@quark/ui/CLI';
+import {
+  KeyValue,
+  Panel,
+  Result,
+  Screen,
+  StatusLine,
+} from '@quarks.studio/ui/CLI';
 
 interface CurrentUser {
   id: string;

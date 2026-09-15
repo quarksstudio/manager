@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-import { parseYaml, stringifyYaml } from '@quark/targz';
+import { parseYaml, stringifyYaml } from '@quarks.studio/targz';
 
 import type { SkillLockfile } from './recursive-installer';
 import { PackageNotFound, uninstall } from './uninstaller';

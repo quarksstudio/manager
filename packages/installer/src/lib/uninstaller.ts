@@ -1,7 +1,11 @@
 import { promises as fs } from 'fs';
 import * as path from 'path';
 
-import { parseYaml, stringifyYaml, type SkillsManifest } from '@quark/targz';
+import {
+  parseYaml,
+  stringifyYaml,
+  type SkillsManifest,
+} from '@quarks.studio/targz';
 
 import type { SkillLockfile } from './recursive-installer';
 

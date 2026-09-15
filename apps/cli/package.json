@@ -1,5 +1,5 @@
 {
-  "name": "@quark/cli",
+  "name": "@quarks.studio/cli",
   "version": "0.1.0",
   "private": false,
   "license": "MIT",
@@ -16,12 +16,12 @@
     "access": "public"
   },
   "dependencies": {
-    "@quark/tester": "workspace:*",
+    "@quarks.studio/tester": "workspace:*",
     "commander": "^15.0.0",
-    "@quark/installer": "workspace:*",
-    "@quark/registry": "workspace:*",
-    "@quark/config": "workspace:*",
-    "@quark/local-store": "workspace:*",
-    "@quark/publisher": "workspace:*"
+    "@quarks.studio/installer": "workspace:*",
+    "@quarks.studio/registry": "workspace:*",
+    "@quarks.studio/config": "workspace:*",
+    "@quarks.studio/local-store": "workspace:*",
+    "@quarks.studio/publisher": "workspace:*"
   }
 }

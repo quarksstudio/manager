@@ -1,5 +1,5 @@
 {
-  "name": "@quark/config",
+  "name": "@quarks.studio/config",
   "version": "0.1.0",
   "private": false,
   "license": "MIT",
@@ -28,10 +28,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@quark/use-storage": "workspace:*",
+    "@quarks.studio/use-storage": "workspace:*",
     "ini": "^7.0.0",
     "tslib": "^2.3.0",
-    "@quark/ui": "workspace:*",
+    "@quarks.studio/ui": "workspace:*",
     "ink": "^7.0.2"
   },
   "peerDependencies": {

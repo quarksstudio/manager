@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import { PackageTabs } from './PackageTabs';
 
-jest.mock('@quark/registry', () => ({
+jest.mock('@quarks.studio/registry', () => ({
   certificationsForVersion: () => [],
 }));
 

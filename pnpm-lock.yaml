@@ -192,22 +192,22 @@ importers:
 
   apps/cli:
     dependencies:
-      '@quark/config':
+      '@quarks.studio/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@quark/installer':
+      '@quarks.studio/installer':
         specifier: workspace:*
         version: link:../../packages/installer
-      '@quark/local-store':
+      '@quarks.studio/local-store':
         specifier: workspace:*
         version: link:../../packages/local-store
-      '@quark/publisher':
+      '@quarks.studio/publisher':
         specifier: workspace:*
         version: link:../../packages/publisher
-      '@quark/registry':
+      '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../../packages/registry
-      '@quark/tester':
+      '@quarks.studio/tester':
         specifier: workspace:*
         version: link:../../packages/tester
       commander:
@@ -216,10 +216,10 @@ importers:
 
   apps/ui:
     dependencies:
-      '@quark/registry':
+      '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../../packages/registry
-      '@quark/ui':
+      '@quarks.studio/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       react:
@@ -234,10 +234,10 @@ importers:
 
   packages/config:
     dependencies:
-      '@quark/ui':
+      '@quarks.studio/ui':
         specifier: workspace:*
         version: link:../ui
-      '@quark/use-storage':
+      '@quarks.studio/use-storage':
         specifier: workspace:*
         version: link:../use-storage
       ini:
@@ -255,25 +255,25 @@ importers:
 
   packages/installer:
     dependencies:
-      '@quark/local-store':
+      '@quarks.studio/local-store':
         specifier: workspace:*
         version: link:../local-store
-      '@quark/manifest':
+      '@quarks.studio/manifest':
         specifier: workspace:*
         version: link:../manifest
-      '@quark/permissions':
+      '@quarks.studio/permissions':
         specifier: workspace:*
         version: link:../permissions
-      '@quark/registry':
+      '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../registry
-      '@quark/targz':
+      '@quarks.studio/targz':
         specifier: workspace:*
         version: link:../targz
-      '@quark/types':
+      '@quarks.studio/types':
         specifier: workspace:*
         version: link:../types
-      '@quark/ui':
+      '@quarks.studio/ui':
         specifier: workspace:*
         version: link:../ui
       ink:
@@ -291,10 +291,10 @@ importers:
 
   packages/local-store:
     dependencies:
-      '@quark/types':
+      '@quarks.studio/types':
         specifier: workspace:*
         version: link:../types
-      '@quark/ui':
+      '@quarks.studio/ui':
         specifier: workspace:*
         version: link:../ui
       ink:
@@ -318,7 +318,7 @@ importers:
 
   packages/permissions:
     dependencies:
-      '@quark/manifest':
+      '@quarks.studio/manifest':
         specifier: workspace:*
         version: link:../manifest
       tslib:
@@ -327,16 +327,16 @@ importers:
 
   packages/publisher:
     dependencies:
-      '@quark/registry':
+      '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../registry
-      '@quark/targz':
+      '@quarks.studio/targz':
         specifier: workspace:*
         version: link:../targz
-      '@quark/tester':
+      '@quarks.studio/tester':
         specifier: workspace:*
         version: link:../tester
-      '@quark/ui':
+      '@quarks.studio/ui':
         specifier: workspace:*
         version: link:../ui
       ink:
@@ -351,13 +351,13 @@ importers:
 
   packages/registry:
     dependencies:
-      '@quark/types':
+      '@quarks.studio/types':
         specifier: workspace:*
         version: link:../types
-      '@quark/ui':
+      '@quarks.studio/ui':
         specifier: workspace:*
         version: link:../ui
-      '@quark/use-storage':
+      '@quarks.studio/use-storage':
         specifier: workspace:*
         version: link:../use-storage
       '@simplewebauthn/browser':
@@ -375,13 +375,13 @@ importers:
 
   packages/runtime:
     dependencies:
-      '@quark/manifest':
+      '@quarks.studio/manifest':
         specifier: workspace:*
         version: link:../manifest
-      '@quark/permissions':
+      '@quarks.studio/permissions':
         specifier: workspace:*
         version: link:../permissions
-      '@quark/types':
+      '@quarks.studio/types':
         specifier: workspace:*
         version: link:../types
       tslib:
@@ -390,7 +390,7 @@ importers:
 
   packages/targz:
     dependencies:
-      '@quark/tester':
+      '@quarks.studio/tester':
         specifier: workspace:*
         version: link:../tester
       tar:
@@ -405,7 +405,7 @@ importers:
 
   packages/tester:
     dependencies:
-      '@quark/ui':
+      '@quarks.studio/ui':
         specifier: workspace:*
         version: link:../ui
       ajv:
@@ -441,10 +441,10 @@ importers:
 
   packages/ui:
     dependencies:
-      '@quark/registry':
+      '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../registry
-      '@quark/use-storage':
+      '@quarks.studio/use-storage':
         specifier: workspace:*
         version: link:../use-storage
       class-variance-authority:

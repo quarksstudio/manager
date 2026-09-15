@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useApp } from 'ink';
 import { useConfig } from '../index';
-import { EXIT_CODES } from '@quark/ui/CLI';
-import { KeyValue, Result, Screen, StatusLine } from '@quark/ui/CLI';
+import { EXIT_CODES } from '@quarks.studio/ui/CLI';
+import { KeyValue, Result, Screen, StatusLine } from '@quarks.studio/ui/CLI';
 
 export function ConfigGetScreen({ configKey = '' }: { configKey?: string }) {
   const { loading, config, error } = useConfig();

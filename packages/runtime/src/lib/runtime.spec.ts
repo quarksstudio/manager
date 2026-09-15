@@ -1,6 +1,6 @@
 import * as child_process from 'child_process';
 import { executeSkill } from './runtime';
-import type { Manifest } from '@quark/manifest';
+import type { Manifest } from '@quarks.studio/manifest';
 
 jest.mock('child_process', () => ({
   spawn: jest.fn().mockReturnValue({ on: jest.fn() }),

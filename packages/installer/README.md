@@ -1,4 +1,4 @@
-# @quark/installer
+# @quarks.studio/installer
 
 Instalador seguro y recursivo de skills. Resuelve versiones/dependencias, valida permisos, verifica SHA-256, audita y extrae TAR, aplica mappings de forma transaccional y escribe `skill.lock.yml`.
 
@@ -14,6 +14,6 @@ pnpm nx test installer
 ## CLI
 
 Screens and command adapters live in `src/CLI`, one React component per file.
-Import them through `@quark/installer/CLI`; the main entrypoint keeps its
+Import them through `@quarks.studio/installer/CLI`; the main entrypoint keeps its
 business API and does not load CLI presentation. Shared Ink components and
-terminal helpers come from `@quark/ui/CLI`.
+terminal helpers come from `@quarks.studio/ui/CLI`.

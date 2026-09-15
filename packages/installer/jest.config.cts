@@ -7,15 +7,15 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'html'],
   moduleNameMapper: {
-    '^@quark/ui/CLI$': '<rootDir>/../ui/src/CLI/index.ts',
+    '^@quarks.studio/ui/CLI$': '<rootDir>/../ui/src/CLI/index.ts',
 
-    '^@quark/registry$': '<rootDir>/../registry/src/index.ts',
-    '^@quark/manifest$': '<rootDir>/../manifest/src/index.ts',
-    '^@quark/local-store$': '<rootDir>/../local-store/src/index.ts',
-    '^@quark/permissions$': '<rootDir>/../permissions/src/index.ts',
-    '^@quark/types$': '<rootDir>/../types/src/index.ts',
-    '^@quark/use-storage$': '<rootDir>/../use-storage/src/index.ts',
-    '^@quark/targz$': '<rootDir>/../targz/src/index.ts',
+    '^@quarks.studio/registry$': '<rootDir>/../registry/src/index.ts',
+    '^@quarks.studio/manifest$': '<rootDir>/../manifest/src/index.ts',
+    '^@quarks.studio/local-store$': '<rootDir>/../local-store/src/index.ts',
+    '^@quarks.studio/permissions$': '<rootDir>/../permissions/src/index.ts',
+    '^@quarks.studio/types$': '<rootDir>/../types/src/index.ts',
+    '^@quarks.studio/use-storage$': '<rootDir>/../use-storage/src/index.ts',
+    '^@quarks.studio/targz$': '<rootDir>/../targz/src/index.ts',
   },
   coverageDirectory: '../../coverage/packages/installer',
 };

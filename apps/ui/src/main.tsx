@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import * as ReactDOM from 'react-dom/client';
-import { configureRegistry } from '@quark/registry';
+import { configureRegistry } from '@quarks.studio/registry';
 import App from './app/app';
 
 configureRegistry(import.meta.env.VITE_REGISTRY_API_URL ?? '/v1');

@@ -1,5 +1,5 @@
 {
-  "name": "@quark/targz",
+  "name": "@quarks.studio/targz",
   "version": "0.1.0",
   "private": false,
   "license": "MIT",
@@ -22,7 +22,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@quark/tester": "workspace:*",
+    "@quarks.studio/tester": "workspace:*",
     "tar": "^7.4.3",
     "tslib": "^2.3.0",
     "yaml": "^2.9.0"

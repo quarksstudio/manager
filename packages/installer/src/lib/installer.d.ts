@@ -1,4 +1,7 @@
-import { validatePermissions, type UserPolicy } from '@quark/permissions';
+import {
+  validatePermissions,
+  type UserPolicy,
+} from '@quarks.studio/permissions';
 import {
   type InstallResult,
   type RecursiveInstallOptions,

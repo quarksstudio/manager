@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { parseYaml, stringifyYaml } from '@quark/targz';
+import { parseYaml, stringifyYaml } from '@quarks.studio/targz';
 import type { PublicationProject } from '../application/ports';
 
 export const nodeProject: PublicationProject = {

@@ -1,4 +1,4 @@
-import { createStorage } from '@quark/use-storage';
+import { createStorage } from '@quarks.studio/use-storage';
 
 import { apiFetch } from './lib/api-fetch';
 import { Client } from './lib';
@@ -11,7 +11,7 @@ import {
 
 const values = new Map<string, unknown>();
 
-jest.mock('@quark/use-storage', () => ({
+jest.mock('@quarks.studio/use-storage', () => ({
   createStorage: jest.fn(() => ({
     getItem: jest.fn(async (key: string) => values.get(key) ?? null),
     setItem: jest.fn(async (key: string, value: unknown) => {

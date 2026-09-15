@@ -12,6 +12,6 @@ describe('Info action', () => {
   });
 
   it('renders the info screen', () => {
-    expect(() => Info('@quark/cli')).not.toThrow();
+    expect(() => Info('@quarks.studio/cli')).not.toThrow();
   });
 });

@@ -3,16 +3,19 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import * as tar from 'tar';
-import { Client, apiFetch, apiRequest } from '@quark/registry';
-import { parseManifest } from '@quark/manifest';
+import { Client, apiFetch, apiRequest } from '@quarks.studio/registry';
+import { parseManifest } from '@quarks.studio/manifest';
 import {
   cacheSkill,
   getSkillPath,
   readCachedSkill,
   registerInstall,
   unregisterInstall,
-} from '@quark/local-store';
-import { validatePermissions, type UserPolicy } from '@quark/permissions';
+} from '@quarks.studio/local-store';
+import {
+  validatePermissions,
+  type UserPolicy,
+} from '@quarks.studio/permissions';
 import {
   InstallSkillHandler,
   type InstallSkillCommand,

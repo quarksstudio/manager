@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderAction } from '@quark/ui/CLI';
+import { renderAction } from '@quarks.studio/ui/CLI';
 import TestScreen from './TestScreen';
 
 export interface TestActionOptions {

@@ -33,7 +33,7 @@ type InspectPackageArchive = (
   expected: { name: string; version: string },
 ) => Promise<ArchiveInspection>;
 
-const tester = require('@quark/tester') as {
+const tester = require('@quarks.studio/tester') as {
   inspectPackageArchive: InspectPackageArchive;
 };
 

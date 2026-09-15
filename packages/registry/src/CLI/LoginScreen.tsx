@@ -7,8 +7,8 @@ import {
   type AuthStep,
   type LoginStrategy,
 } from '../index';
-import { EXIT_CODES } from '@quark/ui/CLI';
-import { Panel, Screen, Select, StatusLine } from '@quark/ui/CLI';
+import { EXIT_CODES } from '@quarks.studio/ui/CLI';
+import { Panel, Screen, Select, StatusLine } from '@quarks.studio/ui/CLI';
 
 const STATUS: Record<AuthStep, string> = {
   idle: 'Waiting to start login...',

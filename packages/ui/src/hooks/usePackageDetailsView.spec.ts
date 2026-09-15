@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { ApiError, type PackageDetails } from '@quark/registry';
+import { ApiError, type PackageDetails } from '@quarks.studio/registry';
 
 import { apiCache, packageCacheKey } from '../lib/storage';
 import { usePackageDetailsView } from './usePackageDetailsView';
@@ -7,8 +7,8 @@ import { usePackageDetailsView } from './usePackageDetailsView';
 const mockGet = jest.fn();
 let mockClient: { Packages: { get: typeof mockGet } };
 
-jest.mock('@quark/registry', () => ({
-  ...jest.requireActual('@quark/registry'),
+jest.mock('@quarks.studio/registry', () => ({
+  ...jest.requireActual('@quarks.studio/registry'),
   useRegistryClient: () => mockClient,
 }));
 

@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { useApp } from 'ink';
 
 import { useAuthLogout } from '../index';
-import { EXIT_CODES } from '@quark/ui/CLI';
-import { Screen, StatusLine } from '@quark/ui/CLI';
+import { EXIT_CODES } from '@quarks.studio/ui/CLI';
+import { Screen, StatusLine } from '@quarks.studio/ui/CLI';
 
 export function LogoutScreen() {
   const { exit } = useApp();

@@ -1,4 +1,4 @@
-import type { Manifest } from '@quark/manifest';
+import type { Manifest } from '@quarks.studio/manifest';
 export interface UserPolicy {
   allowedDomains?: string[];
   allowFilesystem?: boolean;

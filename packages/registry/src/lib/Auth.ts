@@ -1,4 +1,4 @@
-import { Provadier, ProvadierName } from '@quark/types/client';
+import { Provadier, ProvadierName } from '@quarks.studio/types/client';
 
 const BASE = 'https://identitytoolkit.googleapis.com/v1';
 

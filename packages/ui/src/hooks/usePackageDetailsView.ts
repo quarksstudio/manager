@@ -8,7 +8,7 @@ import {
   type Certification,
   type PackageDetails,
   type PackageVersion,
-} from '@quark/registry';
+} from '@quarks.studio/registry';
 
 import { packageCacheKey } from '../lib/storage';
 import { useCachedQuery } from './useCachedQuery';

@@ -1,4 +1,4 @@
-import type { Manifest } from '@quark/manifest';
+import type { Manifest } from '@quarks.studio/manifest';
 import { createInterface } from 'node:readline/promises';
 import { PermissionPolicy } from '../domain';
 

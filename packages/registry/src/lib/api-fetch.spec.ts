@@ -1,6 +1,6 @@
 import { AUTH_SESSION_KEY, apiFetch, apiRequest } from './api-fetch';
 
-jest.mock('@quark/use-storage', () => {
+jest.mock('@quarks.studio/use-storage', () => {
   const values = new Map<string, unknown>();
   const auth = {
     getItem: jest.fn(),
@@ -29,7 +29,7 @@ jest.mock('@quark/use-storage', () => {
   };
 });
 
-const storageMocks = jest.requireMock('@quark/use-storage') as {
+const storageMocks = jest.requireMock('@quarks.studio/use-storage') as {
   __auth: { getItem: jest.Mock; removeItem: jest.Mock };
   __cache: { getItem: jest.Mock; setItem: jest.Mock; clear: jest.Mock };
   __reset: () => void;

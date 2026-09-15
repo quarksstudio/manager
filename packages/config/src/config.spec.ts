@@ -3,7 +3,9 @@ import os from 'os';
 import * as path from 'path';
 
 const mockStorage = { setItem: jest.fn(), removeItem: jest.fn() };
-jest.mock('@quark/use-storage', () => ({ createStorage: () => mockStorage }));
+jest.mock('@quarks.studio/use-storage', () => ({
+  createStorage: () => mockStorage,
+}));
 
 describe('configuration persistence', () => {
   let root: string;

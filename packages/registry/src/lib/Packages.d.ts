@@ -1,4 +1,7 @@
-import type { PackageInterface, VersionInterface } from '@quark/types/models';
+import type {
+  PackageInterface,
+  VersionInterface,
+} from '@quarks.studio/types/models';
 export declare function search(this: any, str?: string): Promise<any>;
 export declare function get(this: any, name: string): Promise<any>;
 export declare function getVersion(

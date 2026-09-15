@@ -1,5 +1,5 @@
 {
-  "name": "@quark/installer",
+  "name": "@quarks.studio/installer",
   "version": "0.1.0",
   "private": false,
   "license": "MIT",
@@ -28,16 +28,16 @@
     "access": "public"
   },
   "dependencies": {
-    "@quark/local-store": "workspace:*",
-    "@quark/manifest": "workspace:*",
-    "@quark/permissions": "workspace:*",
-    "@quark/registry": "workspace:*",
-    "@quark/types": "workspace:*",
-    "@quark/targz": "workspace:*",
+    "@quarks.studio/local-store": "workspace:*",
+    "@quarks.studio/manifest": "workspace:*",
+    "@quarks.studio/permissions": "workspace:*",
+    "@quarks.studio/registry": "workspace:*",
+    "@quarks.studio/types": "workspace:*",
+    "@quarks.studio/targz": "workspace:*",
     "react": "^19.0.0",
     "tar": "^7.4.3",
     "tslib": "^2.3.0",
-    "@quark/ui": "workspace:*",
+    "@quarks.studio/ui": "workspace:*",
     "ink": "^7.0.2"
   }
 }

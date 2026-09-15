@@ -1,5 +1,5 @@
 import { Download } from 'lucide-react';
-import { sortVersions, type PackageVersion } from '@quark/registry';
+import { sortVersions, type PackageVersion } from '@quarks.studio/registry';
 
 import { certificationBadge } from '../../../hooks/usePackageDetailsView';
 import { formatDate } from '../../lib/format';

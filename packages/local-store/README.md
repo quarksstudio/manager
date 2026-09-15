@@ -1,4 +1,4 @@
-# @quark/local-store
+# @quarks.studio/local-store
 
 Persistencia local de instalaciones y caché global de artefactos. Mantiene catálogos/locks por proyecto y bundles content-addressed en `~/.quark/cache/skills/sha256/<hash>.tgz`.
 
@@ -14,6 +14,6 @@ pnpm nx test local-store
 ## CLI
 
 Screens and command adapters live in `src/CLI`, one React component per file.
-Import them through `@quark/local-store/CLI`; the main entrypoint keeps its
+Import them through `@quarks.studio/local-store/CLI`; the main entrypoint keeps its
 business API and does not load CLI presentation. Shared Ink components and
-terminal helpers come from `@quark/ui/CLI`.
+terminal helpers come from `@quarks.studio/ui/CLI`.

@@ -1,5 +1,5 @@
 import { Pencil, Plus, Save, X } from 'lucide-react';
-import type { PackageDetails } from '@quark/registry';
+import type { PackageDetails } from '@quarks.studio/registry';
 
 import { usePackageMetadataEditor } from '../../../hooks/usePackageMetadataEditor';
 import { Badge } from '../ui/badge';

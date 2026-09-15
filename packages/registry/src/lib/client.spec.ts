@@ -1,6 +1,6 @@
 import { Client } from './index';
 
-jest.mock('@quark/use-storage', () => ({
+jest.mock('@quarks.studio/use-storage', () => ({
   createStorage: jest.fn(() => ({
     getItem: jest.fn().mockResolvedValue(null),
     setItem: jest.fn().mockResolvedValue(undefined),

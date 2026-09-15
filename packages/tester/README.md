@@ -1,4 +1,4 @@
-# @quark/tester
+# @quarks.studio/tester
 
 Deterministic contract testing and verification for Quark skills and agents.
 
@@ -88,6 +88,6 @@ pnpm nx test tester
 ## CLI
 
 Screens and command adapters live in `src/CLI`, one React component per file.
-Import them through `@quark/tester/CLI`; the main entrypoint keeps its
+Import them through `@quarks.studio/tester/CLI`; the main entrypoint keeps its
 business API and does not load CLI presentation. Shared Ink components and
-terminal helpers come from `@quark/ui/CLI`.
+terminal helpers come from `@quarks.studio/ui/CLI`.

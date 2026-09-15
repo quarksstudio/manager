@@ -1,4 +1,4 @@
-import type { ProjectInterface } from '@quark/types/models';
+import type { ProjectInterface } from '@quarks.studio/types/models';
 
 export async function get(this: any, str = ''): Promise<any> {
   return this._fetch(`projects/${str}`);

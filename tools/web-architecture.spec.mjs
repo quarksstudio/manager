@@ -54,7 +54,10 @@ async function violations(code, filePath) {
 }
 
 test('web presentation may import the registry and browser-storage libraries', async () => {
-  for (const specifier of ['@quark/registry', '@quark/use-storage']) {
+  for (const specifier of [
+    '@quarks.studio/registry',
+    '@quarks.studio/use-storage',
+  ]) {
     assert.equal(
       (
         await violations(
@@ -70,8 +73,8 @@ test('web presentation may import the registry and browser-storage libraries', a
 
 test('web presentation cannot reach the registry CLI surface', async () => {
   for (const specifier of [
-    '@quark/registry/CLI',
-    '@quark/registry/CLI/search-action',
+    '@quarks.studio/registry/CLI',
+    '@quarks.studio/registry/CLI/search-action',
   ]) {
     assert.ok(
       (
@@ -89,9 +92,9 @@ test('web presentation cannot import CLI components or other quark packages', as
   for (const code of [
     "import { Screen } from '../CLI';",
     "import { renderAction } from '../../CLI';",
-    "import { read } from '@quark/targz';",
-    "import { sortVersions } from '@quark/registry/CLI';",
-    "import { get } from '@quark/types';",
+    "import { read } from '@quarks.studio/targz';",
+    "import { sortVersions } from '@quarks.studio/registry/CLI';",
+    "import { get } from '@quarks.studio/types';",
   ]) {
     assert.ok(
       (await violations(code, 'packages/ui/src/web/components/ui/button.tsx'))
@@ -116,11 +119,11 @@ test('CLI presentation cannot import web components', async () => {
   }
 });
 
-test('CLI presentation cannot import any @quark/* library', async () => {
+test('CLI presentation cannot import any @quarks.studio/* library', async () => {
   assert.ok(
     (
       await violations(
-        "import { useRegistryClient } from '@quark/registry';",
+        "import { useRegistryClient } from '@quarks.studio/registry';",
         'packages/ui/src/CLI/components/layout/Panel.tsx',
       )
     ).length > 0,
@@ -135,7 +138,7 @@ test('package entry points stay free of registry imports', async () => {
   assert.ok(
     (
       await violations(
-        "import { x } from '@quark/registry';",
+        "import { x } from '@quarks.studio/registry';",
         'packages/ui/src/CLI/index.ts',
       )
     ).length > 0,

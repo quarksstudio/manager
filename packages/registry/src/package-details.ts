@@ -1,6 +1,6 @@
-import type { Certification } from '@quark/types/models';
+import type { Certification } from '@quarks.studio/types/models';
 
-export type { Certification } from '@quark/types/models';
+export type { Certification } from '@quarks.studio/types/models';
 
 export interface PackageVersion {
   version: string;

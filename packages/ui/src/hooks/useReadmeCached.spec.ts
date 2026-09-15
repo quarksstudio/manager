@@ -6,8 +6,8 @@ import { useReadmeCached } from './useReadmeCached';
 const mockGetReadme = jest.fn();
 let mockClient: { Packages: { getReadme: typeof mockGetReadme } };
 
-jest.mock('@quark/registry', () => ({
-  ...jest.requireActual('@quark/registry'),
+jest.mock('@quarks.studio/registry', () => ({
+  ...jest.requireActual('@quarks.studio/registry'),
   useRegistryClient: () => mockClient,
 }));
 

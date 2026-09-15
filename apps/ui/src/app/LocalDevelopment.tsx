@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { apiFetch, loginWithEmulator } from '@quark/registry';
+import { apiFetch, loginWithEmulator } from '@quarks.studio/registry';
 
 export function LocalDevelopment() {
   const [message, setMessage] = useState('');

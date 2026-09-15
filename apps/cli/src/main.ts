@@ -1,14 +1,17 @@
-import { createStorage } from '@quark/use-storage';
-import { configureRegistry } from '@quark/registry';
+import { createStorage } from '@quarks.studio/use-storage';
+import { configureRegistry } from '@quarks.studio/registry';
 import { homedir } from 'os';
 import { Command } from 'commander';
-import { Add, Remove } from '@quark/installer/CLI';
-import { Search, Info, Login, Logout, Me } from '@quark/registry/CLI';
-import * as Config from '@quark/config/CLI';
-import * as Cache from '@quark/local-store/CLI';
-import { Publish } from '@quark/publisher/CLI';
-import { Test } from '@quark/tester/CLI';
-import { parseCertificationTier, type CertificationTier } from '@quark/tester';
+import { Add, Remove } from '@quarks.studio/installer/CLI';
+import { Search, Info, Login, Logout, Me } from '@quarks.studio/registry/CLI';
+import * as Config from '@quarks.studio/config/CLI';
+import * as Cache from '@quarks.studio/local-store/CLI';
+import { Publish } from '@quarks.studio/publisher/CLI';
+import { Test } from '@quarks.studio/tester/CLI';
+import {
+  parseCertificationTier,
+  type CertificationTier,
+} from '@quarks.studio/tester';
 
 if (process.env['QUARK_REGISTRY_API_URL'])
   configureRegistry(process.env['QUARK_REGISTRY_API_URL']);

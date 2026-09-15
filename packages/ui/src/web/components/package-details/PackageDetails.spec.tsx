@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { ApiError } from '@quark/registry';
+import { ApiError } from '@quarks.studio/registry';
 
 import { PackageDetails } from './PackageDetails';
 
@@ -25,8 +25,8 @@ let mockView: Record<string, unknown>;
 const mockDownload = jest.fn();
 const mockUsePackageDetailsView = jest.fn(() => mockView);
 
-jest.mock('@quark/registry', () => ({
-  ApiError: jest.requireActual('@quark/registry').ApiError,
+jest.mock('@quarks.studio/registry', () => ({
+  ApiError: jest.requireActual('@quarks.studio/registry').ApiError,
 }));
 
 jest.mock('../../../hooks/usePackageDetailsView', () => ({

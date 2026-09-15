@@ -1,4 +1,4 @@
-# @quark/use-storage
+# @quarks.studio/use-storage
 
 Isomorphic TTL storage for Quark browser, Electron renderer, CLI and backend applications.
 

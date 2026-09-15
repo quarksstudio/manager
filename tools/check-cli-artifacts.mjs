@@ -60,11 +60,11 @@ try {
     await mkdir(resolve(target, '..'), { recursive: true });
     await cp(join(root, 'dist/packages', dir), target, { recursive: true });
     for (const name of Object.keys(pkg.dependencies ?? {}))
-      if (!name.startsWith('@quark/')) external.add(name);
+      if (!name.startsWith('@quarks.studio/')) external.add(name);
   }
   const cli = await readJson(join(root, 'dist/apps/cli/package.json'));
   for (const name of Object.keys(cli.dependencies ?? {}))
-    if (!name.startsWith('@quark/')) external.add(name);
+    if (!name.startsWith('@quarks.studio/')) external.add(name);
   for (const name of external) {
     let target;
     for (const candidate of [
@@ -87,19 +87,19 @@ try {
     const load = Module._load;
     Module._load = function(id, ...args) { if (/^ink(\\/|$)/.test(id)) throw new Error('Business loaded Ink'); return load.call(this, id, ...args); };
     const req = Module.createRequire(process.cwd() + '/entry.cjs');
-    for (const name of ${JSON.stringify(names.filter((name) => name !== 'ui'))}) req('@quark/' + name);
+    for (const name of ${JSON.stringify(names.filter((name) => name !== 'ui'))}) req('@quarks.studio/' + name);
   `);
   run(`import Module from 'node:module';
     const load = Module._load;
     Module._load = function(id, ...args) { if (/^(react|ink)(\\/|$)/.test(id)) throw new Error('Publisher loaded UI'); return load.call(this, id, ...args); };
     const req = Module.createRequire(process.cwd() + '/entry.cjs');
-    const { publishPackage } = req('@quark/publisher');
-    const { configureRegistry } = req('@quark/registry/upload');
+    const { publishPackage } = req('@quarks.studio/publisher');
+    const { configureRegistry } = req('@quarks.studio/registry/upload');
     configureRegistry('https://registry.test/api');
     if (typeof publishPackage !== 'function') throw new Error('Missing publisher');
   `);
   run(`for (const [name, commands] of Object.entries(${JSON.stringify(commands)})) {
-    const api = await import('@quark/' + name + '/CLI');
+    const api = await import('@quarks.studio/' + name + '/CLI');
     for (const command of commands) if (typeof api[command] !== 'function') throw new Error(name + ':' + command);
   }`);
   const webEntry = join(root, 'dist/packages/ui/src/web/index.mjs');
@@ -111,11 +111,11 @@ try {
   run(`import Module from 'node:module';
     const load = Module._load;
     Module._load = function(id, ...args) { if (/^ink(\\/|$)/.test(id)) throw new Error('Web bundle loaded Ink'); return load.call(this, id, ...args); };
-    const web = await import('@quark/ui/web');
+    const web = await import('@quarks.studio/ui/web');
     for (const name of ['PackageDetails', 'PackageSidebar', 'usePackageDetailsView', 'renderMarkdown'])
       if (typeof web[name] !== 'function') throw new Error('ui:web missing ' + name);
   `);
-  run(`const hooks = await import('@quark/ui/hooks');
+  run(`const hooks = await import('@quarks.studio/ui/hooks');
     for (const name of ['usePackageDetailsView', 'usePackageDownload', 'usePackageMetadataEditor'])
       if (typeof hooks[name] !== 'function') throw new Error('ui:hooks missing ' + name);
   `);
