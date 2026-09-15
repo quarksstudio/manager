@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "esnext",
+    "target": "es2022",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "types": ["node"]

@@ -13,16 +13,14 @@ afterAll(() => {
 });
 beforeEach(() => {
   jest.clearAllMocks();
-  global.fetch = jest
-    .fn()
-    .mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        idToken: 'emulator-token',
-        refreshToken: 'refresh',
-        expiresIn: '3600',
-      }),
-    });
+  global.fetch = jest.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({
+      idToken: 'emulator-token',
+      refreshToken: 'refresh',
+      expiresIn: '3600',
+    }),
+  });
 });
 it('exchanges the emulator token before storing the server session', async () => {
   const session = { accessToken: 'verified-token', user: { uid: 'developer' } };

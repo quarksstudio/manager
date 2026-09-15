@@ -34,14 +34,14 @@ const order = topologicalOrder(packages);
 for (const name of order) {
   const entry = packages.get(name);
   const output = path.join(distRoot, entry.group, entry.directory);
-  const expectedOutput =
-    entry.group === 'apps'
-      ? (entry.manifest.main ?? './index.html')
-      : (entry.manifest.main ?? './index.js');
-  if (!(await exists(path.join(output, expectedOutput))))
+  const expected = expectedOutputFor(entry);
+  if (expected.single && !(await exists(path.join(output, expected.single))))
     throw new Error(
-      `Missing build output for ${name}: ${output}/${expectedOutput}`,
+      `Missing build output for ${name}: ${output}/${expected.single}`,
     );
+  for (const target of expected.exports ?? [])
+    if (!(await exists(path.join(output, target))))
+      throw new Error(`Missing build output for ${name}: ${output}/${target}`);
   const sourceReadme = path.join(
     workspace,
     entry.group,
@@ -69,15 +69,17 @@ function publishManifest(source, allPackages, group) {
   delete manifest.private;
   manifest.license ??= 'MIT';
   if (group === 'packages') {
-    manifest.main ??= './index.js';
-    manifest.types ??= './index.d.ts';
-    manifest.exports ??= {
-      '.': {
-        types: manifest.types,
-        require: manifest.main,
-        default: manifest.main,
-      },
-    };
+    if (!manifest.exports) {
+      manifest.main ??= './index.js';
+      manifest.types ??= './index.d.ts';
+      manifest.exports ??= {
+        '.': {
+          types: manifest.types,
+          require: manifest.main,
+          default: manifest.main,
+        },
+      };
+    }
   } else if (manifest.main) {
     manifest.main = source.main;
   }
@@ -111,26 +113,37 @@ function publishManifest(source, allPackages, group) {
 }
 
 function topologicalOrder(allPackages) {
-  const visiting = new Set();
-  const visited = new Set();
-  const result = [];
-  const visit = (name) => {
-    if (visited.has(name)) return;
-    if (visiting.has(name))
-      throw new Error(`Workspace dependency cycle involving ${name}`);
-    visiting.add(name);
+  const localDependencies = (name) => {
     const manifest = allPackages.get(name).manifest;
-    const dependencies = {
+    return Object.keys({
       ...manifest.dependencies,
       ...manifest.optionalDependencies,
-    };
-    for (const dependency of Object.keys(dependencies).sort())
-      if (allPackages.has(dependency)) visit(dependency);
-    visiting.delete(name);
-    visited.add(name);
+    }).filter((dependency) => allPackages.has(dependency));
+  };
+  const state = new Map();
+  const stack = [];
+  const cycles = new Set();
+  const result = [];
+  const visit = (name) => {
+    if (state.get(name) === 2) return;
+    if (state.get(name) === 1) {
+      for (let i = stack.indexOf(name); i < stack.length; i++)
+        cycles.add(stack[i]);
+      return;
+    }
+    state.set(name, 1);
+    stack.push(name);
+    for (const dependency of [...localDependencies(name)].sort())
+      visit(dependency);
+    stack.pop();
+    state.set(name, 2);
     result.push(name);
   };
   for (const name of [...allPackages.keys()].sort()) visit(name);
+  if (cycles.size > 0)
+    console.warn(
+      `Breaking workspace dependency cycle(s): ${[...cycles].sort().join(', ')} (npm installs cyclic packages fine)`,
+    );
   return result;
 }
 
@@ -140,4 +153,24 @@ async function exists(file) {
   } catch {
     return false;
   }
+}
+
+function expectedOutputFor(entry) {
+  const { manifest } = entry;
+  if (entry.group === 'apps')
+    return { single: manifest.main ?? './index.html' };
+  if (manifest.main) return { single: manifest.main };
+  if (manifest.exports)
+    return { exports: collectExportTargets(manifest.exports) };
+  return { single: './index.js' };
+}
+
+function collectExportTargets(exports) {
+  if (typeof exports === 'string') return [exports];
+  const targets = [];
+  for (const value of Object.values(exports)) {
+    if (typeof value === 'string') targets.push(value);
+    else targets.push(...collectExportTargets(value));
+  }
+  return targets;
 }

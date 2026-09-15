@@ -10,6 +10,10 @@ on:
         description: Build and pack without publishing
         type: boolean
         default: true
+      version:
+        description: Version to set on all publishable packages (e.g. 0.1.0 or 0.2.0-beta)
+        type: string
+        required: true
 
 permissions:
   contents: read
@@ -43,8 +47,19 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Reject generated JavaScript in source directories
         run: test -z "$(find apps packages -type f -path '*/src/*' \( -name '*.js' -o -name '*.js.map' \) -print -quit)"
+      - name: Resolve release version
+        id: version
+        run: |
+          REF="${{ github.event_name == 'push' && github.ref_name || inputs.version }}"
+          VERSION="${REF#manager-v}"
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-]|$)'; then
+            echo "Invalid release version derived from ${REF}" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - run: pnpm format:check
       - run: pnpm exec nx run-many -t lint test build --all
+      - run: node tools/set-release-version.mjs ${{ steps.version.outputs.version }}
       - run: node tools/prepare-npm-packages.mjs
       - name: Pack or publish in dependency order
         env:

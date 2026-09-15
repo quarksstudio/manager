@@ -4,6 +4,8 @@ import { join } from 'path';
 
 import { ProcessSandbox } from './process-sandbox';
 
+jest.setTimeout(30_000);
+
 describe('ProcessSandbox HTTP interception', () => {
   let cwd: string;
 

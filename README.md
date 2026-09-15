@@ -22,38 +22,51 @@ tools/
 
 Todos usan `private: false` y `publishConfig.access: "public"`:
 
-| Paquete              | Dependencias internas @quark                               |
-| -------------------- | ---------------------------------------------------------- |
-| `@quark/installer`   | local-store, manifest, permissions, registry, types, targz |
-| `@quark/local-store` | types                                                      |
-| `@quark/manifest`    | —                                                          |
-| `@quark/permissions` | manifest                                                   |
-| `@quark/registry`    | use-storage, types                                         |
-| `@quark/runtime`     | manifest, permissions, types                               |
-| `@quark/targz`       | tester                                                     |
-| `@quark/tester`      | —                                                          |
-| `@quark/types`       | —                                                          |
-| `@quark/use-storage` | —                                                          |
+| Paquete              | Dependencias internas @quark                                |
+| -------------------- | ----------------------------------------------------------- |
+| `@quark/config`      | ui, use-storage                                             |
+| `@quark/installer`   | local-store, manifest, permissions, registry, types, targz  |
+| `@quark/local-store` | types                                                       |
+| `@quark/manifest`    | —                                                           |
+| `@quark/permissions` | manifest                                                    |
+| `@quark/publisher`   | registry, targz, tester, ui                                 |
+| `@quark/registry`    | use-storage, types                                          |
+| `@quark/runtime`     | manifest, permissions, types                                |
+| `@quark/targz`       | tester                                                      |
+| `@quark/tester`      | —                                                           |
+| `@quark/types`       | —                                                           |
+| `@quark/ui`          | registry, use-storage                                       |
+| `@quark/use-storage` | —                                                           |
+| `@quark/cli`         | config, installer, local-store, publisher, registry, tester |
+| `@quark/ui-app`      | —                                                           |
+
+### Versionado
+
+La versión de lanzamiento se fija con `tools/set-release-version.mjs <version>` (reescribe el `version` de todos los paquetes publicables). Los tags y ramas usan la convención semver:
+
+- `main` es la rama **estable**. Al cortar un lanzamiento se publica una versión concreta (p. ej. `0.1.0`) y se etiqueta `manager-v0.1.0` (la publicación para CI deriva la versión del tag).
+- `develop` es la rama de **desarrollo** con prerelease (`0.2.0-beta`...). Por precedencia semver una prerelease (`0.2.0-beta`) siempre queda por delante de la estable siguiente (`0.2.0`), de modo que `develop` nunca puede publicar la versión estable.
 
 ### Flujo de publicación
 
 El workflow `.github/workflows/publish-packages.yml` se dispara:
 
-1. **Por tag** `manager-v*` → publica de verdad a `registry.npmjs.org` con `--provenance`.
-2. **Manual (`workflow_dispatch`)** → `dry_run` por defecto (empaqueta sin publicar).
+1. **Por tag** `manager-v*` → publica de verdad a `registry.npmjs.org` con `--provenance`. El tag debe ser `manager-v<version>` (p. ej. `manager-v0.1.0`).
+2. **Manual (`workflow_dispatch`)** → `dry_run` por defecto (empaqueta sin publicar); requiere el input `version`.
 
 El flujo ejecuta `lint`, `test` y `build` de todos los proyectos y luego:
 
+- `node tools/set-release-version.mjs <version>` — fija la versión de lanzamiento en todos los paquetes publicables (derivada del tag en las publicaciones por CI).
 - `node tools/prepare-npm-packages.mjs` — copia cada paquete a `dist/{group}/{dir}`, reescribe el `package.json` de publicación (resuelve `workspace:*` a rangos `^x.y.z`, fija `main`/`types`/`exports`/`files`/`publishConfig`).
 - `node tools/publish-npm-packages.mjs [--dry-run]` — publica en orden de dependencias; omite versiones ya existentes.
 
 ### Contrato de estructura del build
 
-Cada paquete en `dist/packages/<pkg>/` debe contener su entrada raíz en la **raíz** del dist, coincidiendo con su `main`/`types`:
+Cada paquete en `dist/packages/<pkg>/` debe contener su entrada raíz en la **raíz** del dist, coincidiendo con su `main`/`types`; en paquetes **subpath-only** sin `main` raíz (p. ej. `@quark/ui`, que expone `./CLI`, `./hooks` y `./web`), `prepare-npm-packages.mjs` valida cada target de `exports` en vez de la raíz:
 
-- `main: ./index.js` y `types: ./index.d.ts` en la raíz.
+- `main: ./index.js` y `types: ./index.d.ts` en la raíz; o `exports` que apunten a archivos emitidos por el build.
 
-`prepare-npm-packages.mjs` **valida** que exista `dist/packages/<pkg>/{main}` y aborta si no (línea 28-29). Por tanto:
+`prepare-npm-packages.mjs` **valida** que exista cada salida esperada y aborta si no. Por tanto:
 
 - El `tsconfig.lib.json` de cada paquete debe emitir achatado (sin prefijo `src/`).
 - Un build `@nx/js:tsc` con `rootDir` al `src/` del paquete emite `index.js` en la raíz del `outputPath`.

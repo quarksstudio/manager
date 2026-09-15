@@ -3,3 +3,7 @@
 /coverage
 /.nx/cache
 /.nx/workspace-data
+# pnpm maintains its own lockfile format; prettier would rewrite it on every install
+/pnpm-lock.yaml
+# long-running conversation/release log, not source documentation
+/request.md
