@@ -1,3 +1,4 @@
+import { LocalDevelopment } from './LocalDevelopment';
 import {
   Navigate,
   Route,
@@ -53,6 +54,9 @@ export function App() {
           </Link>
         </div>
       </header>
+      {import.meta.env.VITE_QUARK_LOCAL === 'true' ? (
+        <LocalDevelopment />
+      ) : null}
       <Routes>
         <Route
           path="/"

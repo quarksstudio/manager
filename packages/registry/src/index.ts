@@ -64,3 +64,5 @@ export {
   uploadPackageArchive,
   type UploadPackageArchiveInput,
 } from './infrastructure/upload-package-archive';
+
+export { loginWithEmulator } from './local-login';

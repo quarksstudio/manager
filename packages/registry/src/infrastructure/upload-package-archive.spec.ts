@@ -30,7 +30,7 @@ describe('archive upload transport', () => {
     const send = jest
       .spyOn(globalThis, 'fetch')
       .mockResolvedValue(new Response(null, { status: 201 }));
-    await uploadPackageArchive(input);
+    await uploadPackageArchive({ ...input, fileName: 'demo.tar.gz' });
     expect(send).toHaveBeenCalledWith(
       'https://registry.test/v1/package/%40scope%2Fdemo/1.0.0',
       expect.objectContaining({
@@ -40,7 +40,7 @@ describe('archive upload transport', () => {
     );
     const body = send.mock.calls[0][1]?.body as FormData;
     expect(body.get('description')).toBe('description');
-    const file = body.get('file') as File;
+    const file = body.get('bundle') as File;
     expect(file.name).toBe('demo.tgz');
     expect(new Uint8Array(await file.arrayBuffer())).toEqual(input.content);
   });

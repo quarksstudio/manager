@@ -1,3 +1,5 @@
+import { createStorage } from '@quark/use-storage';
+import { configureRegistry } from '@quark/registry';
 import { homedir } from 'os';
 import { Command } from 'commander';
 import { Add, Remove } from '@quark/installer/CLI';
@@ -7,6 +9,18 @@ import * as Cache from '@quark/local-store/CLI';
 import { Publish } from '@quark/publisher/CLI';
 import { Test } from '@quark/tester/CLI';
 import { parseCertificationTier, type CertificationTier } from '@quark/tester';
+
+if (process.env['QUARK_REGISTRY_API_URL'])
+  configureRegistry(process.env['QUARK_REGISTRY_API_URL']);
+
+if (
+  process.env['QUARK_ENV'] === 'local' &&
+  process.env['MANAGER_SERVER_TOKEN']
+) {
+  await createStorage({ namespace: 'app' }).setItem('auth:session', {
+    accessToken: process.env['MANAGER_SERVER_TOKEN'],
+  });
+}
 
 const program = new Command();
 

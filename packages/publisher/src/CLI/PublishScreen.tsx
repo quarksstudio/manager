@@ -59,7 +59,6 @@ export function PublishScreen({
     ).then(
       (value) => {
         setResult(value);
-        exit();
       },
       (reason) => {
         setError(reason instanceof Error ? reason : new Error(String(reason)));
@@ -67,10 +66,13 @@ export function PublishScreen({
           reason instanceof VerificationFailure
             ? EXIT_CODES.verificationFailure
             : EXIT_CODES.genericFailure;
-        exit();
       },
     );
   }, [sourceDir, tierRequested, outputDir, token, upload, dryRun, exit]);
+
+  useEffect(() => {
+    if (result || error) exit();
+  }, [result, error, exit]);
 
   if (json && result) {
     return <Text>{JSON.stringify(result)}</Text>;

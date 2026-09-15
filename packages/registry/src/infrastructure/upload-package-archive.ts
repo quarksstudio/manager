@@ -23,9 +23,9 @@ export async function uploadPackageArchive(
   const send = (url: string) => {
     const body = new FormData();
     body.append(
-      'file',
+      'bundle',
       new Blob([new Uint8Array(input.content).buffer]),
-      input.fileName,
+      input.fileName.replace(/\.tar\.gz$/i, '.tgz'),
     );
     body.append('description', input.description);
     return fetch(url, {

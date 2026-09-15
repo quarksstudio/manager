@@ -3,11 +3,11 @@ import { Provadier, ProvadierName } from '@quark/types/client';
 const BASE = 'https://identitytoolkit.googleapis.com/v1';
 
 export async function me(this: any): Promise<any> {
-  return this._fetch(`me`);
+  return this._fetch(`auth/me`);
 }
 
 export async function logout(this: any): Promise<any> {
-  return this._fetch(`logout`, { method: 'POST' });
+  return this._fetch(`auth/logout`, { method: 'POST' });
 }
 
 export async function getUrlLogin(

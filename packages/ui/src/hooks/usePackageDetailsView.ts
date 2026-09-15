@@ -33,7 +33,15 @@ export function certificationBadge(
     .filter((item) => item.status === 'approved')
     .sort((a, b) => (TIER_RANK[b.tier] ?? 0) - (TIER_RANK[a.tier] ?? 0));
   const best = approved[0];
-  return best ? { tier: best.tier, label: `Certified ${best.tier}` } : null;
+  return best
+    ? {
+        tier: best.tier,
+        label:
+          best.environment === 'local'
+            ? `Local simulation ${best.tier}`
+            : `Certified ${best.tier}`,
+      }
+    : null;
 }
 
 export interface PackageDetailsViewOptions {

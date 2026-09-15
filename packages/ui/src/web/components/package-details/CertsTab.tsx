@@ -5,6 +5,7 @@ import { Badge } from '../ui/badge';
 import { Label } from '../ui/label';
 
 export interface CertificationRow {
+  environment?: 'local';
   tier: string;
   status: string;
   approvedAt?: string;
@@ -75,6 +76,9 @@ export function CertsTab({
                 <span className="font-mono text-sm font-medium">
                   {item.tier}
                 </span>
+                {item.environment === 'local' ? (
+                  <Badge variant="outline">Local simulation</Badge>
+                ) : null}
                 <Badge variant={statusVariant(item.status)}>
                   {STATUS_LABEL[item.status] ?? item.status}
                 </Badge>
