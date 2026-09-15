@@ -47,11 +47,21 @@ async function directoryFor(name) {
 
 function run(command, args) {
   const result = spawnSync(command, args, {
-    stdio: 'inherit',
+    stdio: 'pipe',
     env: process.env,
   });
-  if (result.status !== 0)
+  process.stdout.write(String(result.stdout ?? ''));
+  process.stderr.write(String(result.stderr ?? ''));
+  if (result.status !== 0) {
+    const output = String(result.stderr || result.stdout || '').trim();
+    const message =
+      `::error::${command} ${args.join(' ')} failed:\n${output.split('\n').slice(-25).join('\n')}`.replaceAll(
+        '\n',
+        '%0A',
+      );
+    console.error(message);
     throw new Error(
       `${command} ${args.join(' ')} failed with ${result.status}`,
     );
+  }
 }
