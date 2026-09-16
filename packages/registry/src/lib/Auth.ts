@@ -1,4 +1,4 @@
-import { Provadier, ProvadierName } from '@quarks.studio/types/client';
+import { Provider, ProviderName } from '@quarks.studio/types/client';
 
 const BASE = 'https://identitytoolkit.googleapis.com/v1';
 
@@ -12,13 +12,13 @@ export async function logout(this: any): Promise<any> {
 
 export async function getUrlLogin(
   this: any,
-  providerId: ProvadierName,
+  providerId: ProviderName,
   continueUri: string,
 ): Promise<string> {
-  const valor = Provadier[providerId];
+  const value = Provider[providerId];
 
-  if (!valor || !providerId) {
-    throw new Error('Invalid provadier');
+  if (!value || !providerId) {
+    throw new Error('Invalid provider');
   }
   const res = await fetch(
     `${BASE}/accounts:createAuthUri?key=${process.env['QUARK_GCP_KEY']}`,
@@ -26,7 +26,7 @@ export async function getUrlLogin(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        providerId: valor,
+        providerId: value,
         continueUri,
       }),
     },

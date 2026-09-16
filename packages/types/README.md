@@ -1,6 +1,8 @@
 # @quarks.studio/types
 
-Contratos compartidos del manager: modelos de Package, Version, User, Order y Project; contratos de cliente y errores de dominio. No contiene infraestructura ni efectos secundarios.
+Shared contracts of the manager: the Package, Version, User, Order and Project
+models; client contracts and domain errors. It contains no infrastructure or
+side effects.
 
 ```bash
 pnpm nx build types

@@ -1,7 +1,7 @@
-export declare enum Provadier {
+export declare enum Provider {
   google = 'google.com',
   github = 'github.com',
   twitter = 'twitter.com',
   facebook = 'facebook.com',
 }
-export type ProvadierName = keyof typeof Provadier;
+export type ProviderName = keyof typeof Provider;

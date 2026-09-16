@@ -21,6 +21,10 @@ Archive publication without React or Ink uses `configureRegistry(api)` and
 shared with `Client.API`. Upload accepts archive bytes, filename, package name,
 version, description and an optional token (otherwise `MANAGER_SERVER_TOKEN`).
 
+It also exposes `registerAuditorPasskey` and `signAuditDecision`, which run the
+WebAuthn S4 ceremonies against the server endpoints without handling private
+keys in JavaScript.
+
 Authenticated clients also expose `Client.Gateway` for payment-provider
 operations:
 
@@ -33,10 +37,6 @@ operations:
 The payment provider must tokenize card details on the client side. Card
 numbers and security codes must never be sent to this client or persisted by
 the manager.
-
-# @quarks.studio/registry
-
-Cliente del registry, autenticación y hooks React. También expone `registerAuditorPasskey` y `signAuditDecision`, que ejecutan las ceremonias WebAuthn S4 contra los endpoints del servidor sin manejar claves privadas en JavaScript.
 
 ## CLI
 

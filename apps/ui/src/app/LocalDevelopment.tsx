@@ -16,7 +16,7 @@ export function LocalDevelopment() {
   }, []);
   return (
     <section className="mx-auto max-w-6xl space-y-3 p-4">
-      <p>Entorno local · pagos y certificaciones simulados</p>
+      <p>Local environment · simulated payments and certifications</p>
       <div className="flex flex-wrap gap-3">
         {['developer', 'admin', 'security-admin', 'auditor'].map((user) => (
           <button
@@ -29,19 +29,19 @@ export function LocalDevelopment() {
                 'quark-local-password',
               )
                 .then(() => {
-                  setMessage(`Sesión: ${user}`);
+                  setMessage(`Session: ${user}`);
                   void refresh();
                 })
                 .catch((error) => setMessage(String(error)));
             }}
           >
-            Entrar como {user}
+            Sign in as {user}
           </button>
         ))}
       </div>
       <p role="status">{message}</p>
       <button className="underline" onClick={() => void refresh()}>
-        Actualizar paquetes
+        Refresh packages
       </button>
       <ul>
         {packages.map((pkg) => (

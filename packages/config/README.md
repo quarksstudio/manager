@@ -1,8 +1,11 @@
 # @quarks.studio/config
 
-Gestión de configuración del CLI de Quark. El dominio modela los valores de configuración (`AppConfig`), el repositorio persiste en `~/.config/quark/config.ini` (INI) y migra tokens legacy al storage de sesión.
+Configuration management for the Quark CLI. The domain models the configuration
+values (`AppConfig`), the repository persists them in
+`~/.config/quark/config.ini` (INI) and migrates legacy tokens to the session
+storage.
 
-El hook `useConfig` expone el estado de configuración a componentes React.
+The `useConfig` hook exposes the configuration state to React components.
 
 ```bash
 pnpm nx build config

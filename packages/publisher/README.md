@@ -1,8 +1,9 @@
 # @quarks.studio/publisher
 
-Publicación de skills y agentes sin React ni Ink. `domain` define contratos y
-errores; `application` coordina el flujo mediante puertos; `infrastructure`
-conecta filesystem, tester, empaquetado y transporte del registry.
+Publication of skills and agents without React or Ink. `domain` defines the
+contracts and errors; `application` coordinates the flow through ports;
+`infrastructure` connects the filesystem, tester, packaging and registry
+transport.
 
 ```ts
 import { publishPackage } from '@quarks.studio/publisher';
@@ -12,24 +13,23 @@ configureRegistry('https://registry.example/api');
 const result = await publishPackage({ sourceDir: './my-skill', dryRun: true });
 ```
 
-`dryRun: true` (o `upload: false`) verifica, escribe el snapshot y empaqueta sin
-subir. Para subir, omite `dryRun` y proporciona `token` o
-`MANAGER_SERVER_TOKEN`. El endpoint se comparte con `Client.API`.
+`dryRun: true` (or `upload: false`) validates, writes the snapshot and packages
+without uploading. To upload, omit `dryRun` and provide a `token` or
+`MANAGER_SERVER_TOKEN`. The endpoint is shared with `Client.API`.
 
-`publishPackage(options, onProgress?)` informa las etapas `validate`, `verify`,
-`pack` y `upload`. Una verificación fallida lanza `VerificationFailure` antes
-de escribir o empaquetar. Los códigos de salida y la presentación pertenecen
-al consumidor.
+`publishPackage(options, onProgress?)` reports the `validate`, `verify`, `pack`
+and `upload` stages. A failed verification throws `VerificationFailure` before
+writing or packaging. Exit codes and presentation belong to the consumer.
 
-`createPublishPackage(dependencies)` permite inyectar proyecto, verificador,
-empaquetador, transporte y reloj. Exporta también `PublishOptions`,
-`PublishResult`, `PublishProgress` y los contratos de esos puertos.
+`createPublishPackage(dependencies)` lets you inject the project, verifier,
+packer, transport and clock. It also exports `PublishOptions`, `PublishResult`,
+`PublishProgress` and the contracts of those ports.
 
-Validación: `pnpm nx test publisher` y `pnpm nx build publisher`.
+Validation: `pnpm nx test publisher` and `pnpm nx build publisher`.
 
 ## CLI
 
 Screens and command adapters live in `src/CLI`, one React component per file.
-Import them through `@quarks.studio/publisher/CLI`; the main entrypoint keeps its
-business API and does not load CLI presentation. Shared Ink components and
+Import them through `@quarks.studio/publisher/CLI`; the main entrypoint keeps
+its business API and does not load CLI presentation. Shared Ink components and
 terminal helpers come from `@quarks.studio/ui/CLI`.

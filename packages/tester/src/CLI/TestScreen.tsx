@@ -49,7 +49,7 @@ export function TestScreen({ json = false, ...options }: TestScreenProps) {
   if (!result) {
     return (
       <Screen title="Quark test">
-        <StatusLine status="running" message="Ejecutando tester local..." />
+        <StatusLine status="running" message="Running local tests..." />
       </Screen>
     );
   }
@@ -63,9 +63,9 @@ export function TestScreen({ json = false, ...options }: TestScreenProps) {
       />
       <Box flexDirection="column" marginTop={1}>
         <Text>Hash: {result.sha256Hash || 'n/a'}</Text>
-        <Text>Duración: {result.durationMs} ms</Text>
+        <Text>Duration: {result.durationMs} ms</Text>
         <Text>
-          Cobertura: schema {result.coverage.schemaCoverage}% · assertions{' '}
+          Coverage: schema {result.coverage.schemaCoverage}% · assertions{' '}
           {result.coverage.assertionCoverage}% · invariants{' '}
           {result.coverage.invariantCoverage}%
         </Text>
@@ -79,7 +79,7 @@ export function TestScreen({ json = false, ...options }: TestScreenProps) {
         <Result
           success={result.passed}
           message={
-            result.passed ? 'Verificación exitosa' : 'Verificación fallida'
+            result.passed ? 'Verification passed' : 'Verification failed'
           }
         />
       </Box>

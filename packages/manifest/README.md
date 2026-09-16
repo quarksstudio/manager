@@ -1,8 +1,11 @@
 # @quarks.studio/manifest
 
-Parser y validador del manifiesto ejecutable de un skill instalado. Normaliza nombre, versión, entrypoint, runtime, permisos y dependencias antes de que installer/runtime los utilicen.
+Parser and validator of the executable manifest of an installed skill. It
+normalizes name, version, entrypoint, runtime, permissions and dependencies
+before installer/runtime use them.
 
-No inspecciona archivos comprimidos; esa responsabilidad pertenece a `@quarks.studio/tester` y `@quarks.studio/targz`.
+It does not inspect compressed files; that responsibility belongs to
+`@quarks.studio/tester` and `@quarks.studio/targz`.
 
 ```bash
 pnpm nx build manifest

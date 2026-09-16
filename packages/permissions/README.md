@@ -1,8 +1,10 @@
 # @quarks.studio/permissions
 
-Políticas y consentimiento para capacidades solicitadas por skills. Compara el manifiesto con `UserPolicy`, devuelve permisos concedidos/denegados y ofrece el prompt utilizado por CLI.
+Policies and consent for capabilities requested by skills. It compares the
+manifest with `UserPolicy`, returns granted/denied permissions and offers the
+prompt used by the CLI.
 
-Installer debe completar esta validación antes de escribir cualquier skill en destino.
+Installer must run this validation before writing any skill to its destination.
 
 ```bash
 pnpm nx build permissions

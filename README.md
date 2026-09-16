@@ -1,82 +1,110 @@
 # manager
 
-Monorepo Nx que contiene el **cliente** del ecosistema Quark: la CLI, la interfaz web y todas las **librerías NPM** que se publican para ser consumidas externamente (incluido el servidor `quark/server`).
+Nx monorepo containing the **client** of the Quark ecosystem: the CLI, the web
+interface and all the **NPM libraries** that are published for external
+consumers (including the `quark/server` server).
 
-## Estructura
+## Structure
 
 ```
 apps/
-  cli/    @quarks.studio/cli             # CLI de Quark
-  ui/     @quarks.studio/ui              # Interfaz web
-packages/                        # librerías publicables a NPM (ver abajo)
+  cli/    @quarks.studio/cli             # Quark CLI
+  ui/     @quarks.studio/ui              # Web interface
+packages/                        # libraries publishable to NPM (see below)
 tools/
-  prepare-npm-packages.mjs       # construye los tarballs de publicación en dist/
-  publish-npm-packages.mjs       # publica (o empaqueta en --dry-run) en orden topológico
+  prepare-npm-packages.mjs       # builds the publish tarballs into dist/
+  publish-npm-packages.mjs       # publishes (or packages with --dry-run) in topological order
 ```
 
-## Publicación a NPM
+## Publishing to NPM
 
-**Regla de arquitectura: todo lo que vive en `manager` y es una librería se publica a NPM.** No se consume ningún paquete de `manager` apuntando a su source; los consumidores (p. ej. `quark/server`) dependen de la versión publicada instalada desde `node_modules`.
+**Architecture rule: everything that lives in `manager` and is a library gets published to NPM.** No consumer points at a `manager` package's source; consumers (e.g. `quark/server`) depend on the published version installed from `node_modules`.
 
-### Paquetes publicables
+### Publishable packages
 
-Todos usan `private: false` y `publishConfig.access: "public"`:
+All use `private: false` and `publishConfig.access: "public"`:
 
-| Paquete                      | Dependencias internas @quarks.studio                        |
-| ---------------------------- | ----------------------------------------------------------- |
-| `@quarks.studio/config`      | ui, use-storage                                             |
-| `@quarks.studio/installer`   | local-store, manifest, permissions, registry, types, targz  |
-| `@quarks.studio/local-store` | types                                                       |
-| `@quarks.studio/manifest`    | —                                                           |
-| `@quarks.studio/permissions` | manifest                                                    |
-| `@quarks.studio/publisher`   | registry, targz, tester, ui                                 |
-| `@quarks.studio/registry`    | use-storage, types                                          |
-| `@quarks.studio/runtime`     | manifest, permissions, types                                |
-| `@quarks.studio/targz`       | tester                                                      |
-| `@quarks.studio/tester`      | —                                                           |
-| `@quarks.studio/types`       | —                                                           |
-| `@quarks.studio/ui`          | registry, use-storage                                       |
-| `@quarks.studio/use-storage` | —                                                           |
-| `@quarks.studio/cli`         | config, installer, local-store, publisher, registry, tester |
-| `@quarks.studio/ui-app`      | —                                                           |
+| Package                       | Internal @quarks.studio dependencies               |
+| ----------------------------- | --------------------------------------------------- |
+| `@quarks.studio/config`       | ui, use-storage                                      |
+| `@quarks.studio/installer`    | local-store, manifest, permissions, registry, types, targz |
+| `@quarks.studio/local-store`  | types                                                |
+| `@quarks.studio/manifest`     | —                                                    |
+| `@quarks.studio/permissions`  | manifest                                             |
+| `@quarks.studio/publisher`    | registry, targz, tester, ui                          |
+| `@quarks.studio/registry`     | use-storage, types                                   |
+| `@quarks.studio/runtime`      | manifest, permissions, types                         |
+| `@quarks.studio/targz`        | tester                                               |
+| `@quarks.studio/tester`       | —                                                    |
+| `@quarks.studio/types`        | —                                                    |
+| `@quarks.studio/ui`           | registry, use-storage                                |
+| `@quarks.studio/use-storage`  | —                                                    |
+| `@quarks.studio/cli`          | config, installer, local-store, publisher, registry, tester |
+| `@quarks.studio/ui-app`       | —                                                    |
 
-### Versionado
+### Versioning
 
-La versión de lanzamiento se fija con `tools/set-release-version.mjs <version>` (reescribe el `version` de todos los paquetes publicables). Los tags y ramas usan la convención semver:
+The release version is set with `tools/set-release-version.mjs <version>`
+(rewrites the `version` field of every publishable package). Tags and branches
+follow the semver convention:
 
-- `main` es la rama **estable**. Al cortar un lanzamiento se publica una versión concreta (p. ej. `0.1.0`) y se etiqueta `manager-v0.1.0` (la publicación para CI deriva la versión del tag).
-- `develop` es la rama de **desarrollo** con prerelease (`0.2.0-beta`...). Por precedencia semver una prerelease (`0.2.0-beta`) siempre queda por delante de la estable siguiente (`0.2.0`), de modo que `develop` nunca puede publicar la versión estable.
+- `main` is the **stable** branch. When cutting a release, a concrete version
+  (e.g. `0.1.0`) is published and tagged `manager-v0.1.0` (CI publishing
+  derives the version from the tag).
+- `develop` is the **development** branch with prereleases (`0.2.0-beta`...).
+  By semver precedence a prerelease (`0.2.0-beta`) always sorts ahead of the
+  next stable release (`0.2.0`), so `develop` can never publish the stable
+  version.
 
-### Flujo de publicación
+### Publishing flow
 
-El workflow `.github/workflows/publish-packages.yml` se dispara:
+The `.github/workflows/publish-packages.yml` workflow is triggered:
 
-1. **Por tag** `manager-v*` → publica de verdad a `registry.npmjs.org` con `--provenance`. El tag debe ser `manager-v<version>` (p. ej. `manager-v0.1.0`).
-2. **Manual (`workflow_dispatch`)** → `dry_run` por defecto (empaqueta sin publicar); requiere el input `version`.
+1. **By tag** `manager-v*` → actually publishes to `registry.npmjs.org` with
+   `--provenance`. The tag must be `manager-v<version>` (e.g. `manager-v0.1.0`).
+2. **Manual (`workflow_dispatch`)** → `dry_run` by default (packages without
+   publishing); requires the `version` input.
 
-El flujo ejecuta `lint`, `test` y `build` de todos los proyectos y luego:
+The workflow runs `lint`, `test` and `build` for all projects and then:
 
-- `node tools/set-release-version.mjs <version>` — fija la versión de lanzamiento en todos los paquetes publicables (derivada del tag en las publicaciones por CI).
-- `node tools/prepare-npm-packages.mjs` — copia cada paquete a `dist/{group}/{dir}`, reescribe el `package.json` de publicación (resuelve `workspace:*` a rangos `^x.y.z`, fija `main`/`types`/`exports`/`files`/`publishConfig`).
-- `node tools/publish-npm-packages.mjs [--dry-run]` — publica en orden de dependencias; omite versiones ya existentes.
+- `node tools/set-release-version.mjs <version>` — sets the release version on
+  all publishable packages (derived from the tag on CI publications).
+- `node tools/prepare-npm-packages.mjs` — copies each package to
+  `dist/{group}/{dir}`, rewrites the publish `package.json` (resolves
+  `workspace:*` to `^x.y.z` ranges, sets `main`/`types`/`exports`/`files`/
+  `publishConfig`).
+- `node tools/publish-npm-packages.mjs [--dry-run]` — publishes in dependency
+  order; skips versions that already exist.
 
-### Contrato de estructura del build
+### Build structure contract
 
-Cada paquete en `dist/packages/<pkg>/` debe contener su entrada raíz en la **raíz** del dist, coincidiendo con su `main`/`types`; en paquetes **subpath-only** sin `main` raíz (p. ej. `@quarks.studio/ui`, que expone `./CLI`, `./hooks` y `./web`), `prepare-npm-packages.mjs` valida cada target de `exports` en vez de la raíz:
+Each package under `dist/packages/<pkg>/` must contain its root entrypoint at
+the **root** of the dist, matching its `main`/`types`; for **subpath-only**
+packages without a root `main` (e.g. `@quarks.studio/ui`, which exposes
+`./CLI`, `./hooks` and `./web`), `prepare-npm-packages.mjs` validates each
+`exports` target instead of the root:
 
-- `main: ./index.js` y `types: ./index.d.ts` en la raíz; o `exports` que apunten a archivos emitidos por el build.
+- `main: ./index.js` and `types: ./index.d.ts` at the root; or `exports`
+  pointing at files emitted by the build.
 
-`prepare-npm-packages.mjs` **valida** que exista cada salida esperada y aborta si no. Por tanto:
+`prepare-npm-packages.mjs` **validates** that every expected output exists and
+aborts otherwise. Therefore:
 
-- El `tsconfig.lib.json` de cada paquete debe emitir achatado (sin prefijo `src/`).
-- Un build `@nx/js:tsc` con `rootDir` al `src/` del paquete emite `index.js` en la raíz del `outputPath`.
-- **No** se debe dejar un `dist` obsoleto con estructura `src/` (rompe la validación y la resolución por `node_modules`).
+- Each package's `tsconfig.lib.json` must emit flattened (without the `src/`
+  prefix).
+- An `@nx/js:tsc` build with `rootDir` at the package's `src/` emits
+  `index.js` at the root of the `outputPath`.
+- **Do not** leave a stale `dist` with a `src/` structure (it breaks the
+  validation and `node_modules` resolution).
 
-> ⚠️ Si `dist/packages/<pkg>/` contiene la entrada en `src/` (p. ej. `dist/packages/tester/src/index.js`) en vez de la raíz, el build quedó obsoleto o mal configurado: reconstruir limpio (`nx reset && nx build <pkg> --skip-nx-cache`).
+> ⚠️ If `dist/packages/<pkg>/` contains the entrypoint under `src/` (e.g.
+> `dist/packages/tester/src/index.js`) instead of the root, the build is stale
+> or misconfigured: rebuild clean (`nx reset && nx build <pkg> --skip-nx-cache`).
 
-## Calidad
+## Quality
 
-`ci.yml` garantiza en cada push/PR: `pnpm install --frozen-lockfile`, rechazo de JS generado en `src/`, `format:check`, y `lint`/`test`/`build`.
+`ci.yml` guarantees on every push/PR: `pnpm install --frozen-lockfile`, rejection
+of generated JS in `src/`, `format:check`, and `lint`/`test`/`build`.
 
 ## CLI presentation
 
