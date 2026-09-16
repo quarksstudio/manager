@@ -24,23 +24,23 @@ tools/
 
 All use `private: false` and `publishConfig.access: "public"`:
 
-| Package                       | Internal @quarks.studio dependencies               |
-| ----------------------------- | --------------------------------------------------- |
-| `@quarks.studio/config`       | ui, use-storage                                      |
-| `@quarks.studio/installer`    | local-store, manifest, permissions, registry, types, targz |
-| `@quarks.studio/local-store`  | types                                                |
-| `@quarks.studio/manifest`     | —                                                    |
-| `@quarks.studio/permissions`  | manifest                                             |
-| `@quarks.studio/publisher`    | registry, targz, tester, ui                          |
-| `@quarks.studio/registry`     | use-storage, types                                   |
-| `@quarks.studio/runtime`      | manifest, permissions, types                         |
-| `@quarks.studio/targz`        | tester                                               |
-| `@quarks.studio/tester`       | —                                                    |
-| `@quarks.studio/types`        | —                                                    |
-| `@quarks.studio/ui`           | registry, use-storage                                |
-| `@quarks.studio/use-storage`  | —                                                    |
-| `@quarks.studio/cli`          | config, installer, local-store, publisher, registry, tester |
-| `@quarks.studio/ui-app`       | —                                                    |
+| Package                      | Internal @quarks.studio dependencies                        |
+| ---------------------------- | ----------------------------------------------------------- |
+| `@quarks.studio/config`      | ui, use-storage                                             |
+| `@quarks.studio/installer`   | local-store, manifest, permissions, registry, types, targz  |
+| `@quarks.studio/local-store` | types                                                       |
+| `@quarks.studio/manifest`    | —                                                           |
+| `@quarks.studio/permissions` | manifest                                                    |
+| `@quarks.studio/publisher`   | registry, targz, tester, ui                                 |
+| `@quarks.studio/registry`    | use-storage, types                                          |
+| `@quarks.studio/runtime`     | manifest, permissions, types                                |
+| `@quarks.studio/targz`       | tester                                                      |
+| `@quarks.studio/tester`      | —                                                           |
+| `@quarks.studio/types`       | —                                                           |
+| `@quarks.studio/ui`          | registry, use-storage                                       |
+| `@quarks.studio/use-storage` | —                                                           |
+| `@quarks.studio/cli`         | config, installer, local-store, publisher, registry, tester |
+| `@quarks.studio/ui-app`      | —                                                           |
 
 ### Versioning
 

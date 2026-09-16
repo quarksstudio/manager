@@ -39,10 +39,12 @@ program
   .option('--global', 'install for the current user')
   .option('--where <path>', 'installation destination', process.cwd())
   .option('-m, --models <models>', 'comma-separated model targets', ',')
-  .action((skill, options) => Add(skill, {
-    ...options,
-    where: options.global ? homedir() : options.where,
-  }));
+  .action((skill, options) =>
+    Add(skill, {
+      ...options,
+      where: options.global ? homedir() : options.where,
+    }),
+  );
 
 program
   .command('add')
@@ -51,10 +53,12 @@ program
   .option('--global', 'install for the current user')
   .option('--where <path>', 'installation destination', process.cwd())
   .option('-m, --models <models>', 'comma-separated model targets', ',')
-  .action((skill, options) => Add(skill, {
-    ...options,
-    where: options.global ? homedir() : options.where,
-  }));
+  .action((skill, options) =>
+    Add(skill, {
+      ...options,
+      where: options.global ? homedir() : options.where,
+    }),
+  );
 
 const auth = program.command('auth').description('Manage authentication');
 
@@ -64,11 +68,13 @@ auth
   .argument('[provider]', 'google, github, twitter or facebook')
   .option('-s, --strategy <strategy>', 'manual-code or local-server')
   .option('-p, --port <port>', 'local callback server port')
-  .action((provider, options) => Login({
+  .action((provider, options) =>
+    Login({
       provider,
       strategy: options.strategy,
       localServerPort: options.port ? Number(options.port) : undefined,
-    }));
+    }),
+  );
 
 auth.command('me').description('Show the current user').action(Me);
 auth.command('logout').description('Sign out').action(Logout);
@@ -88,10 +94,12 @@ program
     async (
       skill: string,
       options: { tier: CertificationTier; dryRun?: boolean },
-    ) => await Publish(skill, {
+    ) =>
+      await Publish(skill, {
         tier: options.tier,
         upload: !options.dryRun,
-      }));
+      }),
+  );
 
 program
   .command('info')
@@ -125,7 +133,8 @@ program
         isolated?: boolean;
         json?: boolean;
       },
-    ) => Test(targetDir, options));
+    ) => Test(targetDir, options),
+  );
 
 program
   .command('remove')
