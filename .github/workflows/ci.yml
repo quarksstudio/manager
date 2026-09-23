@@ -31,7 +31,9 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+      - run: pnpm test:package-architecture
       - name: Reject generated JavaScript in source directories
         run: test -z "$(find apps packages -type f -path '*/src/*' \( -name '*.js' -o -name '*.js.map' \) -print -quit)"
       - run: pnpm format:check
       - run: pnpm exec nx run-many -t lint test build
+      - run: pnpm test:web-artifacts

@@ -143,18 +143,10 @@ check compiled exports and command help in an isolated temporary fixture.
 
 ## Web presentation
 
-`packages/ui` also ships `@quarks.studio/ui/web` and `@quarks.studio/ui/web/styles.css` (ESM,
-Ink-free) with the package-detail page components. `apps/ui` exports the React
-application mounted by Astro in `server/apps/web`; it no longer has a separate
-Vite HTML entrypoint. The unified web runs on port 4200 and renders packages at
-`/packages/:packageName` and talks to the registry through `@quarks.studio/registry`
-(Astro passes `PUBLIC_REGISTRY_API_URL`, defaulting to `/v1`).
+`@quarks.studio/ui/web` exports reusable React presentation and `@quarks.studio/ui/web/styles.css` exports compiled CSS. Components receive data and action URLs; data hooks remain in the separate `@quarks.studio/ui/hooks` entry. The web entry has no session or transport access and does not load Ink.
 
-The web surface may depend on `@quarks.studio/registry` but never on `@quarks.studio/*` others
-or the Ink `./CLI` tree; CLI files are blocked from `./web` in turn
-(`no-restricted-imports` in `eslint.config.mjs`). The Nx build cycle between
-`cli-ui` and `registry` is avoided with explicit `dependsOn` and a
-`src/CLI/**` exclusion in the `registry` library tsconfig; `build-web` runs
-after `build-lib` because the TSC clean step would wipe the bundled web entry.
-Run `pnpm test:web-architecture` and `pnpm test:cli-artifacts` (which asserts
-the web bundle exposes `PackageDetails` and never loads Ink).
+`apps/ui` is an independent Vite demo using fixtures at the same package URLs as Server. Server owns the Astro routes, request-scoped `@quarks.studio/registry/client`, session cookies, mutations and downloads. Server installs versioned npm artifacts and never reads this checkout.
+
+All libraries use `packages/<name>/src` and `packages/<name>/test`; apps retain their own `src` and `test`. Run `pnpm test:package-architecture`, `pnpm test:web-architecture`, and, after building, `pnpm test:web-artifacts` and `pnpm test:cli-artifacts`.
+
+Release 0.2.0 changes the `PackageDetails` props contract. Publish it before updating Server's lockfile.

@@ -6,6 +6,7 @@ await build({
   entryPoints: ['packages/ui/src/hooks/index.ts'],
   outfile: 'dist/packages/ui/src/hooks/index.mjs',
   bundle: true,
+  jsx: 'automatic',
   format: 'esm',
   platform: 'browser',
   target: 'es2020',

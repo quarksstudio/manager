@@ -1,5 +1,5 @@
 import { Badge } from '../ui/badge';
-import type { CertificationBadge } from '../../../hooks/usePackageDetailsView';
+import type { CertificationBadge } from '../../lib/certification';
 
 export interface PackageHeaderProps {
   name: string;

@@ -44,3 +44,9 @@ Screens and command adapters live in `src/CLI`, one React component per file.
 Import them through `@quarks.studio/registry/CLI`; the main entrypoint keeps its
 business API and does not load CLI presentation. Shared Ink components and
 terminal helpers come from `@quarks.studio/ui/CLI`.
+
+## Request-scoped client (0.2)
+
+`import { createRegistryClient } from '@quarks.studio/registry/client'` provides a React-free client for Astro and other server runtimes. Construct it with `{ baseUrl, token?, fetch? }` per request. It shares package operations with the existing client but does not use global configuration, browser storage or a shared response cache. `RegistryHttpError.status` preserves HTTP errors; bundle downloads return the original streaming `Response`.
+
+Existing client and hook entry points remain available for compatibility. Pure package/version types and helpers are also exported by the `client` entry.

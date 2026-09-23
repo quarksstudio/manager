@@ -44,7 +44,8 @@
       "@quarks.studio/ui/hooks": ["./packages/ui/src/hooks/index.ts"],
       "@quarks.studio/ui/web": ["./packages/ui/src/web/index.ts"],
       "@quarks.studio/ui/web/styles.css": ["./packages/ui/src/web/styles.css"],
-      "ink": ["./node_modules/ink/build/index.d.ts"]
+      "ink": ["./node_modules/ink/build/index.d.ts"],
+      "@quarks.studio/registry/client": ["./packages/registry/src/client.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

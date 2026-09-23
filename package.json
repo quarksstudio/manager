@@ -5,9 +5,11 @@
   "scripts": {
     "format": "nx format:write --all",
     "format:check": "nx format:check --all",
-    "test:cli-architecture": "node tools/cli-architecture.spec.mjs",
+    "test:cli-architecture": "node tools/test/cli-architecture.spec.mjs",
     "test:cli-artifacts": "node tools/check-cli-artifacts.mjs",
-    "test:web-architecture": "node tools/web-architecture.spec.mjs"
+    "test:web-architecture": "node tools/test/web-architecture.spec.mjs",
+    "test:package-architecture": "node --test tools/test/package-architecture.spec.mjs",
+    "test:web-artifacts": "node tools/test/web-artifacts.spec.mjs"
   },
   "private": true,
   "packageManager": "pnpm@11.21.0",
@@ -36,6 +38,7 @@
     "@types/node": "20.19.9",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/sanitize-html": "2.16.0",
     "@vitejs/plugin-react": "^6.0.0",
     "@vitest/ui": "~4.1.0",
     "babel-jest": "^30.0.2",
@@ -72,7 +75,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "6.30.3",
-    "zod": "^3.25.76",
-    "tar": "^7.4.3"
+    "tar": "^7.4.3",
+    "zod": "^3.25.76"
   }
 }

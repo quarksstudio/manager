@@ -17,7 +17,7 @@ export function createPublishPackage(dependencies: PublisherDependencies) {
       onProgress({ stage, status, detail });
     try {
       progress('active');
-      logger.info(`validating ${options.sourceDir ?? process.cwd()}`);
+      logger.info(`validating ${options.sourceDir ?? '.'}`);
       const source = await dependencies.project.inspect(options.sourceDir);
       progress('success', `${source.packageName}@${source.version}`);
       logger.verbose(

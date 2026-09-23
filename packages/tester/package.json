@@ -1,6 +1,6 @@
 {
   "name": "@quarks.studio/tester",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": false,
   "license": "MIT",
   "type": "commonjs",
@@ -19,7 +19,7 @@
     }
   },
   "bin": {
-    "quark-tester": "./cli.js"
+    "quark-tester": "./src/cli.js"
   },
   "files": [
     "**/*.js",

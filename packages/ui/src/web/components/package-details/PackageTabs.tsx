@@ -1,104 +1,122 @@
-import { BookOpen, Layers, Settings, ShieldCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import {
   certificationsForVersion,
   type PackageDetails,
-} from '@quarks.studio/registry';
-
-import { Tabs } from '../ui/tabs';
-import { TabsList } from '../ui/tabs-list';
-import { TabsTrigger } from '../ui/tabs-trigger';
-import { TabsContent } from '../ui/tabs-content';
+} from '@quarks.studio/registry/client';
 import { ReadmeTab } from './ReadmeTab';
 import { VersionsTab } from './VersionsTab';
 import { CertsTab } from './CertsTab';
 import { ConfigTab } from './ConfigTab';
-
 export interface ReadmeState {
   loading: boolean;
-  error: unknown;
+  error?: unknown;
   content: string;
   version: string;
-  onRetry: () => void;
+  retryUrl?: string;
+  onRetry?: () => void;
 }
-
 export interface PackageTabsProps {
   packageName: string;
   detail: PackageDetails;
   selectedVersion: string;
-  onSelectVersion: (version: string) => void;
-  onDownload: (version: string) => void;
   readme: ReadmeState;
-  onDetailRefetch: () => void;
+  urls: {
+    versions: Record<string, string>;
+    downloads: Record<string, string>;
+    metadata?: string;
+  };
+  formError?: string;
+  draft?: { description: string; tags: string; authors: string };
 }
-
+/** All sections render on the server; hydration adds purely visual tabs. */
 export function PackageTabs({
   packageName,
   detail,
   selectedVersion,
-  onSelectVersion,
-  onDownload,
   readme,
-  onDetailRefetch,
+  urls,
+  formError,
+  draft,
 }: PackageTabsProps) {
-  const versions = detail.versions ?? [];
-  const canEdit = detail.canEditMetadata;
+  const [hydrated, setHydrated] = useState(false);
+  const [active, setActive] = useState(formError ? 'config' : 'readme');
+  useEffect(() => setHydrated(true), []);
+  const tabs = [
+    ['readme', 'ReadMe'],
+    ['versions', 'Versions'],
+    ['certs', 'Certs'],
+    ...(detail.canEditMetadata ? [['config', 'Config']] : []),
+  ];
+  const sectionId = (tab: string) =>
+    `${encodeURIComponent(packageName)}-${tab}`;
   return (
-    <Tabs defaultValue="readme" className="min-w-0" data-testid="package-tabs">
-      <TabsList>
-        <TabsTrigger value="readme">
-          <BookOpen aria-hidden="true" />
-          <span>ReadMe</span>
-        </TabsTrigger>
-        <TabsTrigger value="versions">
-          <Layers aria-hidden="true" />
-          <span>Versions</span>
-        </TabsTrigger>
-        <TabsTrigger value="certs">
-          <ShieldCheck aria-hidden="true" />
-          <span>Certs</span>
-        </TabsTrigger>
-        {canEdit ? (
-          <TabsTrigger value="config">
-            <Settings aria-hidden="true" />
-            <span>Config</span>
-          </TabsTrigger>
-        ) : null}
-      </TabsList>
-      <TabsContent value="readme">
-        <ReadmeTab
-          loading={readme.loading}
-          error={readme.error}
-          content={readme.content}
-          version={selectedVersion}
-          onRetry={readme.onRetry}
-        />
-      </TabsContent>
-      <TabsContent value="versions">
+    <div className="space-y-6" data-testid="package-tabs">
+      <nav aria-label="Package sections" className="flex gap-4 border-b pb-2">
+        {tabs.map(([tab, label]) => (
+          <a
+            key={tab}
+            href={`#${sectionId(tab)}`}
+            aria-current={active === tab ? 'page' : undefined}
+            className={
+              active === tab
+                ? 'font-semibold text-primary'
+                : 'text-muted-foreground'
+            }
+            onClick={(event) => {
+              if (hydrated) {
+                event.preventDefault();
+                setActive(tab);
+              }
+            }}
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
+      <section
+        id={sectionId('readme')}
+        hidden={hydrated && active !== 'readme'}
+      >
+        <h2 className="sr-only">ReadMe</h2>
+        <ReadmeTab {...readme} />
+      </section>
+      <section
+        id={sectionId('versions')}
+        hidden={hydrated && active !== 'versions'}
+      >
+        <h2 className="sr-only">Versions</h2>
         <VersionsTab
           packageName={packageName}
-          versions={versions}
+          versions={detail.versions ?? []}
           selectedVersion={selectedVersion}
-          onSelectVersion={onSelectVersion}
-          onDownload={onDownload}
+          versionUrls={urls.versions}
+          downloadUrls={urls.downloads}
         />
-      </TabsContent>
-      <TabsContent value="certs">
+      </section>
+      <section id={sectionId('certs')} hidden={hydrated && active !== 'certs'}>
+        <h2 className="sr-only">Certs</h2>
         <CertsTab
-          versions={versions}
+          versions={detail.versions ?? []}
           selectedVersion={selectedVersion}
-          onSelectVersion={onSelectVersion}
+          versionUrls={urls.versions}
           certifications={certificationsForVersion(detail, selectedVersion)}
         />
-      </TabsContent>
-      {canEdit ? (
-        <TabsContent value="config">
+      </section>
+      {detail.canEditMetadata && (
+        <section
+          id={sectionId('config')}
+          hidden={hydrated && active !== 'config'}
+        >
+          <h2 className="sr-only">Config</h2>
           <ConfigTab
             packageName={packageName}
             detail={detail}
-            onSaved={onDetailRefetch}
+            action={urls.metadata}
+            error={formError}
+            draft={draft}
           />
-        </TabsContent>
-      ) : null}
-    </Tabs>
+        </section>
+      )}
+    </div>
   );
 }

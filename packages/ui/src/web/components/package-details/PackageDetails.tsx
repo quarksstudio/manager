@@ -1,171 +1,108 @@
-import { PackageSearch } from 'lucide-react';
-
-import { usePackageDetailsView } from '../../../hooks/usePackageDetailsView';
-import { useReadmeCached } from '../../../hooks/useReadmeCached';
-import { usePackageDownload } from '../../../hooks/usePackageDownload';
+import {
+  highestVersion,
+  type PackageDetails as Detail,
+} from '@quarks.studio/registry/client';
+import { certificationBadge } from '../../lib/certification';
 import { PackageHeader } from './PackageHeader';
-import { PackageTabs } from './PackageTabs';
 import { PackageSidebar } from './PackageSidebar';
-import { PackageStateNotice } from './PackageStateNotice';
+import { PackageTabs } from './PackageTabs';
 import { PackageDetailsSkeleton } from './PackageDetailsSkeleton';
-import { Button } from '../ui/button';
 
 export interface PackageDetailsProps {
   packageName: string;
-  initialVersion?: string;
-  onVersionChange?: (version: string) => void;
+  detail?: Detail | null;
+  selectedVersion?: string;
+  loading?: boolean;
+  error?: string;
+  notFound?: boolean;
+  readme?: { content: string; error?: string };
+  urls: {
+    retry: string;
+    versions: Record<string, string>;
+    downloads: Record<string, string>;
+    metadata?: string;
+  };
+  formError?: string;
+  draft?: { description: string; tags: string; authors: string };
 }
-
 export function PackageDetails({
   packageName,
-  initialVersion,
-  onVersionChange,
+  detail,
+  selectedVersion = '',
+  loading,
+  error,
+  notFound,
+  readme,
+  urls,
+  formError,
+  draft,
 }: PackageDetailsProps) {
-  const view = usePackageDetailsView(packageName, {
-    initialVersion,
-    onVersionChange,
-  });
-  const { download } = usePackageDownload(packageName);
-  const {
-    data: readme,
-    error: readmeError,
-    loading: readmeLoading,
-    refetch: refetchReadme,
-  } = useReadmeCached(packageName, view.selectedVersion || undefined);
-
-  if (view.loading) {
-    return <PackageDetailsSkeleton />;
-  }
-
-  if (view.notFound) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-8">
-        <PackageStateNotice
-          title="Package not found"
-          description={`No package named "${packageName}" exists in the registry.`}
-          onRetry={view.refetch}
-        >
-          <PackageSearch
-            aria-hidden="true"
-            className="size-6 text-muted-foreground"
-          />
-        </PackageStateNotice>
-      </div>
-    );
-  }
-
-  if (view.error) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-8">
-        <PackageStateNotice
-          title="Something went wrong"
-          description={
-            view.error instanceof Error
-              ? view.error.message
-              : String(view.error)
-          }
-          onRetry={view.refetch}
-        />
-      </div>
-    );
-  }
-
-  if (!view.detail) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-8">
-        <PackageStateNotice
-          title="No package data"
-          description={`Could not load details for "${packageName}".`}
-          onRetry={view.refetch}
-        />
-      </div>
-    );
-  }
-
-  const { detail } = view;
-  const installCommand = `quark add ${packageName}`;
-  const empty = (detail.versions ?? []).length === 0;
-
-  if (empty) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-8 space-y-8">
-        <PackageHeader
-          name={view.packageName}
-          badge={view.badge}
-          description={detail.description}
-        />
-        <PackageStateNotice
-          title="No published versions"
-          description={`${packageName} has not published any versions yet.`}
-          onRetry={view.refetch}
-        />
-      </div>
-    );
-  }
-
-  if (view.versionNotFound) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-8 space-y-8">
-        <PackageHeader
-          name={view.packageName}
-          badge={view.badge}
-          description={detail.description}
-        />
-        <PackageStateNotice
-          title="Version not found"
-          description={`Version "${view.requestedVersion}" does not exist for "${packageName}".`}
-          onRetry={view.refetch}
-        >
-          {onVersionChange && view.latestVersion ? (
-            <Button
-              variant="outline"
-              data-testid="see-latest-version"
-              onClick={() => onVersionChange(view.latestVersion as string)}
-            >
-              See latest version ({view.latestVersion})
-            </Button>
-          ) : null}
-        </PackageStateNotice>
-      </div>
-    );
-  }
-
+  if (loading) return <PackageDetailsSkeleton />;
+  const latest = highestVersion(detail?.versions)?.version;
+  const versionMissing =
+    !!selectedVersion &&
+    !(detail?.versions ?? []).some((v) => v.version === selectedVersion);
+  const notice = notFound
+    ? 'Package not found'
+    : error
+      ? error
+      : !detail
+        ? 'No package data'
+        : !detail.versions?.length
+          ? 'No published versions'
+          : versionMissing
+            ? 'Version not found'
+            : '';
   return (
     <main
       className="mx-auto w-full max-w-6xl px-4 py-8"
       data-testid="package-details"
     >
       <PackageHeader
-        name={view.packageName}
-        badge={view.badge}
-        description={detail.description}
+        name={packageName}
+        description={detail?.description}
+        badge={certificationBadge(
+          highestVersion(detail?.versions)?.certifications,
+        )}
       />
-      <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <PackageTabs
-          packageName={packageName}
-          detail={detail}
-          selectedVersion={view.selectedVersion}
-          onSelectVersion={view.setSelectedVersion}
-          onDownload={(version) => void download(version)}
-          readme={{
-            loading: readmeLoading,
-            error: readmeError,
-            content: readme?.content ?? '',
-            version: view.selectedVersion,
-            onRetry: refetchReadme,
-          }}
-          onDetailRefetch={view.refetch}
-        />
-        <PackageSidebar
-          packageName={packageName}
-          latestVersion={view.latestVersion}
-          downloads={detail.downloads}
-          downloadsSince={detail.downloadsSince}
-          authors={detail.authors}
-          tags={detail.tags}
-          installCommand={installCommand}
-        />
-      </div>
+      {notice ? (
+        <section className="py-8">
+          <h2>{notice}</h2>
+          <a href={urls.retry}>Retry</a>
+          {versionMissing && latest && (
+            <a href={urls.versions[latest]}>See latest version ({latest})</a>
+          )}
+        </section>
+      ) : (
+        detail && (
+          <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+            <PackageTabs
+              packageName={packageName}
+              detail={detail}
+              selectedVersion={selectedVersion}
+              readme={{
+                content: readme?.content ?? '',
+                error: readme?.error,
+                loading: false,
+                version: selectedVersion,
+                retryUrl: urls.retry,
+              }}
+              urls={urls}
+              formError={formError}
+              draft={draft}
+            />
+            <PackageSidebar
+              packageName={packageName}
+              latestVersion={latest ?? null}
+              downloads={detail.downloads}
+              downloadsSince={detail.downloadsSince}
+              authors={detail.authors}
+              tags={detail.tags}
+              installCommand={`quark add ${packageName}`}
+            />
+          </div>
+        )
+      )}
     </main>
   );
 }

@@ -22,6 +22,7 @@ await build({
   entryPoints: [`packages/${name}/src/CLI/index.ts`],
   outfile: `dist/packages/${name}/src/CLI/index.mjs`,
   bundle: true,
+  jsx: 'automatic',
   platform: 'node',
   format: 'esm',
   packages: 'external',

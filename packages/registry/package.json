@@ -1,6 +1,6 @@
 {
   "name": "@quarks.studio/registry",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": false,
   "license": "MIT",
   "type": "commonjs",
@@ -21,6 +21,11 @@
       "types": "./src/CLI/index.d.ts",
       "import": "./src/CLI/index.mjs",
       "default": "./src/CLI/index.mjs"
+    },
+    "./client": {
+      "types": "./src/client.d.ts",
+      "require": "./src/client.js",
+      "default": "./src/client.js"
     }
   },
   "files": [

@@ -1,17 +1,21 @@
 import { Download } from 'lucide-react';
-import { sortVersions, type PackageVersion } from '@quarks.studio/registry';
+import {
+  sortVersions,
+  type PackageVersion,
+} from '@quarks.studio/registry/client';
 
-import { certificationBadge } from '../../../hooks/usePackageDetailsView';
+import { certificationBadge } from '../../lib/certification';
 import { formatDate } from '../../lib/format';
 import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
 
 export interface VersionsTabProps {
   packageName: string;
   versions: PackageVersion[];
   selectedVersion: string;
-  onSelectVersion: (version: string) => void;
-  onDownload: (version: string) => void;
+  onSelectVersion?: (version: string) => void;
+  versionUrls?: Record<string, string>;
+  downloadUrls?: Record<string, string>;
+  onDownload?: (version: string) => void;
 }
 
 export function VersionsTab({
@@ -20,6 +24,8 @@ export function VersionsTab({
   selectedVersion,
   onSelectVersion,
   onDownload,
+  versionUrls,
+  downloadUrls,
 }: VersionsTabProps) {
   const ordered = sortVersions(versions);
 
@@ -43,15 +49,15 @@ export function VersionsTab({
           >
             <div className="flex flex-wrap items-center justify-between gap-4 p-4">
               <div className="flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
+                <a
+                  href={versionUrls?.[item.version]}
                   data-testid={`select-${item.version}`}
                   aria-pressed={selected}
-                  onClick={() => onSelectVersion(item.version)}
+                  onClick={() => onSelectVersion?.(item.version)}
                   className="font-mono text-sm font-medium text-foreground hover:underline"
                 >
                   {item.version}
-                </button>
+                </a>
                 <Badge variant={badge ? 'success' : 'outline'}>
                   {badge?.label ?? 'Sin certificar'}
                 </Badge>
@@ -60,14 +66,13 @@ export function VersionsTab({
                 <span className="text-sm text-muted-foreground">
                   {formatDate(item.date)}
                 </span>
-                <Button
-                  variant="outline"
-                  size="icon"
+                <a
+                  href={downloadUrls?.[item.version]}
                   aria-label={`Download version ${item.version}`}
-                  onClick={() => onDownload(item.version)}
+                  onClick={() => onDownload?.(item.version)}
                 >
                   <Download aria-hidden="true" />
-                </Button>
+                </a>
               </div>
             </div>
           </li>

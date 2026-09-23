@@ -1,4 +1,7 @@
-import { sortVersions, type PackageVersion } from '@quarks.studio/registry';
+import {
+  sortVersions,
+  type PackageVersion,
+} from '@quarks.studio/registry/client';
 
 import { formatDate } from '../../lib/format';
 import { Badge } from '../ui/badge';
@@ -15,7 +18,8 @@ export interface CertificationRow {
 export interface CertsTabProps {
   versions: PackageVersion[];
   selectedVersion: string;
-  onSelectVersion: (version: string) => void;
+  onSelectVersion?: (version: string) => void;
+  versionUrls?: Record<string, string>;
   certifications: CertificationRow[];
 }
 
@@ -38,6 +42,7 @@ export function CertsTab({
   versions,
   selectedVersion,
   onSelectVersion,
+  versionUrls,
   certifications,
 }: CertsTabProps) {
   const ordered = sortVersions(versions);
@@ -46,19 +51,33 @@ export function CertsTab({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
         <Label htmlFor="certs-version">Version</Label>
-        <select
-          id="certs-version"
-          data-testid="certs-version-select"
-          value={selectedVersion}
-          onChange={(event) => onSelectVersion(event.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-        >
-          {ordered.map((item) => (
-            <option key={item.version} value={item.version}>
-              {item.version}
-            </option>
-          ))}
-        </select>
+        {versionUrls ? (
+          <nav aria-label="Certification version">
+            {ordered.map((item) => (
+              <a
+                key={item.version}
+                href={versionUrls[item.version]}
+                className="mr-3"
+              >
+                {item.version}
+              </a>
+            ))}
+          </nav>
+        ) : (
+          <select
+            id="certs-version"
+            data-testid="certs-version-select"
+            value={selectedVersion}
+            onChange={(event) => onSelectVersion?.(event.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            {ordered.map((item) => (
+              <option key={item.version} value={item.version}>
+                {item.version}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {certifications.length === 0 ? (

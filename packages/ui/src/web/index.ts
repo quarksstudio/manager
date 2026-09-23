@@ -9,16 +9,10 @@ export { PackageSidebar } from './components/package-details/PackageSidebar';
 export { PackageStateNotice } from './components/package-details/PackageStateNotice';
 export { PackageDetailsSkeleton } from './components/package-details/PackageDetailsSkeleton';
 export {
-  usePackageDetailsView,
   certificationBadge,
   type CertificationBadge,
-} from '../hooks/usePackageDetailsView';
-export {
-  usePackageMetadataEditor,
-  normalizeTag,
-  type PackageMetadataDraft,
-} from '../hooks/usePackageMetadataEditor';
-export { usePackageDownload } from '../hooks/usePackageDownload';
+} from './lib/certification';
+export type { PackageDetailsProps } from './components/package-details/PackageDetails';
 
 export { renderMarkdown } from './lib/markdown';
 export {
@@ -42,3 +36,4 @@ export { TabsList } from './components/ui/tabs-list';
 export { TabsTrigger } from './components/ui/tabs-trigger';
 export { TabsContent } from './components/ui/tabs-content';
 export { Textarea } from './components/ui/textarea';
+export { Home, type HomeProps } from './components/Home';

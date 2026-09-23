@@ -45,6 +45,7 @@ jobs:
 
       - run: npm install --global npm@latest
       - run: pnpm install --frozen-lockfile
+      - run: pnpm test:package-architecture
       - name: Reject generated JavaScript in source directories
         run: test -z "$(find apps packages -type f -path '*/src/*' \( -name '*.js' -o -name '*.js.map' \) -print -quit)"
       - name: Resolve release version
@@ -59,6 +60,7 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - run: pnpm format:check
       - run: pnpm exec nx run-many -t lint test build --all
+      - run: pnpm test:web-artifacts
       - run: node tools/set-release-version.mjs ${{ steps.version.outputs.version }}
       - run: node tools/prepare-npm-packages.mjs
       - name: Pack or publish in dependency order

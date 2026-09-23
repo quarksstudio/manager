@@ -19,6 +19,7 @@ for (const group of sourceGroups) {
     const manifestFile = path.join(sourceRoot, directory, 'package.json');
     try {
       const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
+      if (manifest.private) continue;
       if (!manifest.name || !manifest.version)
         throw new Error(`${manifestFile} requires name and version`);
       if (packages.has(manifest.name))
@@ -42,6 +43,10 @@ for (const name of order) {
   for (const target of expected.exports ?? [])
     if (!(await exists(path.join(output, target))))
       throw new Error(`Missing build output for ${name}: ${output}/${target}`);
+  for (const target of Object.values(entry.manifest.bin ?? {})) {
+    if (!(await exists(path.join(output, target))))
+      throw new Error(`Missing executable ${name}: ${target}`);
+  }
   const sourceReadme = path.join(
     workspace,
     entry.group,
@@ -94,6 +99,12 @@ function publishManifest(source, allPackages, group) {
     group === 'packages'
       ? ['**/*.js', '**/*.d.ts', 'README.md']
       : ['**/*', 'README.md'];
+  manifest.files = [
+    ...(manifest.files ?? []),
+    '!test/**',
+    '!**/*.spec.*',
+    '!**/*.test.*',
+  ];
   manifest.publishConfig = {
     ...(manifest.publishConfig ?? {}),
     access: 'public',

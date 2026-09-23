@@ -1,4 +1,5 @@
 module.exports = {
+  moduleNameMapper: { '^sanitize-html$': require.resolve('sanitize-html', { paths: [__dirname] }), '^@quarks.studio/registry/client$': '<rootDir>/../registry/src/client.ts' },
   displayName: 'cli-ui',
   preset: '../../jest.preset.js',
   testEnvironment: 'jsdom',

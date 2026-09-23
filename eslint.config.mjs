@@ -247,7 +247,21 @@ export default [
       'no-restricted-imports': [
         'error',
         {
+          paths: [
+            {
+              name: '@quarks.studio/registry',
+              message:
+                'Use serializable props and pure helpers from registry/client.',
+            },
+            {
+              name: '@quarks.studio/registry/client',
+              importNames: ['createRegistryClient'],
+              message: 'Data transport belongs in Astro.',
+            },
+          ],
           patterns: [
+            '**/hooks/**',
+            '@quarks.studio/use-storage',
             '@quarks.studio/registry/CLI',
             '@quarks.studio/registry/CLI/**',
             '@quarks.studio/types',

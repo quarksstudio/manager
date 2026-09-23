@@ -113,7 +113,7 @@ try {
     const load = Module._load;
     Module._load = function(id, ...args) { if (/^ink(\\/|$)/.test(id)) throw new Error('Web bundle loaded Ink'); return load.call(this, id, ...args); };
     const web = await import('@quarks.studio/ui/web');
-    for (const name of ['PackageDetails', 'PackageSidebar', 'usePackageDetailsView', 'renderMarkdown'])
+    for (const name of ['PackageDetails', 'PackageSidebar', 'Home', 'renderMarkdown'])
       if (typeof web[name] !== 'function') throw new Error('ui:web missing ' + name);
   `);
   run(`const hooks = await import('@quarks.studio/ui/hooks');

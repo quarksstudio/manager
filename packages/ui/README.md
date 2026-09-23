@@ -80,3 +80,9 @@ src/web/
 
 Internal imports reference their defining files directly. The public exports
 of `@quarks.studio/ui/CLI`, `@quarks.studio/ui/hooks` and `@quarks.studio/ui/web` remain explicit.
+
+## Server-rendered web presentation (0.2)
+
+Import `PackageDetails`, `Home`, and presentation primitives from `@quarks.studio/ui/web`, and import the compiled stylesheet from `@quarks.studio/ui/web/styles.css`. `PackageDetails` now receives `detail`, `selectedVersion`, README state, and `urls` (retry, versions, downloads, metadata); it does not fetch data or read a session. This replaces the previous fetching component contract. The optional draft/error props preserve unsuccessful form submissions. Native links and forms remain usable without hydration; React adds visual tabs.
+
+Existing data hooks remain in `@quarks.studio/ui/hooks`, separate from presentation. React and React DOM are peer dependencies. Package source lives in `src`; tests live in `test` and are excluded from npm artifacts.

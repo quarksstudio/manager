@@ -1,5 +1,5 @@
 import { build } from 'esbuild';
-import { copyFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
 const entry = 'packages/ui/src/web/index.ts';
@@ -12,6 +12,7 @@ await build({
   entryPoints: [entry],
   outfile,
   bundle: true,
+  jsx: 'automatic',
   format: 'esm',
   platform: 'browser',
   target: 'es2020',
@@ -30,7 +31,21 @@ await build({
 });
 
 await mkdir(dirname(outfile), { recursive: true });
-await copyFile(
-  resolve('packages/ui/src/web/styles.css'),
-  resolve('dist/packages/ui/src/web/styles.css'),
-);
+const { build: buildStyles } = await import('vite');
+const { default: tailwind } = await import('@tailwindcss/vite');
+const result = await buildStyles({
+  configFile: false,
+  plugins: [tailwind()],
+  build: {
+    write: false,
+    rollupOptions: { input: resolve('packages/ui/src/web/styles.css') },
+  },
+});
+const bundles = Array.isArray(result) ? result : [result];
+const css = bundles
+  .flatMap((bundle) => bundle.output)
+  .filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'))
+  .map((asset) => asset.source)
+  .join('\n');
+if (!css) throw new Error('Missing compiled UI styles');
+await writeFile(resolve('dist/packages/ui/src/web/styles.css'), css);

@@ -1,15 +1,15 @@
 import { RefreshCw } from 'lucide-react';
 
-import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 import { renderMarkdown } from '../../lib/markdown';
 
 export interface ReadmeTabProps {
   loading: boolean;
-  error: unknown;
+  error?: unknown;
   content: string;
   version: string;
-  onRetry: () => void;
+  onRetry?: () => void;
+  retryUrl?: string;
 }
 
 export function ReadmeTab({
@@ -18,6 +18,7 @@ export function ReadmeTab({
   content,
   version,
   onRetry,
+  retryUrl,
 }: ReadmeTabProps) {
   if (loading) {
     return (
@@ -36,10 +37,10 @@ export function ReadmeTab({
         <p className="text-sm text-muted-foreground">
           The README for v{version || 'latest'} could not be loaded.
         </p>
-        <Button variant="outline" size="sm" onClick={onRetry}>
+        <a href={retryUrl} onClick={onRetry}>
           <RefreshCw aria-hidden="true" />
           Retry
-        </Button>
+        </a>
       </div>
     );
   }

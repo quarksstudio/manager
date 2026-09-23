@@ -8,10 +8,9 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec astro build --root apps/web",
-        "cwd": "../server"
+        "command": "vite build --config apps/ui/vite.config.ts"
       },
-      "outputs": ["{workspaceRoot}/../server/dist/apps/web"]
+      "outputs": ["{workspaceRoot}/dist/apps/ui"]
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -23,8 +22,7 @@
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec astro dev --root apps/web",
-        "cwd": "../server"
+        "command": "vite --config apps/ui/vite.config.ts"
       }
     }
   }
