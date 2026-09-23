@@ -4,6 +4,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as tar from 'tar';
 import { Client, apiFetch, apiRequest } from '@quarks.studio/registry';
+import { logger } from '@quarks.studio/logger';
 import { parseManifest } from '@quarks.studio/manifest';
 import {
   cacheSkill,
@@ -90,6 +91,7 @@ async function performInstallSkill(
   const finalDest = getSkillPath(name, version, isGlobal, cwd);
   if (fs.existsSync(finalDest))
     throw new Error(`Skill is already installed: ${name}@${version}`);
+  logger.info(`installing ${name}@${version} to ${finalDest}`);
 
   let metadata = resolvedMetadata;
   if (!metadata) {
@@ -108,6 +110,7 @@ async function performInstallSkill(
       'Registry manifest does not match the requested package and version',
     );
   }
+  logger.verbose('validating permission policy');
   const permissionResult = validatePermissions(
     publishedManifest,
     options.policy || {},
@@ -133,16 +136,22 @@ async function performInstallSkill(
       : undefined;
     const downloaded = !bundle;
     if (!bundle) {
+      logger.info(`downloading bundle for ${name}@${version}`);
       const bundleResponse = await apiRequest(
         packageUrl(name, version, '/bundle'),
         { useCache: false, force: options.force },
       );
       bundle = Buffer.from(await bundleResponse.arrayBuffer());
+    } else {
+      logger.notice(`using cached bundle ${metadata.hash.slice(0, 12)}…`);
     }
     const actualHash = createHash('sha256').update(bundle).digest('hex');
     if (actualHash.toLowerCase() !== metadata.hash.toLowerCase()) {
       throw new Error('Bundle integrity check failed: SHA-256 mismatch');
     }
+    logger.verbose(
+      `verified ${name}@${version} bundle (${bundle.length} bytes)`,
+    );
     fs.writeFileSync(tarballPath, bundle, { flag: 'wx' });
 
     const seen = new Set<string>();
@@ -166,6 +175,9 @@ async function performInstallSkill(
     if (!seen.has('package/skill.json'))
       throw new Error('Bundle does not contain package/skill.json');
 
+    logger.verbose(
+      `extracting bundle (${fileCount} files, ${unpackedBytes} bytes)`,
+    );
     await tar.x({
       file: tarballPath,
       cwd: extractDir,
@@ -199,6 +211,11 @@ async function performInstallSkill(
           options.cacheDir,
         );
       } catch (error) {
+        logger.warn(
+          `could not cache ${name}@${version}: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
         options.onCacheWarning?.(
           error instanceof Error ? error : new Error(String(error)),
         );
@@ -213,6 +230,7 @@ async function performInstallSkill(
     }
 
     fs.renameSync(stagedPackage, finalDest);
+    logger.verbose('registering install in the local database');
     try {
       registerInstall(name, version, isGlobal, cwd, {
         hash: actualHash,
@@ -228,6 +246,7 @@ async function performInstallSkill(
       }
       throw error;
     }
+    logger.info(`installed ${name}@${version}`);
   } finally {
     fs.rmSync(tempDir, { recursive: true, force: true });
     fs.rmSync(extractDir, { recursive: true, force: true });

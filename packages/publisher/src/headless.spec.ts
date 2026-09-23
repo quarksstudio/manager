@@ -27,7 +27,20 @@ describe('headless public API', () => {
     configureRegistry('https://registry.test/api');
     const send = jest
       .spyOn(globalThis, 'fetch')
-      .mockResolvedValue(new Response(null, { status: 201 }));
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            uploadId: 'test-upload',
+            uploadUrl: 'https://storage.test/bundle',
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/gzip' },
+            expiresAt: new Date(Date.now() + 60000).toISOString(),
+            maxSizeBytes: 50,
+          }),
+          { status: 201 },
+        ),
+      )
+      .mockResolvedValueOnce(new Response(null, { status: 200 }));
     await uploadPackageArchive({
       content: new Uint8Array([1]),
       fileName: 'demo.tgz',

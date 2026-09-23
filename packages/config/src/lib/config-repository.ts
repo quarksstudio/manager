@@ -6,6 +6,7 @@ import { join } from 'path';
 import * as INI from 'ini';
 
 import { createStorage } from '@quarks.studio/use-storage';
+import { isLogLevel, LOG_LEVELS } from '@quarks.studio/logger';
 
 import {
   DEFAULT_AI_MODELS,
@@ -29,6 +30,7 @@ function normalizeConfig(parsed: Record<string, unknown>): AppConfig {
   return {
     ...parsed,
     token: '',
+    log: isLogLevel(parsed['log']) ? parsed['log'] : 'silent',
     colors: String(parsed['colors']) !== 'false',
     ias: Array.isArray(parsed['ias'])
       ? parsed['ias']
@@ -65,6 +67,13 @@ export async function loadConfig(): Promise<LoadedConfig> {
 export async function writeConfig(
   changes: Partial<AppConfig>,
 ): Promise<AppConfig> {
+  const log = changes['log'];
+  if (log !== undefined && !isLogLevel(log)) {
+    throw new Error(
+      `Invalid log level: ${String(log)}. Expected one of: ${LOG_LEVELS.join(', ')}`,
+    );
+  }
+
   const current = await loadConfig();
 
   const token = changes['token'];

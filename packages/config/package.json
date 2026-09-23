@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@quarks.studio/use-storage": "workspace:*",
+    "@quarks.studio/logger": "workspace:*",
     "ini": "^7.0.0",
     "tslib": "^2.3.0",
     "@quarks.studio/ui": "workspace:*",

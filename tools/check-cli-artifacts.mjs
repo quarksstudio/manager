@@ -46,6 +46,7 @@ function run(code) {
 try {
   const dirs = [
     ...names,
+    'logger',
     'types',
     'use-storage',
     'manifest',

@@ -16,6 +16,25 @@ tools/
   publish-npm-packages.mjs       # publishes (or packages with --dry-run) in topological order
 ```
 
+## Logging
+
+The CLI writes logs to `stderr` and defaults to `silent` (nothing is printed).
+The verbosity is chosen from, in order of precedence:
+
+1. `--loglevel <level>` (sets the level directly),
+2. `--verbose` (equivalent to `--loglevel verbose`),
+3. the `QUARK_LOG_LEVEL` environment variable,
+4. the `log` key in `~/.config/quark/config.ini`,
+5. `silent`.
+
+Levels are npm-style: `silent`, `error`, `warn`, `notice`, `http`, `info`,
+`verbose`, `silly`. A level emits messages of that level or more severe. For
+example `quark --loglevel http publish .` shows API traffic and uploads, while
+`quark --verbose install cloud-skill` traces archive downloads and extraction.
+
+The `log` config value can be persisted with
+`quark config set log verbose`; invalid levels are rejected.
+
 ## Publishing to NPM
 
 **Architecture rule: everything that lives in `manager` and is a library gets published to NPM.** No consumer points at a `manager` package's source; consumers (e.g. `quark/server`) depend on the published version installed from `node_modules`.
@@ -24,23 +43,24 @@ tools/
 
 All use `private: false` and `publishConfig.access: "public"`:
 
-| Package                      | Internal @quarks.studio dependencies                        |
-| ---------------------------- | ----------------------------------------------------------- |
-| `@quarks.studio/config`      | ui, use-storage                                             |
-| `@quarks.studio/installer`   | local-store, manifest, permissions, registry, types, targz  |
-| `@quarks.studio/local-store` | types                                                       |
-| `@quarks.studio/manifest`    | —                                                           |
-| `@quarks.studio/permissions` | manifest                                                    |
-| `@quarks.studio/publisher`   | registry, targz, tester, ui                                 |
-| `@quarks.studio/registry`    | use-storage, types                                          |
-| `@quarks.studio/runtime`     | manifest, permissions, types                                |
-| `@quarks.studio/targz`       | tester                                                      |
-| `@quarks.studio/tester`      | —                                                           |
-| `@quarks.studio/types`       | —                                                           |
-| `@quarks.studio/ui`          | registry, use-storage                                       |
-| `@quarks.studio/use-storage` | —                                                           |
-| `@quarks.studio/cli`         | config, installer, local-store, publisher, registry, tester |
-| `@quarks.studio/ui-app`      | —                                                           |
+| Package                      | Internal @quarks.studio dependencies                                |
+| ---------------------------- | ------------------------------------------------------------------- |
+| `@quarks.studio/config`      | logger, ui, use-storage                                             |
+| `@quarks.studio/installer`   | local-store, logger, manifest, permissions, registry, types, targz  |
+| `@quarks.studio/local-store` | types                                                               |
+| `@quarks.studio/logger`      | —                                                                   |
+| `@quarks.studio/manifest`    | —                                                                   |
+| `@quarks.studio/permissions` | manifest                                                            |
+| `@quarks.studio/publisher`   | logger, registry, targz, tester, ui                                 |
+| `@quarks.studio/registry`    | logger, use-storage, types                                          |
+| `@quarks.studio/runtime`     | manifest, permissions, types                                        |
+| `@quarks.studio/targz`       | tester                                                              |
+| `@quarks.studio/tester`      | —                                                                   |
+| `@quarks.studio/types`       | —                                                                   |
+| `@quarks.studio/ui`          | registry, use-storage                                               |
+| `@quarks.studio/use-storage` | —                                                                   |
+| `@quarks.studio/cli`         | config, installer, local-store, logger, publisher, registry, tester |
+| `@quarks.studio/ui-app`      | —                                                                   |
 
 ### Versioning
 
@@ -124,9 +144,11 @@ check compiled exports and command help in an isolated temporary fixture.
 ## Web presentation
 
 `packages/ui` also ships `@quarks.studio/ui/web` and `@quarks.studio/ui/web/styles.css` (ESM,
-Ink-free) with the package-detail page components. `apps/ui` renders them at
+Ink-free) with the package-detail page components. `apps/ui` exports the React
+application mounted by Astro in `server/apps/web`; it no longer has a separate
+Vite HTML entrypoint. The unified web runs on port 4200 and renders packages at
 `/packages/:packageName` and talks to the registry through `@quarks.studio/registry`
-(`configureRegistry(import.meta.env.VITE_REGISTRY_API_URL ?? '/v1')`).
+(Astro passes `PUBLIC_REGISTRY_API_URL`, defaulting to `/v1`).
 
 The web surface may depend on `@quarks.studio/registry` but never on `@quarks.studio/*` others
 or the Ink `./CLI` tree; CLI files are blocked from `./web` in turn

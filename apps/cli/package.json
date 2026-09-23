@@ -23,6 +23,7 @@
     "@quarks.studio/registry": "workspace:*",
     "@quarks.studio/config": "workspace:*",
     "@quarks.studio/local-store": "workspace:*",
-    "@quarks.studio/publisher": "workspace:*"
+    "@quarks.studio/publisher": "workspace:*",
+    "@quarks.studio/logger": "workspace:*"
   }
 }

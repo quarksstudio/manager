@@ -23,6 +23,8 @@
       "@quarks.studio/runtime": ["./packages/runtime/src/index.ts"],
       "@quarks.studio/permissions": ["./packages/permissions/src/index.ts"],
       "@quarks.studio/local-store": ["./packages/local-store/src/index.ts"],
+      "@quarks.studio/logger": ["./packages/logger/src/index.ts"],
+      "@quarks.studio/logger/*": ["./packages/logger/src/*"],
       "@quarks.studio/use-storage": ["./packages/use-storage/src/index.ts"],
       "@quarks.studio/targz": ["./packages/targz/src/index.ts"],
       "@quarks.studio/tester": ["./packages/tester/src/index.ts"],

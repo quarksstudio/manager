@@ -1,5 +1,5 @@
 {
-  "name": "@quarks.studio/use-storage",
+  "name": "@quarks.studio/logger",
   "version": "0.1.1",
   "private": false,
   "license": "MIT",
@@ -23,12 +23,5 @@
   },
   "dependencies": {
     "tslib": "^2.3.0"
-  },
-  "peerDependencies": {
-    "react": "^19.0.0"
-  },
-  "browser": {
-    "./src/node-adapter.ts": "./src/node-adapter.browser.ts",
-    "./src/node-adapter.js": "./src/node-adapter.browser.js"
   }
 }

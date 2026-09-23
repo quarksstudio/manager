@@ -7,3 +7,6 @@ allowBuilds:
   esbuild: true
   nx: true
   unrs-resolver: true
+
+patchedDependencies:
+  cli-boxes: patches/cli-boxes.patch

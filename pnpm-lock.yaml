@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  cli-boxes: f3c4b6f830429d92f453361c633bb276cea9a45b07a62b1a9fd1a3a93bb60d51
+
 importers:
 
   .:
@@ -201,6 +204,9 @@ importers:
       '@quarks.studio/local-store':
         specifier: workspace:*
         version: link:../../packages/local-store
+      '@quarks.studio/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@quarks.studio/publisher':
         specifier: workspace:*
         version: link:../../packages/publisher
@@ -237,6 +243,9 @@ importers:
 
   packages/config:
     dependencies:
+      '@quarks.studio/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@quarks.studio/ui':
         specifier: workspace:*
         version: link:../ui
@@ -261,6 +270,9 @@ importers:
       '@quarks.studio/local-store':
         specifier: workspace:*
         version: link:../local-store
+      '@quarks.studio/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@quarks.studio/manifest':
         specifier: workspace:*
         version: link:../manifest
@@ -310,6 +322,12 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
+  packages/logger:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
   packages/manifest:
     dependencies:
       tslib:
@@ -330,6 +348,9 @@ importers:
 
   packages/publisher:
     dependencies:
+      '@quarks.studio/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../registry
@@ -354,6 +375,9 @@ importers:
 
   packages/registry:
     dependencies:
+      '@quarks.studio/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@quarks.studio/types':
         specifier: workspace:*
         version: link:../types
@@ -11179,7 +11203,7 @@ snapshots:
     dependencies:
       clsx: 2.1.1
 
-  cli-boxes@4.0.1: {}
+  cli-boxes@4.0.1(patch_hash=f3c4b6f830429d92f453361c633bb276cea9a45b07a62b1a9fd1a3a93bb60d51): {}
 
   cli-cursor@3.1.0:
     dependencies:
@@ -12474,7 +12498,7 @@ snapshots:
       ansi-styles: 6.2.3
       auto-bind: 5.0.1
       chalk: 5.6.2
-      cli-boxes: 4.0.1
+      cli-boxes: 4.0.1(patch_hash=f3c4b6f830429d92f453361c633bb276cea9a45b07a62b1a9fd1a3a93bb60d51)
       cli-cursor: 4.0.0
       cli-truncate: 6.1.1
       code-excerpt: 4.0.0

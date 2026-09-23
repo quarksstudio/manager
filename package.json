@@ -10,6 +10,7 @@
     "test:web-architecture": "node tools/web-architecture.spec.mjs"
   },
   "private": true,
+  "packageManager": "pnpm@11.21.0",
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@nx/esbuild": "22.7.1",

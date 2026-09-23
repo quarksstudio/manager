@@ -87,6 +87,37 @@ describe('publication workflow', () => {
         .map((event) => event.stage),
     ).toEqual(['validate', 'verify', 'pack', 'upload']);
   });
+  it('waits for Storage before reporting upload success', async () => {
+    const deps = dependencies();
+    let finish!: () => void;
+    let started!: () => void;
+    const uploading = new Promise<void>((resolve) => {
+      started = resolve;
+    });
+    deps.uploader.upload.mockImplementation(() => {
+      started();
+      return new Promise<void>((resolve) => {
+        finish = resolve;
+      });
+    });
+    const events: PublishProgress[] = [];
+    const publication = createPublishPackage(deps)({}, (event) =>
+      events.push(event),
+    );
+    await uploading;
+    expect(
+      events
+        .filter((event) => event.stage === 'upload')
+        .map((event) => event.status),
+    ).toEqual(['active']);
+    finish();
+    await expect(publication).resolves.toMatchObject({ uploaded: true });
+    expect(events.at(-1)).toMatchObject({
+      stage: 'upload',
+      status: 'success',
+      detail: 'Tier 1 verification pending',
+    });
+  });
   it.each([{ dryRun: true }, { upload: false }])(
     'packages without reading or uploading the archive: %j',
     async (options) => {

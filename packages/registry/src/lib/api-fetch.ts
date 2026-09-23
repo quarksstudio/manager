@@ -1,4 +1,5 @@
 import { createStorage } from '@quarks.studio/use-storage';
+import { logger } from '@quarks.studio/logger';
 
 export const AUTH_SESSION_KEY = 'auth:session';
 
@@ -61,20 +62,29 @@ export async function apiRequest(
   if (cacheable) {
     try {
       const cached = await cache.getItem<CachedResponse>(key, { force });
-      if (cached) return restoreResponse(cached);
+      if (cached) {
+        logger.silly(`cache hit ${key} for ${method} ${endpoint}`);
+        return restoreResponse(cached);
+      }
     } catch {
       // Cache failures must not prevent the network request.
     }
   }
 
+  logger.http(`${method} ${endpoint}`);
   const response = await fetch(endpoint, { ...request, headers });
   if (response.status === 401) {
+    logger.warn(`session expired while calling ${endpoint}`);
     await storage.removeItem(AUTH_SESSION_KEY);
     notifySessionChange();
   }
   if (!response.ok) {
+    logger.error(
+      `${method} ${endpoint} failed with ${response.status} ${response.statusText}`,
+    );
     throw new ApiError(response.status, response.statusText);
   }
+  logger.http(`${method} ${endpoint} ${response.status}`);
   if (cacheable) {
     await cache
       .setItem(key, await serializeResponse(response), cacheTtlMs)

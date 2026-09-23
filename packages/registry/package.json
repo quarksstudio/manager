@@ -35,6 +35,7 @@
   "dependencies": {
     "@simplewebauthn/browser": "^13.2.2",
     "@quarks.studio/use-storage": "workspace:*",
+    "@quarks.studio/logger": "workspace:*",
     "@quarks.studio/types": "workspace:*",
     "tslib": "^2.3.0",
     "@quarks.studio/ui": "workspace:*",

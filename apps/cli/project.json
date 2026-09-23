@@ -21,8 +21,9 @@
         "esbuildOptions": {
           "sourcemap": true,
           "banner": {
-            "js": "#!/usr/bin/env node"
+            "js": "#!/usr/bin/env -S node --disable-warning=ExperimentalWarning"
           },
+          "external": ["@quarks.studio/*"],
           "outExtension": {
             ".js": ".js"
           }
@@ -34,8 +35,9 @@
           "esbuildOptions": {
             "sourcemap": false,
             "banner": {
-              "js": "#!/usr/bin/env node"
+              "js": "#!/usr/bin/env -S node --disable-warning=ExperimentalWarning"
             },
+            "external": ["@quarks.studio/*"],
             "outExtension": {
               ".js": ".js"
             }

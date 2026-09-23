@@ -32,6 +32,7 @@
     "@quarks.studio/manifest": "workspace:*",
     "@quarks.studio/permissions": "workspace:*",
     "@quarks.studio/registry": "workspace:*",
+    "@quarks.studio/logger": "workspace:*",
     "@quarks.studio/types": "workspace:*",
     "@quarks.studio/targz": "workspace:*",
     "react": "^19.0.0",

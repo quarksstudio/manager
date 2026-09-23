@@ -44,7 +44,7 @@ export function PublishScreen({
     { id: 'validate', label: 'Validate path and manifest', status: 'pending' },
     { id: 'verify', label: 'Run local verification', status: 'pending' },
     { id: 'pack', label: 'Pack archive', status: 'pending' },
-    { id: 'upload', label: 'Upload to registry', status: 'pending' },
+    { id: 'upload', label: 'Upload bundle', status: 'pending' },
   ]);
 
   const updateStep = ({ stage, status, detail }: PublishProgress) => {
@@ -106,7 +106,7 @@ export function PublishScreen({
       <Box marginTop={1}>
         <Result
           success={true}
-          message={`${result.packageName}@${result.version} — ${result.uploaded ? 'uploaded' : 'packaged (dry run)'}`}
+          message={`${result.packageName}@${result.version} — ${result.uploaded ? 'uploaded; Tier 1 verification pending' : 'packaged (dry run)'}`}
           detail={result.archive}
         />
       </Box>

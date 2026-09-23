@@ -31,6 +31,7 @@
     "@quarks.studio/registry": "workspace:*",
     "@quarks.studio/targz": "workspace:*",
     "@quarks.studio/tester": "workspace:*",
+    "@quarks.studio/logger": "workspace:*",
     "tslib": "^2.3.0",
     "@quarks.studio/ui": "workspace:*",
     "ink": "^7.0.2"

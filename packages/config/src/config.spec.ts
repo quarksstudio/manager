@@ -26,7 +26,7 @@ describe('configuration persistence', () => {
     const loaded = await repository.loadConfig();
     expect(loaded.config['colors']).toBe(true);
     expect(await fs.readFile(repository.CONFIG_FILE, 'utf8')).toContain(
-      'log=info',
+      'log=silent',
     );
   });
   it('migrates a legacy token out of the INI file', async () => {
@@ -50,12 +50,29 @@ describe('configuration persistence', () => {
   });
   it('preserves existing values while updating and clears tokens through session storage', async () => {
     await repository.writeConfig({ editor: 'vim' });
-    await repository.writeConfig({ log: 'debug', token: '' });
+    await repository.writeConfig({ log: 'verbose', token: '' });
     const loaded = await repository.loadConfig();
-    expect(loaded.config).toMatchObject({ editor: 'vim', log: 'debug' });
+    expect(loaded.config).toMatchObject({ editor: 'vim', log: 'verbose' });
     expect(mockStorage.removeItem).toHaveBeenCalledWith('auth:session');
     expect(await fs.readFile(repository.CONFIG_FILE, 'utf8')).not.toContain(
       'token=',
     );
+  });
+  it('rejects an invalid log level', async () => {
+    await fs.mkdir(repository.CONFIG_DIR, { recursive: true });
+    await expect(repository.writeConfig({ log: 'debug' })).rejects.toThrow(
+      /Expected one of: silent, error, warn, notice, http, info, verbose, silly/,
+    );
+  });
+  it('falls back to silent for a legacy invalid log value', async () => {
+    await fs.mkdir(repository.CONFIG_DIR, { recursive: true });
+    await fs.writeFile(repository.CONFIG_FILE, 'log=debug\ncolors=false\n');
+    const loaded = await repository.loadConfig();
+    expect(loaded.config['log']).toBe('silent');
+    await expect(
+      repository.writeConfig({ colors: true }),
+    ).resolves.toMatchObject({
+      log: 'silent',
+    });
   });
 });
