@@ -6,7 +6,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   colors: true,
   editor: 'nano',
   ias: [],
-  api: "https://api.quarks.studio/v1"
+  api: 'https://api.quarks.studio/v1',
 };
 
 export const DEFAULT_AI_MODELS = ['gpt-4o', 'claude-3-opus'];

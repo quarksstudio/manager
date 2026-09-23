@@ -1,4 +1,12 @@
-import { cp, mkdir, mkdtemp, realpath, rm, symlink, readFile } from 'node:fs/promises';
+import {
+  cp,
+  mkdir,
+  mkdtemp,
+  realpath,
+  rm,
+  symlink,
+  readFile,
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -44,9 +52,7 @@ for (const name of external) {
   let target;
   const candidates = [
     join(root, 'node_modules', name),
-    ...names.map((dir) =>
-      join(root, 'packages', dir, 'node_modules', name),
-    ),
+    ...names.map((dir) => join(root, 'packages', dir, 'node_modules', name)),
   ];
   for (const candidate of candidates) {
     try {
@@ -57,11 +63,7 @@ for (const name of external) {
   if (!target) continue;
   const scope = name.indexOf('/');
   await mkdir(
-    join(
-      stage,
-      'node_modules',
-      scope === -1 ? '.' : name.slice(0, scope),
-    ),
+    join(stage, 'node_modules', scope === -1 ? '.' : name.slice(0, scope)),
     { recursive: true },
   );
   try {
@@ -75,7 +77,11 @@ await cp(join(root, 'dist/apps/cli'), join(stage, 'app'), {
 
 const spawn = spawnSync(
   process.execPath,
-  ['--disable-warning=ExperimentalWarning', join(stage, 'app/main.js'), ...process.argv.slice(2)],
+  [
+    '--disable-warning=ExperimentalWarning',
+    join(stage, 'app/main.js'),
+    ...process.argv.slice(2),
+  ],
   { cwd: stage, stdio: 'inherit' },
 );
 await rm(stage, { recursive: true, force: true });
