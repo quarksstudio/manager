@@ -1,22 +1,9 @@
+import { CopyOutlined, CheckOutlined } from '@ant-design/icons';
 import { useState } from 'react';
-import { Check, Copy } from 'lucide-react';
+import { Button, Card, Divider, Flex, Tag, Typography } from 'antd';
 
 import { formatCount, formatSinceDate } from '../../lib/format';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Card } from '../ui/card';
-import { CardContent } from '../ui/card-content';
-import { Separator } from '../ui/separator';
-
-export interface PackageSidebarProps {
-  packageName: string;
-  latestVersion?: string | null;
-  downloads?: number;
-  downloadsSince?: string;
-  authors?: string[];
-  tags?: string[];
-  installCommand: string;
-}
+import { QuarkTheme } from '../../lib/theme';
 
 async function copyText(value: string): Promise<boolean> {
   try {
@@ -41,6 +28,55 @@ async function copyText(value: string): Promise<boolean> {
   return copied;
 }
 
+export interface PackageSidebarProps {
+  packageName: string;
+  latestVersion?: string | null;
+  downloads?: number;
+  downloadsSince?: string;
+  authors?: string[];
+  tags?: string[];
+  installCommand: string;
+}
+
+function FieldLabel({ children }: { children: string }) {
+  return (
+    <Typography.Text
+      type="secondary"
+      className="!text-xs !uppercase tracking-wide"
+    >
+      {children}
+    </Typography.Text>
+  );
+}
+
+function InstallCommand({ command }: { command: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleClick = async () => {
+    const ok = await copyText(command);
+    if (ok) {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    }
+  };
+  return (
+    <Flex align="center" gap={8} className="rounded border px-3 py-2">
+      <Typography.Text
+        className="min-w-0 flex-1 truncate font-mono !text-sm"
+        code
+      >
+        {command}
+      </Typography.Text>
+      <Button
+        type="text"
+        icon={copied ? <CheckOutlined /> : <CopyOutlined />}
+        aria-label={copied ? 'Copied' : 'Copy install command'}
+        data-testid="copy-install"
+        onClick={() => void handleClick()}
+      />
+    </Flex>
+  );
+}
+
 export function PackageSidebar({
   latestVersion,
   downloads,
@@ -50,116 +86,79 @@ export function PackageSidebar({
   installCommand,
 }: PackageSidebarProps) {
   return (
-    <aside
-      data-testid="package-sidebar"
-      className="grid gap-4 self-start lg:sticky lg:top-6"
-    >
-      <Card>
-        <CardContent className="space-y-5 p-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                Last version
-              </span>
-              <p
-                className="font-mono text-lg font-semibold"
-                data-testid="last-version"
-              >
-                {latestVersion ?? '—'}
-              </p>
+    <QuarkTheme>
+      <aside
+        data-testid="package-sidebar"
+        className="grid gap-4 self-start lg:sticky lg:top-6"
+      >
+        <Card>
+          <Flex vertical gap={20}>
+            <div className="grid grid-cols-2 gap-4">
+              <Flex vertical gap={4}>
+                <FieldLabel>Last version</FieldLabel>
+                <Typography.Text
+                  className="font-mono !text-lg !font-semibold"
+                  data-testid="last-version"
+                >
+                  {latestVersion ?? '—'}
+                </Typography.Text>
+              </Flex>
+              <Flex vertical gap={4}>
+                <FieldLabel>Downloads</FieldLabel>
+                <Typography.Text
+                  className="!text-lg !font-semibold"
+                  data-testid="downloads-count"
+                >
+                  {formatCount(downloads ?? 0)}
+                </Typography.Text>
+                {downloadsSince ? (
+                  <Typography.Text type="secondary" className="!text-xs">
+                    since {formatSinceDate(downloadsSince)}
+                  </Typography.Text>
+                ) : null}
+              </Flex>
             </div>
-            <div className="space-y-1">
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                Downloads
-              </span>
-              <p
-                className="text-lg font-semibold"
-                data-testid="downloads-count"
-              >
-                {formatCount(downloads ?? 0)}
-              </p>
-              {downloadsSince ? (
-                <p className="text-xs text-muted-foreground">
-                  since {formatSinceDate(downloadsSince)}
-                </p>
-              ) : null}
-            </div>
-          </div>
-          <Separator />
-          <div className="space-y-2">
-            <span className="text-xs uppercase tracking-wide text-muted-foreground">
-              Authors
-            </span>
-            {authors.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No authors listed</p>
-            ) : (
-              <ul className="space-y-1">
-                {authors.map((author) => (
-                  <li key={author} className="text-sm text-foreground">
-                    {author}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <div className="space-y-2">
-            <span className="text-xs uppercase tracking-wide text-muted-foreground">
-              Tags
-            </span>
-            {tags.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No tags</p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {tags.map((tag) => (
-                  <Badge key={tag} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </div>
-          <Separator />
-          <div className="space-y-2">
-            <span className="text-xs uppercase tracking-wide text-muted-foreground">
-              Install
-            </span>
-            <InstallCommand command={installCommand} />
-          </div>
-        </CardContent>
-      </Card>
-    </aside>
-  );
-}
-
-function InstallCommand({ command }: { command: string }) {
-  return (
-    <div className="flex items-center gap-2 rounded-md border bg-muted px-3 py-2">
-      <code className="min-w-0 flex-1 truncate font-mono text-sm text-foreground">
-        {command}
-      </code>
-      <CopyButton text={command} />
-    </div>
-  );
-}
-
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  const handleClick = async () => {
-    const ok = await copyText(text);
-    if (ok) {
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
-    }
-  };
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      aria-label={copied ? 'Copied' : 'Copy install command'}
-      data-testid="copy-install"
-      onClick={() => void handleClick()}
-    >
-      {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
-    </Button>
+            <Divider className="!my-0" />
+            <Flex vertical gap={8}>
+              <FieldLabel>Authors</FieldLabel>
+              {authors.length === 0 ? (
+                <Typography.Text type="secondary" className="text-sm">
+                  No authors listed
+                </Typography.Text>
+              ) : (
+                <ul className="space-y-1">
+                  {authors.map((author) => (
+                    <li key={author} className="text-sm">
+                      {author}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Flex>
+            <Flex vertical gap={8}>
+              <FieldLabel>Tags</FieldLabel>
+              {tags.length === 0 ? (
+                <Typography.Text type="secondary" className="text-sm">
+                  No tags
+                </Typography.Text>
+              ) : (
+                <Flex wrap gap={8}>
+                  {tags.map((tag) => (
+                    <Tag bordered key={tag}>
+                      {tag}
+                    </Tag>
+                  ))}
+                </Flex>
+              )}
+            </Flex>
+            <Divider className="!my-0" />
+            <Flex vertical gap={8}>
+              <FieldLabel>Install</FieldLabel>
+              <InstallCommand command={installCommand} />
+            </Flex>
+          </Flex>
+        </Card>
+      </aside>
+    </QuarkTheme>
   );
 }

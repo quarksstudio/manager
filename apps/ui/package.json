@@ -7,14 +7,25 @@
     "**/*",
     "README.md"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
     "@quarks.studio/registry": "workspace:*",
     "@quarks.studio/ui": "workspace:*",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-router-dom": "6.30.3"
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/react": "^4.4.2",
+    "astro": "^5.0.0",
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "desktop": "astro build && electron desktop/main.cjs",
+    "desktop:start": "electron desktop/main.cjs",
+    "desktop:pack": "astro build && node desktop/stage.mjs && electron-builder --config electron-builder.yml"
   }
 }

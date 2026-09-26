@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
 import {
   certificationsForVersion,
   type PackageDetails,
 } from '@quarks.studio/registry/client';
-import { ReadmeTab } from './ReadmeTab';
-import { VersionsTab } from './VersionsTab';
+import { Tabs, type TabsProps } from 'antd';
+
+import { QuarkTheme } from '../../lib/theme';
 import { CertsTab } from './CertsTab';
 import { ConfigTab } from './ConfigTab';
+import { ReadmeTab } from './ReadmeTab';
+import { VersionsTab } from './VersionsTab';
 export interface ReadmeState {
   loading: boolean;
   error?: unknown;
@@ -38,85 +40,84 @@ export function PackageTabs({
   formError,
   draft,
 }: PackageTabsProps) {
-  const [hydrated, setHydrated] = useState(false);
-  const [active, setActive] = useState(formError ? 'config' : 'readme');
-  useEffect(() => setHydrated(true), []);
-  const tabs = [
-    ['readme', 'ReadMe'],
-    ['versions', 'Versions'],
-    ['certs', 'Certs'],
-    ...(detail.canEditMetadata ? [['config', 'Config']] : []),
-  ];
   const sectionId = (tab: string) =>
     `${encodeURIComponent(packageName)}-${tab}`;
-  return (
-    <div className="space-y-6" data-testid="package-tabs">
-      <nav aria-label="Package sections" className="flex gap-4 border-b pb-2">
-        {tabs.map(([tab, label]) => (
-          <a
-            key={tab}
-            href={`#${sectionId(tab)}`}
-            aria-current={active === tab ? 'page' : undefined}
-            className={
-              active === tab
-                ? 'font-semibold text-primary'
-                : 'text-muted-foreground'
-            }
-            onClick={(event) => {
-              if (hydrated) {
-                event.preventDefault();
-                setActive(tab);
-              }
-            }}
-          >
-            {label}
-          </a>
-        ))}
-      </nav>
-      <section
-        id={sectionId('readme')}
-        hidden={hydrated && active !== 'readme'}
-      >
-        <h2 className="sr-only">ReadMe</h2>
-        <ReadmeTab {...readme} />
-      </section>
-      <section
-        id={sectionId('versions')}
-        hidden={hydrated && active !== 'versions'}
-      >
-        <h2 className="sr-only">Versions</h2>
-        <VersionsTab
-          packageName={packageName}
-          versions={detail.versions ?? []}
-          selectedVersion={selectedVersion}
-          versionUrls={urls.versions}
-          downloadUrls={urls.downloads}
-        />
-      </section>
-      <section id={sectionId('certs')} hidden={hydrated && active !== 'certs'}>
-        <h2 className="sr-only">Certs</h2>
-        <CertsTab
-          versions={detail.versions ?? []}
-          selectedVersion={selectedVersion}
-          versionUrls={urls.versions}
-          certifications={certificationsForVersion(detail, selectedVersion)}
-        />
-      </section>
-      {detail.canEditMetadata && (
-        <section
-          id={sectionId('config')}
-          hidden={hydrated && active !== 'config'}
-        >
-          <h2 className="sr-only">Config</h2>
-          <ConfigTab
+  const items: TabsProps['items'] = [
+    {
+      key: 'readme',
+      label: 'ReadMe',
+      forceRender: true,
+      children: (
+        <section id={sectionId('readme')}>
+          <h2 className="sr-only">ReadMe</h2>
+          <ReadmeTab {...readme} />
+        </section>
+      ),
+    },
+    {
+      key: 'versions',
+      label: 'Versions',
+      forceRender: true,
+      children: (
+        <section id={sectionId('versions')}>
+          <h2 className="sr-only">Versions</h2>
+          <VersionsTab
             packageName={packageName}
-            detail={detail}
-            action={urls.metadata}
-            error={formError}
-            draft={draft}
+            versions={detail.versions ?? []}
+            selectedVersion={selectedVersion}
+            versionUrls={urls.versions}
+            downloadUrls={urls.downloads}
           />
         </section>
-      )}
-    </div>
+      ),
+    },
+    {
+      key: 'certs',
+      label: 'Certs',
+      forceRender: true,
+      children: (
+        <section id={sectionId('certs')}>
+          <h2 className="sr-only">Certs</h2>
+          <CertsTab
+            versions={detail.versions ?? []}
+            selectedVersion={selectedVersion}
+            versionUrls={urls.versions}
+            certifications={certificationsForVersion(detail, selectedVersion)}
+          />
+        </section>
+      ),
+    },
+    ...(detail.canEditMetadata
+      ? [
+          {
+            key: 'config',
+            label: 'Config',
+            forceRender: true,
+            children: (
+              <section id={sectionId('config')}>
+                <h2 className="sr-only">Config</h2>
+                <ConfigTab
+                  packageName={packageName}
+                  detail={detail}
+                  action={urls.metadata}
+                  error={formError}
+                  draft={draft}
+                />
+              </section>
+            ),
+          },
+        ]
+      : []),
+  ];
+  return (
+    <QuarkTheme>
+      <div className="space-y-6" data-testid="package-tabs">
+        <Tabs
+          defaultActiveKey={formError ? 'config' : 'readme'}
+          items={items}
+          tabBarGutter={32}
+        />
+      </div>
+    </QuarkTheme>
   );
 }

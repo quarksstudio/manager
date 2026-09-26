@@ -4,9 +4,12 @@ packages:
 
 allowBuilds:
   '@swc/core': true
+  electron: true
+  electron-winstaller: true
   esbuild: true
   nx: true
+  sharp: false
   unrs-resolver: true
 
 patchedDependencies:
-  cli-boxes: patches/cli-boxes.patch
+  cli-boxes@4.0.1: patches/cli-boxes.patch

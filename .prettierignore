@@ -7,3 +7,5 @@
 /pnpm-lock.yaml
 # long-running conversation/release log, not source documentation
 /request.md
+# Electron staging output
+**/.desktop-app

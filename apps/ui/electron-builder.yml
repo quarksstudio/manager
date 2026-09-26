@@ -1,0 +1,20 @@
+appId: studio.quarks.client
+productName: Quark Desktop
+copyright: Copyright © 2026 Quark
+directories:
+  app: .desktop-app
+  output: ../../dist/apps/ui-desktop
+files:
+  - '**/*'
+linux:
+  target:
+    - AppImage
+  category: Utility
+win:
+  target:
+    - nsis
+mac:
+  target:
+    - dmg
+  category: public.app-category.developer-tools
+npmRebuild: false

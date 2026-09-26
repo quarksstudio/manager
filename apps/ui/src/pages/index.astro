@@ -1,0 +1,38 @@
+---
+import { LandingHero, LandingTierMatrix } from '@quarks.studio/ui/web';
+import LandingBoundary from '../components/LandingBoundary';
+import Layout from '../layouts/Layout.astro';
+import { landingTiers } from '../lib/landing';
+import { registry, statusFor } from '../lib/registry';
+const client = process.env.RENDER_MODE === 'client';
+const blogUrl = 'https://blog.quarks.studio';
+let items: Array<{ id: string }> = [];
+let error = '';
+if (!client) {
+  try {
+    items = (await registry(Astro.cookies).Packages.search()).items;
+  } catch (failure) {
+    Astro.response.status = statusFor(failure, Astro.cookies);
+    error = 'Could not load packages.';
+  }
+}
+const tiers = client ? undefined : landingTiers(items);
+---
+
+<Layout title="Quark // Skills">
+  <main>
+    {
+      client ? (
+        <LandingBoundary client:only="react" blogUrl={blogUrl} />
+      ) : (
+        <>
+          <LandingHero exploreUrl="/search" blogUrl={blogUrl} />
+          <LandingTierMatrix tiers={tiers} />
+          {error ? (
+            <p class="pb-12 text-center text-sm text-slate-400">{error}</p>
+          ) : null}
+        </>
+      )
+    }
+  </main>
+</Layout>

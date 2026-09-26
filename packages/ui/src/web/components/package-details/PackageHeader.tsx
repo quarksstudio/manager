@@ -1,5 +1,16 @@
-import { Badge } from '../ui/badge';
+import { Tag, Typography } from 'antd';
+
 import type { CertificationBadge } from '../../lib/certification';
+import { QuarkTheme } from '../../lib/theme';
+import type { TierColor } from '../landing/tiers';
+
+function tierColor(tier?: string): TierColor {
+  const key = (tier ?? '').toUpperCase();
+  if (key === 'TIER_2') return 'blue';
+  if (key === 'TIER_3') return 'green';
+  if (key === 'TIER_4') return 'gold';
+  return 'default';
+}
 
 export interface PackageHeaderProps {
   name: string;
@@ -12,22 +23,29 @@ export function PackageHeader({
   badge,
   description,
 }: PackageHeaderProps) {
-  const certified = badge !== null;
   return (
-    <header data-testid="package-header" className="space-y-2">
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="font-mono text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-          {name}
-        </h1>
-        <Badge variant={certified ? 'success' : 'secondary'}>
-          {badge?.label ?? 'Sin certificar'}
-        </Badge>
-      </div>
-      {description ? (
-        <p className="max-w-3xl text-base text-muted-foreground">
-          {description}
-        </p>
-      ) : null}
-    </header>
+    <QuarkTheme>
+      <header data-testid="package-header" className="space-y-2">
+        <div className="flex flex-wrap items-center gap-3">
+          <Typography.Title
+            level={1}
+            className="!mb-0 font-mono !text-2xl sm:!text-3xl"
+          >
+            {name}
+          </Typography.Title>
+          <Tag color={badge ? tierColor(badge.tier) : 'default'}>
+            {badge?.label ?? 'Uncertified'}
+          </Tag>
+        </div>
+        {description ? (
+          <Typography.Paragraph
+            type="secondary"
+            className="!mb-0 max-w-3xl !text-base"
+          >
+            {description}
+          </Typography.Paragraph>
+        ) : null}
+      </header>
+    </QuarkTheme>
   );
 }

@@ -1,0 +1,39 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { PackageDetails } from '@quarks.studio/ui/web';
+import { highestVersion } from '@quarks.studio/registry/client';
+import PackagesBoundary from '../../../components/PackagesBoundary';
+import { packageUrl, registry, statusFor } from '../../../lib/registry';
+const client = process.env.RENDER_MODE === 'client';
+const name = decodeURIComponent(Astro.params.packageName ?? '');
+let detail;
+let error;
+if (!client) {
+  try {
+    detail = await registry(Astro.cookies).Packages.get(name);
+    const latest = highestVersion(detail.versions)?.version;
+    if (latest) return Astro.redirect(packageUrl(name, latest), 302);
+  } catch (failure) {
+    Astro.response.status = statusFor(failure, Astro.cookies);
+    error =
+      Astro.response.status === 404 ? undefined : 'Could not load package.';
+  }
+}
+---
+
+<Layout title={name}>
+  {
+    client ? (
+      <PackagesBoundary client:only="react" packageName={name} />
+    ) : (
+      <PackageDetails
+        client:load
+        packageName={name}
+        detail={detail}
+        error={error}
+        notFound={Astro.response.status === 404}
+        urls={{ retry: packageUrl(name), versions: {}, downloads: {} }}
+      />
+    )
+  }
+</Layout>

@@ -30,7 +30,7 @@ it('renders server data and working version/download links without fetching', ()
     />,
   );
   expect(screen.getByRole('heading', { name: 'README' })).toBeTruthy();
-  fireEvent.click(screen.getByRole('link', { name: 'Versions' }));
+  fireEvent.click(screen.getByRole('tab', { name: 'Versions' }));
   expect(
     screen
       .getByRole('link', { name: 'Download version 1.0.0' })
@@ -101,9 +101,12 @@ it('hydrates SSR markup without replacing it or fetching data', async () => {
       });
     });
     expect(errors).toEqual([]);
+    expect(container.querySelector('#demo-versions')).toBeTruthy();
     expect(
-      container.querySelector('#demo-versions')?.hasAttribute('hidden'),
-    ).toBe(true);
+      container
+        .querySelector('[id$="-panel-versions"]')
+        ?.getAttribute('aria-hidden'),
+    ).toBe('true');
   } finally {
     await act(async () => root?.unmount());
     container.remove();

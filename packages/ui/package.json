@@ -33,8 +33,11 @@
     "access": "public"
   },
   "dependencies": {
+    "@ant-design/cssinjs": "^2.1.2",
+    "@ant-design/icons": "^6.3.4",
     "@quarks.studio/registry": "workspace:*",
     "@quarks.studio/use-storage": "workspace:*",
+    "antd": "^6.6.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "ink": "^7.0.2",

@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { ReloadOutlined } from '@ant-design/icons';
+import { Button, Flex, Result } from 'antd';
 
-import { Button } from '../ui/button';
+import { QuarkTheme } from '../../lib/theme';
 
 export interface PackageStateNoticeProps {
   title: string;
@@ -19,26 +20,28 @@ export function PackageStateNotice({
   children,
 }: PackageStateNoticeProps) {
   return (
-    <div className="flex min-h-64 flex-col items-center justify-center gap-3 rounded-xl border border-dashed p-8 text-center">
-      <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-      {description ? (
-        <p className="max-w-md text-sm text-muted-foreground">{description}</p>
-      ) : null}
-      {onRetry ? (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onRetry}
-          disabled={loading}
+    <QuarkTheme>
+      <Flex align="center" justify="center" className="py-12">
+        <Result
+          status="info"
+          title={title}
+          subTitle={description}
+          extra={
+            onRetry ? (
+              <Button onClick={onRetry} disabled={loading}>
+                <ReloadOutlined
+                  aria-hidden="true"
+                  spin={loading}
+                  aria-label="Retry"
+                />
+                Retry
+              </Button>
+            ) : null
+          }
         >
-          <RefreshCw
-            aria-hidden="true"
-            className={loading ? 'animate-spin' : undefined}
-          />
-          Retry
-        </Button>
-      ) : null}
-      {children}
-    </div>
+          {children}
+        </Result>
+      </Flex>
+    </QuarkTheme>
   );
 }

@@ -8,21 +8,51 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "vite build --config apps/ui/vite.config.ts"
+        "command": "astro build",
+        "cwd": "apps/ui"
       },
       "outputs": ["{workspaceRoot}/dist/apps/ui"]
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "nx:run-commands",
       "options": {
-        "jestConfig": "apps/ui/jest.config.cts"
+        "command": "node --test test/*.spec.mjs",
+        "cwd": "apps/ui"
       }
     },
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "vite --config apps/ui/vite.config.ts"
+        "command": "astro dev",
+        "cwd": "apps/ui"
+      }
+    },
+    "preview": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "astro preview",
+        "cwd": "apps/ui"
+      }
+    },
+    "check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "astro check",
+        "cwd": "apps/ui"
+      }
+    },
+    "desktop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run desktop",
+        "cwd": "apps/ui"
+      }
+    },
+    "desktop:pack": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run desktop:pack",
+        "cwd": "apps/ui"
       }
     }
   }

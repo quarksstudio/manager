@@ -6,6 +6,10 @@ module.exports = {
   displayName: 'cli-ui',
   preset: '../../jest.preset.js',
   testEnvironment: 'jsdom',
+  setupFiles: ['<rootDir>/test/jest-setup.ts'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!(\\.pnpm|@ant-design/|@rc-component/|rc-|antd/))',
+  ],
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],

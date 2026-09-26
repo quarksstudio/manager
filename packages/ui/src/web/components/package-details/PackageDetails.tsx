@@ -3,6 +3,7 @@ import {
   type PackageDetails as Detail,
 } from '@quarks.studio/registry/client';
 import { certificationBadge } from '../../lib/certification';
+import { QuarkTheme } from '../../lib/theme';
 import { PackageHeader } from './PackageHeader';
 import { PackageSidebar } from './PackageSidebar';
 import { PackageTabs } from './PackageTabs';
@@ -54,55 +55,57 @@ export function PackageDetails({
             ? 'Version not found'
             : '';
   return (
-    <main
-      className="mx-auto w-full max-w-6xl px-4 py-8"
-      data-testid="package-details"
-    >
-      <PackageHeader
-        name={packageName}
-        description={detail?.description}
-        badge={certificationBadge(
-          highestVersion(detail?.versions)?.certifications,
-        )}
-      />
-      {notice ? (
-        <section className="py-8">
-          <h2>{notice}</h2>
-          <a href={urls.retry}>Retry</a>
-          {versionMissing && latest && (
-            <a href={urls.versions[latest]}>See latest version ({latest})</a>
+    <QuarkTheme>
+      <main
+        className="mx-auto w-full max-w-6xl px-4 py-8"
+        data-testid="package-details"
+      >
+        <PackageHeader
+          name={packageName}
+          description={detail?.description}
+          badge={certificationBadge(
+            highestVersion(detail?.versions)?.certifications,
           )}
-        </section>
-      ) : (
-        detail && (
-          <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
-            <PackageTabs
-              packageName={packageName}
-              detail={detail}
-              selectedVersion={selectedVersion}
-              readme={{
-                content: readme?.content ?? '',
-                error: readme?.error,
-                loading: false,
-                version: selectedVersion,
-                retryUrl: urls.retry,
-              }}
-              urls={urls}
-              formError={formError}
-              draft={draft}
-            />
-            <PackageSidebar
-              packageName={packageName}
-              latestVersion={latest ?? null}
-              downloads={detail.downloads}
-              downloadsSince={detail.downloadsSince}
-              authors={detail.authors}
-              tags={detail.tags}
-              installCommand={`quark add ${packageName}`}
-            />
-          </div>
-        )
-      )}
-    </main>
+        />
+        {notice ? (
+          <section className="py-8">
+            <h2>{notice}</h2>
+            <a href={urls.retry}>Retry</a>
+            {versionMissing && latest && (
+              <a href={urls.versions[latest]}>See latest version ({latest})</a>
+            )}
+          </section>
+        ) : (
+          detail && (
+            <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+              <PackageTabs
+                packageName={packageName}
+                detail={detail}
+                selectedVersion={selectedVersion}
+                readme={{
+                  content: readme?.content ?? '',
+                  error: readme?.error,
+                  loading: false,
+                  version: selectedVersion,
+                  retryUrl: urls.retry,
+                }}
+                urls={urls}
+                formError={formError}
+                draft={draft}
+              />
+              <PackageSidebar
+                packageName={packageName}
+                latestVersion={latest ?? null}
+                downloads={detail.downloads}
+                downloadsSince={detail.downloadsSince}
+                authors={detail.authors}
+                tags={detail.tags}
+                installCommand={`quark add ${packageName}`}
+              />
+            </div>
+          )
+        )}
+      </main>
+    </QuarkTheme>
   );
 }

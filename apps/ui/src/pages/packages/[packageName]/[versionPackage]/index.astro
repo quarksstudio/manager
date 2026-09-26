@@ -1,0 +1,120 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { PackageDetails } from '@quarks.studio/ui/web';
+import PackagesBoundary from '../../../components/PackagesBoundary';
+import { packageUrl, registry, statusFor } from '../../../lib/registry';
+const client = process.env.RENDER_MODE === 'client';
+const name = decodeURIComponent(Astro.params.packageName ?? '');
+const version = decodeURIComponent(Astro.params.versionPackage ?? '');
+let detail;
+let error;
+let formError;
+let draft;
+let readme = { content: '', error: undefined as string | undefined };
+if (!client) {
+  const clientServer = registry(Astro.cookies);
+  try {
+    detail = await clientServer.Packages.get(name);
+    if (Astro.request.method === 'POST') {
+      const form = await Astro.request.formData();
+      draft = {
+        description: String(form.get('description') ?? ''),
+        tags: String(form.get('tags') ?? ''),
+        authors: String(form.get('authors') ?? ''),
+      };
+      try {
+        const description = draft.description.trim();
+        const tags = draft.tags
+          .split(',')
+          .map((t) => t.trim().replace(/\s+/g, '-').toLowerCase())
+          .filter(Boolean);
+        const authors = draft.authors
+          .split(',')
+          .map((a) => a.trim())
+          .filter(Boolean);
+        if (
+          !description ||
+          description.length > 500 ||
+          !authors.length ||
+          tags.some((t) => t.length > 32) ||
+          new Set(tags).size !== tags.length
+        ) {
+          Astro.response.status = 400;
+          formError =
+            'Check description, unique tags (32 characters maximum) and authors.';
+        } else {
+          await clientServer.Packages.update({
+            id: name,
+            description,
+            tags,
+            authors,
+          });
+          return Astro.redirect(packageUrl(name, version), 303);
+        }
+      } catch (failure) {
+        Astro.response.status = statusFor(failure, Astro.cookies);
+        formError =
+          Astro.response.status === 401
+            ? 'Please sign in again.'
+            : 'Could not save metadata. Check your permissions and values.';
+      }
+    }
+    if (!(detail.versions ?? []).some((v) => v.version === version))
+      Astro.response.status = 404;
+    else {
+      try {
+        readme.content = (
+          await clientServer.Packages.getReadme(name, version)
+        ).content;
+      } catch (failure) {
+        statusFor(failure, Astro.cookies);
+        readme.error = 'README unavailable';
+      }
+    }
+  } catch (failure) {
+    Astro.response.status = statusFor(failure, Astro.cookies);
+    error =
+      Astro.response.status === 404 ? undefined : 'Could not load package.';
+  }
+}
+---
+
+<Layout title={`${name} · ${version}`}>
+  {
+    client ? (
+      <PackagesBoundary
+        client:only="react"
+        packageName={name}
+        version={version}
+      />
+    ) : (
+      <PackageDetails
+        client:load
+        packageName={name}
+        detail={detail}
+        selectedVersion={version}
+        notFound={!detail && Astro.response.status === 404}
+        error={error}
+        readme={readme}
+        urls={{
+          retry: packageUrl(name, version),
+          versions: Object.fromEntries(
+            (detail?.versions ?? []).map((v) => [
+              v.version,
+              packageUrl(name, v.version),
+            ]),
+          ),
+          downloads: Object.fromEntries(
+            (detail?.versions ?? []).map((v) => [
+              v.version,
+              `${packageUrl(name, v.version)}/download`,
+            ]),
+          ),
+          metadata: packageUrl(name, version),
+        }}
+        formError={formError}
+        draft={draft}
+      />
+    )
+  }
+</Layout>

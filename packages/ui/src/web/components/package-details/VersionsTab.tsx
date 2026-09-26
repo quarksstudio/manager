@@ -1,12 +1,22 @@
-import { Download } from 'lucide-react';
+import { DownloadOutlined } from '@ant-design/icons';
 import {
   sortVersions,
   type PackageVersion,
 } from '@quarks.studio/registry/client';
+import { List, Tag, Typography } from 'antd';
 
 import { certificationBadge } from '../../lib/certification';
 import { formatDate } from '../../lib/format';
-import { Badge } from '../ui/badge';
+import { QuarkTheme } from '../../lib/theme';
+import type { TierColor } from '../landing/tiers';
+
+function tierColor(tier?: string): TierColor {
+  const key = (tier ?? '').toUpperCase();
+  if (key === 'TIER_2') return 'blue';
+  if (key === 'TIER_3') return 'green';
+  if (key === 'TIER_4') return 'gold';
+  return 'default';
+}
 
 export interface VersionsTabProps {
   packageName: string;
@@ -31,53 +41,63 @@ export function VersionsTab({
 
   if (ordered.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">
-        No published versions for {packageName}.
-      </p>
+      <QuarkTheme>
+        <Typography.Text type="secondary">
+          No published versions for {packageName}.
+        </Typography.Text>
+      </QuarkTheme>
     );
   }
 
   return (
-    <ul className="divide-y rounded-lg border" data-testid="versions-list">
-      {ordered.map((item) => {
-        const badge = certificationBadge(item.certifications);
-        const selected = item.version === selectedVersion;
-        return (
-          <li
-            key={item.version}
-            className={selected ? 'bg-muted/50' : undefined}
-          >
-            <div className="flex flex-wrap items-center justify-between gap-4 p-4">
+    <QuarkTheme>
+      <List
+        data-testid="versions-list"
+        bordered
+        split
+        dataSource={ordered}
+        renderItem={(item) => {
+          const badge = certificationBadge(item.certifications);
+          const selected = item.version === selectedVersion;
+          return (
+            <List.Item
+              className={selected ? '!bg-container' : undefined}
+              actions={[
+                <Typography.Text
+                  key="date"
+                  type="secondary"
+                  className="text-sm"
+                >
+                  {formatDate(item.date)}
+                </Typography.Text>,
+                <a
+                  key="download"
+                  href={downloadUrls?.[item.version]}
+                  aria-label={`Download version ${item.version}`}
+                  onClick={() => onDownload?.(item.version)}
+                >
+                  <DownloadOutlined aria-hidden="true" />
+                </a>,
+              ]}
+            >
               <div className="flex flex-wrap items-center gap-3">
                 <a
                   href={versionUrls?.[item.version]}
                   data-testid={`select-${item.version}`}
                   aria-pressed={selected}
                   onClick={() => onSelectVersion?.(item.version)}
-                  className="font-mono text-sm font-medium text-foreground hover:underline"
+                  className="font-mono !text-sm !font-medium"
                 >
                   {item.version}
                 </a>
-                <Badge variant={badge ? 'success' : 'outline'}>
-                  {badge?.label ?? 'Sin certificar'}
-                </Badge>
+                <Tag color={badge ? tierColor(badge.tier) : 'default'}>
+                  {badge?.label ?? 'Uncertified'}
+                </Tag>
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-muted-foreground">
-                  {formatDate(item.date)}
-                </span>
-                <a
-                  href={downloadUrls?.[item.version]}
-                  aria-label={`Download version ${item.version}`}
-                  onClick={() => onDownload?.(item.version)}
-                >
-                  <Download aria-hidden="true" />
-                </a>
-              </div>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+            </List.Item>
+          );
+        }}
+      />
+    </QuarkTheme>
   );
 }

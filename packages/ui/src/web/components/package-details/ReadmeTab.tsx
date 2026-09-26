@@ -1,7 +1,8 @@
-import { RefreshCw } from 'lucide-react';
+import { ReloadOutlined } from '@ant-design/icons';
+import { Skeleton, Typography } from 'antd';
 
-import { Skeleton } from '../ui/skeleton';
 import { renderMarkdown } from '../../lib/markdown';
+import { QuarkTheme } from '../../lib/theme';
 
 export interface ReadmeTabProps {
   loading: boolean;
@@ -22,24 +23,23 @@ export function ReadmeTab({
 }: ReadmeTabProps) {
   if (loading) {
     return (
-      <div data-testid="readme-loading" className="space-y-3">
-        <Skeleton className="h-6 w-2/5" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-4/5" />
-        <Skeleton className="h-4 w-3/5" />
-      </div>
+      <QuarkTheme>
+        <div data-testid="readme-loading">
+          <Skeleton active paragraph={{ rows: 4 }} />
+        </div>
+      </QuarkTheme>
     );
   }
 
   if (error) {
     return (
       <div className="space-y-3">
-        <p className="text-sm text-muted-foreground">
+        <Typography.Text type="secondary">
           The README for v{version || 'latest'} could not be loaded.
-        </p>
+        </Typography.Text>
+        <br />
         <a href={retryUrl} onClick={onRetry}>
-          <RefreshCw aria-hidden="true" />
-          Retry
+          <ReloadOutlined aria-hidden="true" /> Retry
         </a>
       </div>
     );
@@ -47,9 +47,9 @@ export function ReadmeTab({
 
   if (!content.trim()) {
     return (
-      <p className="text-sm text-muted-foreground">
+      <Typography.Text type="secondary">
         No README available for v{version || 'latest'}.
-      </p>
+      </Typography.Text>
     );
   }
 

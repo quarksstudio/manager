@@ -43,5 +43,11 @@ Thumbs.db
 .claude/worktrees
 .claude/settings.local.json
 
+# Astro dev artifacts
+.astro
+
+# Electron staging output
+.desktop-app
+
 
 vite.config.*.timestamp*

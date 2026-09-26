@@ -1,0 +1,58 @@
+---
+import {
+  SiteFooter,
+  SiteNavbar,
+  type SiteFooterLink,
+} from '@quarks.studio/ui/web';
+import '../styles.css';
+
+const blogUrl = 'https://blog.quarks.studio';
+const defaultFooterLinks: SiteFooterLink[] = [
+  { label: 'Documentation', href: 'https://docs.quarks.studio' },
+  { label: 'Registry', href: '/search' },
+  { label: 'Legal', href: '/terms' },
+  { label: 'Blog', href: blogUrl },
+];
+interface Props {
+  title: string;
+  description?: string;
+  navbarLogo?: string;
+  searchAction?: string;
+  searchPlaceholder?: string;
+  loginUrl?: string;
+  footerLinks?: SiteFooterLink[];
+}
+const {
+  title,
+  description = 'Formal Certification and Secure Distribution for AI Skills',
+  navbarLogo = 'QUARK // SKILLS',
+  searchAction = '/search',
+  searchPlaceholder = 'Search packages and skills...',
+  loginUrl = '/login',
+  footerLinks = defaultFooterLinks,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="stylesheet" href="/antd.css" />
+    <title>{title}</title>
+  </head>
+  <body class="flex min-h-screen flex-col bg-slate-950 text-slate-100">
+    <SiteNavbar
+      logo={navbarLogo}
+      searchAction={searchAction}
+      searchPlaceholder={searchPlaceholder}
+      loginUrl={loginUrl}
+    />
+    <div class="flex-1">
+      <slot />
+    </div>
+    <SiteFooter links={footerLinks} />
+  </body>
+</html>
