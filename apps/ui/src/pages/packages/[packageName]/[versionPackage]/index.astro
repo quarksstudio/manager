@@ -1,8 +1,8 @@
 ---
-import Layout from '../../../layouts/Layout.astro';
+import Layout from '../../../../layouts/Layout.astro';
 import { PackageDetails } from '@quarks.studio/ui/web';
-import PackagesBoundary from '../../../components/PackagesBoundary';
-import { packageUrl, registry, statusFor } from '../../../lib/registry';
+import PackagesBoundary from '../../../../components/PackagesBoundary';
+import { packageUrl, registry, statusFor } from '../../../../lib/registry';
 const client = process.env.RENDER_MODE === 'client';
 const name = decodeURIComponent(Astro.params.packageName ?? '');
 const version = decodeURIComponent(Astro.params.versionPackage ?? '');

@@ -17,7 +17,12 @@ function hashname(seed) {
   return out;
 }
 
-const names = ['cloud-vision', 'rag-engine', 'agent-coordinator', 'fin-model-compiler'];
+const names = [
+  'cloud-vision',
+  'rag-engine',
+  'agent-coordinator',
+  'fin-model-compiler',
+];
 const landing = Object.fromEntries(
   ['TIER_1', 'TIER_2', 'TIER_3', 'TIER_4'].map((tier, index) => {
     const items = names.slice(0, index + 1).map((name, at) => ({
@@ -160,7 +165,9 @@ renderToStaticMarkup(
 
 const css = extractStyle(cache, { plain: true });
 if (!css.includes('ant-btn') && !css.includes('fit-content')) {
-  throw new Error('Suspicious antd CSS output (no component rules): ' + css.slice(0, 200));
+  throw new Error(
+    'Suspicious antd CSS output (no component rules): ' + css.slice(0, 200),
+  );
 }
 
 const target = resolve('apps/ui/public/antd.css');

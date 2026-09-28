@@ -16,7 +16,7 @@ hydrate islands.
 ## Prerequisites
 
 - Node 24 and pnpm 11 (`pnpm --version`).
-- A running registry API. Locally: `docker compose up` inside the Server repo
+- A running registry API. Locally: `podman compose up` inside the Server repo
   (API on `http://localhost:8081/v1`).
 
 ## Run

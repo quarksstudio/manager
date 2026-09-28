@@ -1,5 +1,2 @@
 import baseConfig from '../../eslint.config.mjs';
-export default [
-  ...baseConfig,
-  { ignores: ['tools/'] },
-];
+export default [...baseConfig, { ignores: ['tools/'] }];
