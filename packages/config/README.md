@@ -13,8 +13,7 @@ Values are merged in this order, each layer overriding the one before it:
    `~/.cache/quarks/storage/`.
 3. `QUARK_`-prefixed environment variables: the variable name is the key in
    camelCase, so `QUARK_EDITOR` sets `editor` and `QUARK_REGISTRY_URL` sets
-   `registryUrl`. `QUARK_LOG_LEVEL` and `QUARK_MANAGER_SERVER_TOKEN` remain as
-   aliases of older names.
+   `registryUrl`. and `QUARK_LOG_LEVEL`.
 4. The access token from the stored session.
 
 `loadConfig()` is memoized, and reads are shared between concurrent callers. It

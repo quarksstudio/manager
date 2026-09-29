@@ -110,7 +110,7 @@ export function createLoginWithProvider({
       );
     }
     const state = environment.randomState();
-    const callback = `${origin}/auth/callback?state=${encodeURIComponent(state)}`;
+    const callback = `${origin}/callback?state=${encodeURIComponent(state)}`;
     const authUrl = authorizationUrl(options.provider, callback);
     onStep?.('opening-browser', authUrl);
     // A named popup, and deliberately without `noopener`/`noreferrer`: the

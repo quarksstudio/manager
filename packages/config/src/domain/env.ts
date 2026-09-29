@@ -16,7 +16,6 @@ export const ENV_PREFIX = 'QUARK_';
 const ALIASES: Record<string, ConfigKey> = {
   QUARK_LOG_LEVEL: 'log',
   QUARK_REGISTRY_API_URL: 'registryUrl',
-  QUARK_MANAGER_SERVER_TOKEN: 'token',
 };
 
 export type EnvSource = Record<string, string | undefined>;

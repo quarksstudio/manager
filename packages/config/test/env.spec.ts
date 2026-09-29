@@ -36,7 +36,6 @@ describe('environment overlay', () => {
   it('maps the log level and token aliases', () => {
     const overrides = withEnv({
       QUARK_LOG_LEVEL: 'verbose',
-      QUARK_MANAGER_SERVER_TOKEN: 'server-token',
     });
     expect(overrides).toMatchObject({
       log: 'verbose',
