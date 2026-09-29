@@ -78,3 +78,51 @@ terminal helpers come from `@quarks.studio/ui/CLI`.
 `import { createRegistryClient } from '@quarks.studio/registry/client'` provides a React-free client for Astro and other server runtimes. Construct it with `{ baseUrl, token?, fetch? }` per request. It shares package operations with the existing client but does not use global configuration, browser storage or a shared response cache. `RegistryHttpError.status` preserves HTTP errors; bundle downloads return the original streaming `Response`.
 
 Existing client and hook entry points remain available for compatibility. Pure package/version types and helpers are also exported by the `client` entry.
+
+## Internal structure
+
+The code is organised as bounded contexts, one directory per business area. The
+public entry points above are the contract; the layout below is an
+implementation detail and may change without a major version bump.
+
+```
+src/
+  identity/        who is asking        (auth, sessions, passkeys)
+  catalog/         what exists           (package search, local cache)
+  distribution/    how it is published    (versions, readme, metadata)
+  billing/         what it costs          (payment gateway)
+  certification/   whether it is trusted  (audit decisions, WebAuthn)
+  publication/     how an archive ships   (upload, tarball)
+  transport/       shared HTTP kernel     (no business rules)
+  composition/     wiring                 (the ambient roots)
+  CLI/             Ink presentation
+```
+
+Each context is layered inward, and a layer only knows the ones above it:
+
+- `domain/` — the model and the rules, with no I/O. It is the one layer worth
+  reading first: everything else serves it.
+- `application/` — a use case. It depends on ports (`identity.port.ts`,
+  `package-registry.port.ts`, …) that it never implements.
+- `infrastructure/` — the adapters that satisfy those ports over HTTP, storage,
+  the filesystem or a browser API.
+- `composition/` — the only place that chooses an implementation. `ambient-*.ts`
+  wires the adapters to the real transport, storage and configuration for
+  callers that have no injection point of their own, which is why the public
+  functions are so short. `ambient-client.ts` and `ambient-context.ts` hold the
+  process-wide singletons, so a package is not fetched twice per process.
+
+Two rules keep the contexts from quietly merging, and both are enforced by
+`test/architecture.spec.ts` rather than by convention:
+
+- A `domain` imports no adapter, and an `application` imports no adapter. If a
+  use case needs a new capability, add it to its port.
+- `domain` and `application` never reach the transport, the composition root or
+  the entry points, and never import React, Ink, the configuration singleton or
+  `use-storage`. That is what lets a CLI, a server renderer and a browser share
+  the same use cases.
+
+`src/CLI/` is deliberately the exception: it reaches into `../index` for its
+business API, and `tools/build-cli.mjs` externalises exactly that specifier. Any
+other import from `src/CLI/` would be inlined into the CLI bundle, so it stays
+import-style minimal.

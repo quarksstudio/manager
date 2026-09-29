@@ -1,11 +1,14 @@
 import { build } from 'esbuild';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 
 const entry = 'packages/ui/tools/build-web-antd-css.entry.tsx';
-const outfile = 'packages/ui/tools/.antd-css.bundle.mjs';
-await mkdir('packages/ui/tools', { recursive: true });
+// A throwaway esbuild intermediate, not a source file: the entry renders the
+// components to harvest antd's CSS, and the bundle is only needed for the
+// duration of that one import. Under `dist/` so it stays out of the tree.
+const outfile = 'dist/tools/antd-css.bundle.mjs';
+await mkdir('dist/tools', { recursive: true });
 await build({
   entryPoints: [entry],
   outfile,
@@ -24,3 +27,16 @@ const result = await import(pathToFileURL(outfile).href);
 if (typeof result.default !== 'undefined') {
   await result.default;
 }
+
+// `extractStyle` emits one long line. The committed stylesheet is the formatted
+// one, so format on the way out: regenerating must not show up as a 20k-line
+// whitespace diff, and `format:check` has to keep passing.
+const { format, resolveConfig } = await import('prettier');
+const target = 'apps/ui/public/antd.css';
+const stylesheet = await readFile(target, 'utf8');
+const formatted = await format(stylesheet, {
+  ...(await resolveConfig(target)),
+  filepath: target,
+  parser: 'css',
+});
+if (formatted !== stylesheet) await writeFile(target, formatted);
