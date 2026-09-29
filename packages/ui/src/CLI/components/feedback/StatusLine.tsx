@@ -25,7 +25,7 @@ export function StatusLine({ status, message, detail }: StatusLineProps) {
   return (
     <Text color={statusColor[status]}>
       {theme.symbols[status]} {message}
-      {detail ? ` — ${detail}` : ''}
+      {detail ? `\n — ${detail}` : ''}
     </Text>
   );
 }

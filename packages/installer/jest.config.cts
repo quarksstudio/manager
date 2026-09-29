@@ -8,6 +8,9 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'html'],
   moduleNameMapper: {
     '^@quarks.studio/ui/CLI$': '<rootDir>/../ui/src/CLI/index.ts',
+    '^@quarks.studio/config$': '<rootDir>/../config/src/index.ts',
+    '^@quarks.studio/config/hooks$': '<rootDir>/../config/src/hooks.ts',
+    '^@quarks.studio/logger$': '<rootDir>/../logger/src/index.ts',
 
     '^@quarks.studio/registry$': '<rootDir>/../registry/src/index.ts',
     '^@quarks.studio/manifest$': '<rootDir>/../manifest/src/index.ts',
@@ -15,6 +18,7 @@ module.exports = {
     '^@quarks.studio/permissions$': '<rootDir>/../permissions/src/index.ts',
     '^@quarks.studio/types$': '<rootDir>/../types/src/index.ts',
     '^@quarks.studio/use-storage$': '<rootDir>/../use-storage/src/index.ts',
+    '^@quarks.studio/use-storage/storage$': '<rootDir>/../use-storage/src/storage.ts',
     '^@quarks.studio/targz$': '<rootDir>/../targz/src/index.ts',
   },
   coverageDirectory: '../../coverage/packages/installer',

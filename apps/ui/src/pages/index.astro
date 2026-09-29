@@ -1,16 +1,17 @@
 ---
+import { loadConfig } from '@quarks.studio/config';
 import { LandingHero, LandingTierMatrix } from '@quarks.studio/ui/web';
 import LandingBoundary from '../components/LandingBoundary';
 import Layout from '../layouts/Layout.astro';
 import { landingTiers } from '../lib/landing';
 import { registry, statusFor } from '../lib/registry';
-const client = process.env.RENDER_MODE === 'client';
+const client = (await loadConfig()).config.renderMode === 'client';
 const blogUrl = 'https://blog.quarks.studio';
 let items: Array<{ id: string }> = [];
 let error = '';
 if (!client) {
   try {
-    items = (await registry(Astro.cookies).Packages.search()).items;
+    items = (await (await registry(Astro.cookies)).Packages.search()).items;
   } catch (failure) {
     Astro.response.status = statusFor(failure, Astro.cookies);
     error = 'Could not load packages.';

@@ -9,7 +9,7 @@ import {
 import { landingTiers } from '../lib/landing';
 
 const registryBaseUrl =
-  (import.meta.env.PUBLIC_REGISTRY_API_URL as string | undefined) ??
+  (import.meta.env.QUARK_API as string | undefined) ??
   'http://localhost:8081/v1';
 
 export interface LandingBoundaryProps {

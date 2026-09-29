@@ -17,6 +17,7 @@
       "@quarks.studio/types": ["./packages/types/src/index.ts"],
       "@quarks.studio/types/*": ["./packages/types/src/*"],
       "@quarks.studio/config": ["./packages/config/src/index.ts"],
+      "@quarks.studio/config/hooks": ["./packages/config/src/hooks.ts"],
       "@quarks.studio/registry": ["./packages/registry/src/index.ts"],
       "@quarks.studio/manifest": ["./packages/manifest/src/index.ts"],
       "@quarks.studio/installer": ["./packages/installer/src/index.ts"],
@@ -26,6 +27,9 @@
       "@quarks.studio/logger": ["./packages/logger/src/index.ts"],
       "@quarks.studio/logger/*": ["./packages/logger/src/*"],
       "@quarks.studio/use-storage": ["./packages/use-storage/src/index.ts"],
+      "@quarks.studio/use-storage/storage": [
+        "./packages/use-storage/src/storage.ts"
+      ],
       "@quarks.studio/targz": ["./packages/targz/src/index.ts"],
       "@quarks.studio/tester": ["./packages/tester/src/index.ts"],
       "@quarks.studio/publisher": ["./packages/publisher/src/index.ts"],
@@ -45,7 +49,10 @@
       "@quarks.studio/ui/web": ["./packages/ui/src/web/index.ts"],
       "@quarks.studio/ui/web/styles.css": ["./packages/ui/src/web/styles.css"],
       "ink": ["./node_modules/ink/build/index.d.ts"],
-      "@quarks.studio/registry/client": ["./packages/registry/src/client.ts"]
+      "@quarks.studio/registry/client": ["./packages/registry/src/client.ts"],
+      "@quarks.studio/registry/headless": [
+        "./packages/registry/src/headless.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

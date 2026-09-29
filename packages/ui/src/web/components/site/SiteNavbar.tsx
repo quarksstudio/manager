@@ -52,7 +52,7 @@ export function SiteNavbar({
             />
           </form>
           <div className="shrink-0">
-            {loginUrl ? <Button href={loginUrl}>Login</Button> : null}
+            <span>Login</span>
           </div>
         </div>
       </header>

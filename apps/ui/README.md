@@ -42,10 +42,16 @@ pnpm --filter @quarks.studio/ui-app desktop:pack
 
 Environment used at runtime:
 
-- `REGISTRY_API_URL` — registry base URL (default `http://localhost:8081/v1`).
-- `RENDER_MODE` — `ssr` (web) or `client` (Electron); set by the desktop shell.
-- `WEB_ORIGIN` — public origin for `security.allowedDomains` (optional).
-- `QUARK_ENV`, `FIREBASE_AUTH_EMULATOR_HOST` — local auth emulator (see `src/pages/auth/local.ts`).
+Every setting is read through `loadConfig()` from `@quarks.studio/config`, so the
+`QUARK_`-prefixed name of the key is the variable name:
+
+- `QUARK_REGISTRY_URL` — registry base URL (default `http://localhost:8081/v1`).
+- `QUARK_RENDER_MODE` — `ssr` (web) or `client` (Electron); set by the desktop shell.
+- `QUARK_TOKEN` — bearer credential, otherwise read from the stored session.
+- `QUARK_ENV`, `QUARK_AUTH_EMULATOR_HOST` — local auth emulator (see `src/pages/auth/local.ts`).
+
+`WEB_ORIGIN` stays raw because Astro reads it while evaluating `astro.config.mjs`,
+before any module of the app is loaded.
 
 ## Layout and styles
 

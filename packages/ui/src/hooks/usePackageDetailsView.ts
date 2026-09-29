@@ -10,7 +10,7 @@ import {
   type PackageVersion,
 } from '@quarks.studio/registry';
 
-import { packageCacheKey } from '../lib/storage';
+import { cacheKey } from '../lib/storage';
 import { useCachedQuery } from './useCachedQuery';
 
 import {
@@ -61,7 +61,7 @@ export function usePackageDetailsView(
     loading,
     refetch,
   } = useCachedQuery(
-    packageCacheKey(packageName),
+    cacheKey('pkg', packageName),
     load,
     !!packageName,
     options.ttlMs,

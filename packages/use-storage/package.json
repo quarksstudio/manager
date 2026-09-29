@@ -11,6 +11,11 @@
       "types": "./src/index.d.ts",
       "require": "./src/index.js",
       "default": "./src/index.js"
+    },
+    "./storage": {
+      "types": "./src/storage.d.ts",
+      "require": "./src/storage.js",
+      "default": "./src/storage.js"
     }
   },
   "files": [

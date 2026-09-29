@@ -1,9 +1,10 @@
 ---
+import { loadConfig } from '@quarks.studio/config';
 import Layout from '../../../../layouts/Layout.astro';
 import { PackageDetails } from '@quarks.studio/ui/web';
 import PackagesBoundary from '../../../../components/PackagesBoundary';
 import { packageUrl, registry, statusFor } from '../../../../lib/registry';
-const client = process.env.RENDER_MODE === 'client';
+const client = (await loadConfig()).config.renderMode === 'client';
 const name = decodeURIComponent(Astro.params.packageName ?? '');
 const version = decodeURIComponent(Astro.params.versionPackage ?? '');
 let detail;
@@ -12,7 +13,7 @@ let formError;
 let draft;
 let readme = { content: '', error: undefined as string | undefined };
 if (!client) {
-  const clientServer = registry(Astro.cookies);
+  const clientServer = await registry(Astro.cookies);
   try {
     detail = await clientServer.Packages.get(name);
     if (Astro.request.method === 'POST') {

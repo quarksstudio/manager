@@ -1,7 +1,6 @@
-import { Client } from './lib';
+import { Client } from './composition/ambient-client';
 
 export { Client };
-export { configureRegistry } from './configuration';
 export {
   filterPackages,
   searchPackages,
@@ -10,23 +9,23 @@ export {
   type RemoteSearchPage,
   type SearchFilters,
   type SearchOptions,
-} from './search-packages';
+} from './composition/ambient-search';
 export {
   AUTH_SESSION_KEY,
   apiFetch,
   apiRequest,
   ApiError,
   type ApiFetchOptions,
-} from './lib/api-fetch';
+} from './composition/ambient-context';
 export {
-  loginWithProvider,
   type AuthProvider,
   type AuthSession,
   type AuthStep,
   type LoginOptions,
   type LoginStrategy,
-} from './auth-login';
-export { registerAuditorPasskey, signAuditDecision } from './auditor-webauthn';
+} from './identity/domain/auth-session';
+export { loginWithProvider } from './composition/ambient-login';
+export { registerAuditorPasskey, signAuditDecision } from './composition/ambient-certification';
 export {
   useCurrentUser,
   useAuthLogout,
@@ -53,7 +52,7 @@ export {
   type PackageVersion,
   type PackageReadme,
   type UpdatePackageMetadataInput,
-} from './package-details';
+} from './distribution/domain/package-details';
 export type { Certification } from '@quarks.studio/types/models';
 
 export default function client(e = '') {
@@ -63,6 +62,6 @@ export default function client(e = '') {
 export {
   uploadPackageArchive,
   type UploadPackageArchiveInput,
-} from './infrastructure/upload-package-archive';
+} from './publication/infrastructure/upload-package-archive';
 
-export { loginWithEmulator } from './local-login';
+export { loginWithEmulator } from './composition/ambient-login';

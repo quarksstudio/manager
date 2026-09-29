@@ -9,7 +9,10 @@ module.exports = {
   moduleNameMapper: {
     '^@quarks.studio/ui/CLI$': '<rootDir>/../ui/src/CLI/index.ts',
 
+    '^@quarks.studio/config/hooks$': '<rootDir>/src/hooks.ts',
+    '^@quarks.studio/logger$': '<rootDir>/../logger/src/index.ts',
     '^@quarks.studio/use-storage$': '<rootDir>/../use-storage/src/index.ts',
+    '^@quarks.studio/use-storage/storage$': '<rootDir>/../use-storage/src/storage.ts',
     '^@quarks.studio/types$': '<rootDir>/../types/src/index.ts',
   },
   coverageDirectory: '../../coverage/packages/config',

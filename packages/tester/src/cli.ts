@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { loadConfig } from '@quarks.studio/config';
+
 import { runAgentTests, runSkillTests } from './lib/runner';
 import { requestServerCertification } from './lib/server-client';
 import { parseCertificationTier, type TestRunnerOptions } from './lib/types';
@@ -19,8 +21,9 @@ async function main(argv: string[]): Promise<number> {
     const serverUrl = requiredOption(rest, '--server');
     const versionId = requiredOption(rest, '--version');
     const productId = requiredOption(rest, '--product');
-    const accessToken = process.env['MANAGER_SERVER_TOKEN'];
-    if (!accessToken) throw new Error('MANAGER_SERVER_TOKEN is not configured');
+    const { config } = await loadConfig();
+    const accessToken = config.token;
+    if (!accessToken) throw new Error('No authentication token is configured');
     const result = await requestServerCertification({
       serverUrl,
       packageId: targetDir,

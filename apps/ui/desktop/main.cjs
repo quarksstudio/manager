@@ -1,6 +1,6 @@
 // Electron shell for the ClientRender output of apps/ui.
 // Embeds the Astro SSR entry (node standalone) and opens the app in a window
-// with RENDER_MODE=client: the React islands fetch from the registry API.
+// with QUARK_RENDER_MODE=client: the React islands fetch from the registry API.
 const { app, BrowserWindow } = require('electron');
 const { spawn } = require('node:child_process');
 const path = require('node:path');
@@ -47,11 +47,11 @@ async function start() {
   server = spawn('node', [entry], {
     env: {
       ...process.env,
-      RENDER_MODE: 'client',
+      QUARK_RENDER_MODE: 'client',
       HOST: host,
       PORT: String(port),
-      REGISTRY_API_URL:
-        process.env.REGISTRY_API_URL || 'http://localhost:8081/v1',
+      QUARK_REGISTRY_URL:
+        process.env.QUARK_REGISTRY_URL || 'http://localhost:8081/v1',
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   });

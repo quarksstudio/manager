@@ -1,100 +1,194 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { writeFile } from 'fs/promises';
-import { homedir } from 'os';
-import { join } from 'path';
-
-import * as INI from 'ini';
-
-import { createStorage } from '@quarks.studio/use-storage';
 import { isLogLevel, LOG_LEVELS } from '@quarks.studio/logger';
 
 import {
-  DEFAULT_AI_MODELS,
   DEFAULT_CONFIG,
+  isConfigKey,
   type AppConfig,
+  type ConfigChanges,
+  type ConfigKey,
+  type ConfigValue,
 } from '../domain/config';
+import { envOverrides } from '../domain/env';
+import {
+  clearSession,
+  loadPersisted,
+  loadSession,
+  persistConfig,
+  saveSession,
+  storeRevision,
+} from './store';
 
-export const CONFIG_DIR = join(homedir(), '.config', 'quark');
-export const CONFIG_FILE = join(CONFIG_DIR, 'config.ini');
-
-const AUTH_SESSION_KEY = 'auth:session';
-
-const authStorage = createStorage({ namespace: 'app' });
+export type ConfigLayer = 'default' | 'persisted' | 'env' | 'session';
 
 export interface LoadedConfig {
   config: AppConfig;
-  filePath: string;
+  sources: Record<ConfigKey, ConfigLayer>;
 }
 
-function normalizeConfig(parsed: Record<string, unknown>): AppConfig {
+interface Memo {
+  revision: number;
+  promise: Promise<LoadedConfig>;
+  /** Undefined until `promise` settles; lets `getConfig` stay synchronous. */
+  value: LoadedConfig | undefined;
+}
+
+let memo: Memo | undefined;
+
+function startResolve(): Memo {
+  const entry: Memo = {
+    revision: storeRevision(),
+    promise: undefined as unknown as Promise<LoadedConfig>,
+    value: undefined,
+  };
+  entry.promise = resolve().then(
+    (loaded) => {
+      if (memo === entry) entry.value = loaded;
+      return loaded;
+    },
+    (error: unknown) => {
+      // Never cache a failed read: a transient storage error must not poison
+      // the process for the rest of its life.
+      if (memo === entry) memo = undefined;
+      throw error;
+    },
+  );
+  return entry;
+}
+
+function current(): Memo | undefined {
+  if (memo?.revision !== storeRevision()) return undefined;
+  return memo;
+}
+
+function text(value: ConfigValue | undefined, fallback: string): string {
+  if (value === undefined) return fallback;
+  if (Array.isArray(value)) return value.join(',');
+  return String(value);
+}
+
+function models(value: ConfigValue | undefined, fallback: string[]): string[] {
+  if (Array.isArray(value))
+    return value.map((model) => model.trim()).filter(Boolean);
+  if (value === undefined) return fallback;
+  return text(value, '')
+    .split(',')
+    .map((model) => model.trim())
+    .filter(Boolean);
+}
+
+function flag(value: ConfigValue | undefined, fallback: boolean): boolean {
+  if (typeof value === 'boolean') return value;
+  if (value === undefined) return fallback;
+  return text(value, 'true') !== 'false';
+}
+
+function normalize(candidate: ConfigChanges): AppConfig {
   return {
-    ...parsed,
-    token: '',
-    log: isLogLevel(parsed['log']) ? parsed['log'] : 'silent',
-    colors: String(parsed['colors']) !== 'false',
-    ias: Array.isArray(parsed['ias'])
-      ? parsed['ias']
-      : parsed['ias']
-        ? [parsed['ias']]
-        : [],
+    token: text(candidate.token, DEFAULT_CONFIG.token),
+    log: isLogLevel(candidate.log) ? candidate.log : DEFAULT_CONFIG.log,
+    colors: flag(candidate.colors, DEFAULT_CONFIG.colors),
+    editor: text(candidate.editor, DEFAULT_CONFIG.editor),
+    ias: models(candidate.ias, DEFAULT_CONFIG.ias),
+    registryUrl: text(candidate.registryUrl, DEFAULT_CONFIG.registryUrl),
+    env: text(candidate.env, DEFAULT_CONFIG.env),
+    renderMode: text(candidate.renderMode, DEFAULT_CONFIG.renderMode),
+    authEmulatorHost: text(
+      candidate.authEmulatorHost,
+      DEFAULT_CONFIG.authEmulatorHost,
+    ),
+    localStoragePublicUrl: text(
+      candidate.localStoragePublicUrl,
+      DEFAULT_CONFIG.localStoragePublicUrl,
+    ),
+    localStorageEndpoint: text(
+      candidate.localStorageEndpoint,
+      DEFAULT_CONFIG.localStorageEndpoint,
+    ),
+    semgrepRulesPath: text(
+      candidate.semgrepRulesPath,
+      DEFAULT_CONFIG.semgrepRulesPath,
+    ),
   };
 }
 
-export async function loadConfig(): Promise<LoadedConfig> {
-  if (!existsSync(CONFIG_FILE)) {
-    mkdirSync(CONFIG_DIR, { recursive: true });
-    const initial = INI.stringify({
-      ...DEFAULT_CONFIG,
-      ias: DEFAULT_AI_MODELS,
-    });
-    writeFileSync(CONFIG_FILE, initial, 'utf-8');
+function trace(
+  persisted: Partial<AppConfig>,
+  fromEnv: ConfigChanges,
+  config: AppConfig,
+): Record<ConfigKey, ConfigLayer> {
+  const sources = {} as Record<ConfigKey, ConfigLayer>;
+  for (const key of Object.keys(DEFAULT_CONFIG) as ConfigKey[]) {
+    sources[key] =
+      key in fromEnv
+        ? 'env'
+        : key in persisted
+          ? 'persisted'
+          : config[key] !== DEFAULT_CONFIG[key]
+            ? 'session'
+            : 'default';
   }
-
-  const raw = readFileSync(CONFIG_FILE, 'utf-8');
-  const parsed = INI.parse(raw);
-  const legacyToken = String(parsed['token'] ?? '');
-  if (legacyToken) {
-    await authStorage.setItem(AUTH_SESSION_KEY, {
-      accessToken: legacyToken,
-    });
-    delete parsed['token'];
-    await writeFile(CONFIG_FILE, INI.stringify(parsed), 'utf-8');
-  }
-
-  return { config: normalizeConfig(parsed), filePath: CONFIG_FILE };
+  return sources;
 }
 
-export async function writeConfig(
-  changes: Partial<AppConfig>,
-): Promise<AppConfig> {
-  const log = changes['log'];
+async function resolve(): Promise<LoadedConfig> {
+  const [persisted, session] = await Promise.all([
+    loadPersisted(),
+    loadSession(),
+  ]);
+  const fromEnv = envOverrides();
+  const config = normalize({ ...persisted, ...fromEnv });
+
+  if (!fromEnv.token && session?.accessToken)
+    config.token = session.accessToken;
+
+  return { config, sources: trace(persisted, fromEnv, config) };
+}
+
+export function loadConfig(): Promise<LoadedConfig> {
+  const settled = current();
+  if (settled) return settled.promise;
+  memo = startResolve();
+  return memo.promise;
+}
+
+/** Last resolved configuration, or the defaults when nothing has loaded yet. */
+export function getConfig(): AppConfig {
+  return current()?.value?.config ?? DEFAULT_CONFIG;
+}
+
+export function reloadConfig(): Promise<LoadedConfig> {
+  memo = startResolve();
+  return memo.promise;
+}
+
+export function resetConfig(): void {
+  memo = undefined;
+}
+
+export async function writeConfig(changes: ConfigChanges): Promise<AppConfig> {
+  const log = changes.log;
   if (log !== undefined && !isLogLevel(log)) {
     throw new Error(
       `Invalid log level: ${String(log)}. Expected one of: ${LOG_LEVELS.join(', ')}`,
     );
   }
 
-  const current = await loadConfig();
+  const previous = (await loadConfig()).config;
+  const next = normalize({ ...previous, ...changes });
 
-  const token = changes['token'];
-  if (typeof token === 'string') {
-    if (token) {
-      await authStorage.setItem(AUTH_SESSION_KEY, { accessToken: token });
-    } else {
-      await authStorage.removeItem(AUTH_SESSION_KEY);
-    }
+  if (typeof changes.token === 'string') {
+    if (changes.token) await saveSession({ accessToken: changes.token });
+    else await clearSession();
   }
 
-  const persistedChanges = { ...changes };
-  delete persistedChanges['token'];
-  const newConfig = { ...current.config, ...persistedChanges, token: '' };
-  const persistedConfig: AppConfig = { ...newConfig };
-  delete persistedConfig['token'];
+  await persistConfig(next);
+  return (await loadConfig()).config;
+}
 
-  if (!existsSync(CONFIG_DIR)) {
-    mkdirSync(CONFIG_DIR, { recursive: true });
-  }
-
-  await writeFile(CONFIG_FILE, INI.stringify(persistedConfig), 'utf-8');
-  return newConfig;
+export async function setConfigValue(
+  key: string,
+  value: string,
+): Promise<AppConfig> {
+  if (!isConfigKey(key)) throw new Error(`Unknown configuration key: ${key}`);
+  return writeConfig({ [key]: value });
 }

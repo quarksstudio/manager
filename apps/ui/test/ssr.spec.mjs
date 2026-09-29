@@ -80,9 +80,9 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
       ...process.env,
       HOST: '127.0.0.1',
       PORT: String(port),
-      REGISTRY_API_URL: `http://127.0.0.1:${apiPort}/v1`,
+      QUARK_REGISTRY_URL: `http://127.0.0.1:${apiPort}/v1`,
       QUARK_ENV: 'local',
-      FIREBASE_AUTH_EMULATOR_HOST: `127.0.0.1:${apiPort}`,
+      QUARK_AUTH_EMULATOR_HOST: `127.0.0.1:${apiPort}`,
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
@@ -199,6 +199,34 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
       headers: { origin: base, cookie: 'quark-session=alice' },
     });
     assert.equal(logout.status, 303);
+    // The popup exchanges the provider token server-side and hands the session
+    // back to the opener: the token is never trusted from the client again.
+    const before = requests.filter((r) => r.url === '/v1/auth/exchange').length;
+    const callback = await request(
+      '/auth/callback?state=state-1&idToken=id-token&refreshToken=refresh-token',
+    );
+    assert.equal(callback.status, 200, await callback.clone().text());
+    assert.match(callback.headers.get('cache-control'), /no-store/);
+    const exchanged = requests
+      .filter((r) => r.url === '/v1/auth/exchange')
+      .slice(before);
+    assert.equal(exchanged.length, 1);
+    assert.equal(exchanged[0].method, 'POST');
+    assert.deepEqual(JSON.parse(exchanged[0].body), {
+      token: 'id-token',
+      refreshToken: 'refresh-token',
+    });
+    const popup = await callback.text();
+    assert.ok(popup.includes('"state-1"'), 'the popup echoes the state');
+    assert.match(popup, /"accessToken":"local-token"/);
+    assert.ok(
+      !popup.includes('id-token'),
+      'the provider token stays out of the page',
+    );
+    // Without the state the opener generated there is nothing to answer.
+    const orphan = await request('/auth/callback?idToken=id-token');
+    assert.equal(orphan.status, 302);
+    assert.equal(orphan.headers.get('location'), '/');
   } catch (error) {
     console.error(logs);
     throw error;

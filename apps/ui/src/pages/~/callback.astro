@@ -1,0 +1,84 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { loadConfig } from '@quarks.studio/config';
+import {
+  AUTH_MESSAGE,
+  createRegistryClient,
+  type AuthSession,
+} from '@quarks.studio/registry/client';
+
+const state = Astro.url.searchParams.get('state');
+const idToken =
+  Astro.url.searchParams.get('idToken') ?? Astro.url.searchParams.get('token');
+const refreshToken = Astro.url.searchParams.get('refreshToken');
+
+if (!(state && idToken)) {
+  return Astro.redirect('/');
+}
+
+const { registryUrl } = (await loadConfig()).config;
+const client = createRegistryClient({ baseUrl: registryUrl });
+
+let session: AuthSession | null = null;
+let error: string | null = null;
+try {
+  session = await client.Auth.exchange(idToken, refreshToken ?? undefined);
+} catch (cause) {
+  error =
+    cause instanceof Error
+      ? cause.message
+      : 'Authentication failed. Try again.';
+}
+// The session is embedded in this document: never let it reach a cache.
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+
+<Layout title="Quark // Skills">
+  <div class="auth-callback">
+    <p>
+      {
+        error
+          ? 'Sign-in failed. You can close this window.'
+          : 'Completing sign-in…'
+      }
+    </p>
+    {!error && <span class="auth-callback__spinner" aria-hidden="true" />}
+  </div>
+  <script define:vars={{ state, session, error, authMessage: AUTH_MESSAGE }}>
+    const opener = window.opener;
+    if (opener) {
+      opener.postMessage(
+        error
+          ? { type: authMessage, state, error }
+          : { type: authMessage, state, session },
+        window.location.origin,
+      );
+      window.close();
+    }
+  </script>
+</Layout>
+
+<style>
+  .auth-callback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 12rem;
+  }
+
+  .auth-callback__spinner {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: auth-callback-spin 0.7s linear infinite;
+  }
+
+  @keyframes auth-callback-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

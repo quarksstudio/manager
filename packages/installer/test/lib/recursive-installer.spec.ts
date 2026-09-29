@@ -3,10 +3,10 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import * as path from 'path';
 
-import { Client } from '@quarks.studio/registry';
 import { pack, parseYaml } from '@quarks.studio/targz';
 
 import { install, type SkillLockfile } from '../../src/lib/recursive-installer';
+import { loadConfig } from '@quarks.studio/config';
 
 describe('recursive installer', () => {
   let workspace: string;
@@ -16,7 +16,9 @@ describe('recursive installer', () => {
       path.join(os.tmpdir(), 'recursive-installer-'),
     );
     jest.spyOn(os, 'homedir').mockReturnValue(workspace);
-    Client.API = 'https://registry.test/v1';
+    process.env['QUARK_REGISTRY_URL'] = 'https://registry.test/v1';
+    // `Client.API` is a synchronous read, so resolve the configuration first.
+    await loadConfig();
   });
 
   afterEach(async () => {

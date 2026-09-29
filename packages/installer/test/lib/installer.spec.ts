@@ -3,18 +3,20 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as tar from 'tar';
 import { createHash } from 'crypto';
-import { Client } from '@quarks.studio/registry';
 import { installSkill } from '../../src/lib/installer';
+import { loadConfig } from '@quarks.studio/config';
 
 describe('installer', () => {
   const tmpDir = path.join(os.tmpdir(), 'quark-installer-test-' + Date.now());
 
-  beforeEach(() => {
+  beforeEach(async () => {
     if (fs.existsSync(tmpDir)) {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
     fs.mkdirSync(tmpDir, { recursive: true });
-    Client.API = 'http://localhost:3000/v1';
+    process.env['QUARK_REGISTRY_URL'] = 'http://localhost:3000/v1';
+    // `Client.API` is a synchronous read, so resolve the configuration first.
+    await loadConfig();
   });
 
   afterEach(() => {
@@ -27,7 +29,7 @@ describe('installer', () => {
     const testPkgDir = path.join(tmpDir, 'source-package');
     fs.mkdirSync(path.join(testPkgDir, 'package'), { recursive: true });
     fs.writeFileSync(
-      path.join(testPkgDir, 'package', 'skill.json'),
+      path.join(testPkgDir, 'package', 'skill.yml'),
       JSON.stringify({
         name: '@foo/bar',
         version: '1.0.0',
@@ -106,13 +108,13 @@ describe('installer', () => {
       'bar',
       '1.0.0',
     );
-    expect(fs.existsSync(path.join(installedPath, 'skill.json'))).toBe(true);
+    expect(fs.existsSync(path.join(installedPath, 'skill.yml'))).toBe(true);
     expect(fs.existsSync(path.join(installedPath, 'src', 'index.py'))).toBe(
       true,
     );
 
     const manifestContent = fs.readFileSync(
-      path.join(installedPath, 'skill.json'),
+      path.join(installedPath, 'skill.yml'),
       'utf8',
     );
     expect(JSON.parse(manifestContent)).toMatchObject({

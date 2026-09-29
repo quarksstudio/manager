@@ -43,8 +43,8 @@ export default defineConfig({
         .sort((a, b) => b.find.length - a.find.length),
     },
     define: {
-      'import.meta.env.PUBLIC_REGISTRY_API_URL': JSON.stringify(
-        process.env.PUBLIC_REGISTRY_API_URL || 'http://localhost:8081/v1',
+      'import.meta.env.QUARK_API': JSON.stringify(
+        process.env.QUARK_REGISTRY_URL || 'http://localhost:8081/v1',
       ),
     },
   },

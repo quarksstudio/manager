@@ -65,7 +65,12 @@ export default [
     },
   },
   {
-    files: ['packages/*/src/domain/**/*.ts'],
+    // A domain model is the part that has to survive every host, so it is
+    // reached for a flat `src/domain` or for a context's own `src/<context>/domain`.
+    files: [
+      'packages/*/src/domain/**/*.ts',
+      'packages/*/src/*/domain/**/*.ts',
+    ],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -82,6 +87,22 @@ export default [
             '../infrastructure/*',
             '../application/*',
           ],
+        },
+      ],
+    },
+  },
+  {
+    // A use case orchestrates ports. Adapters are wired in from the outside, so
+    // reaching for one from `application` is what makes a context untestable.
+    files: [
+      'packages/*/src/application/**/*.ts',
+      'packages/*/src/*/application/**/*.ts',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['../infrastructure/*', '../../infrastructure/*'],
         },
       ],
     },

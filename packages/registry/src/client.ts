@@ -1,104 +1,105 @@
-import * as operations from './lib/Packages';
-import type {
-  PackageDetails,
-  PackageReadme,
-  UpdatePackageMetadataInput,
-} from './package-details';
-export * from './package-details';
+import { createApi, type RegistryApi } from './composition/api';
+import { createHttpIdentityGateway } from './identity/infrastructure/http-identity-gateway';
+import {
+  createHttpContext,
+  RegistryHttpError,
+  type HttpContext,
+  type RegistryCache,
+  type RegistryRequestOptions,
+} from './transport/http-context';
+import type { AuthSession } from './identity/domain/auth-session';
 
-export class RegistryHttpError extends Error {
-  constructor(
-    public readonly status: number,
-    message: string,
-  ) {
-    super(message);
-    this.name = 'RegistryHttpError';
-  }
-}
+export * from './distribution/domain/package-details';
+export { AUTH_MESSAGE } from './identity/domain/auth-callback-protocol';
+export {
+  ApiError,
+  RegistryHttpError,
+  createHttpContext,
+  type CachedResponse,
+  type HttpContext,
+  type OperationContext,
+  type RegistryCache,
+  type RegistryRequestOptions,
+} from './transport/http-context';
+export {
+  DEFAULT_CACHE_TTL_MS,
+  createStorageCache,
+  type StorageCacheOptions,
+} from './transport/storage-cache';
+export type {
+  AuthApi,
+  GatewayApi,
+  PackagesApi,
+  RegistryApi,
+} from './composition/api';
+export type { AuthSession };
+
 export interface RegistryClientOptions {
   baseUrl: string;
   token?: string;
   fetch?: typeof fetch;
+  /**
+   * Off by default: a request-scoped client exists to answer one request, not
+   * to replay a response someone else stored. Pass a cache to opt in.
+   */
+  cache?: RegistryCache;
 }
-/** Request-scoped transport: no global configuration, browser storage or cache. */
-export function createRegistryClient(options: RegistryClientOptions) {
-  const base = options.baseUrl.replace(/\/$/, '');
+
+export interface RegistryClient extends RegistryApi {
+  signInWithPassword: (input: {
+    endpoint: string;
+    email: string;
+    password: string;
+  }) => Promise<AuthSession>;
+  /** Escape hatch for routes the typed groups do not cover. */
+  _request: (
+    path: string,
+    options?: RegistryRequestOptions,
+  ) => Promise<Response>;
+  _fetch: <T = unknown>(
+    path: string,
+    options?: RegistryRequestOptions,
+  ) => Promise<T>;
+}
+
+/**
+ * Request-scoped transport: the base URL, the token, the cache and the 401
+ * behaviour are all given by the caller. Nothing is read from global
+ * configuration or browser storage, so this is the client a server renderer
+ * must use.
+ */
+export function createRegistryClient(
+  options: RegistryClientOptions,
+): RegistryClient {
   const transport = options.fetch ?? globalThis.fetch;
-  const context = {
-    async _request(
-      path: string,
-      init: Record<string, any> = {},
-    ): Promise<Response> {
-      const headers = new Headers(init['headers']);
-      if (options.token)
-        headers.set('Authorization', `Bearer ${options.token}`);
-      let body = init['body'];
-      if (body && typeof body !== 'string' && !(body instanceof FormData)) {
-        headers.set('Content-Type', 'application/json');
-        body = JSON.stringify(body);
-      }
-      const response = await transport(`${base}/${path}`, {
-        ...init,
-        body,
-        headers,
+  const context: HttpContext = createHttpContext({
+    baseUrl: options.baseUrl,
+    token: options.token,
+    fetch: options.fetch,
+    cache: options.cache,
+  });
+
+  return {
+    ...createApi(context),
+    async signInWithPassword({ endpoint, email, password }) {
+      const response = await transport(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          returnSecureToken: true,
+        }),
         cache: 'no-store',
       });
       if (!response.ok)
-        throw new RegistryHttpError(
-          response.status,
-          `Registry request failed (${response.status})`,
-        );
-      return response;
+        throw new RegistryHttpError(response.status, 'Sign in failed');
+      const identity = await response.json();
+      if (typeof identity.idToken !== 'string')
+        throw new RegistryHttpError(502, 'Missing identity token');
+      return createHttpIdentityGateway(context).exchange(identity.idToken);
     },
-    async _fetch(path: string, init?: Record<string, any>) {
-      const response = await this._request(path, init);
-      return response.status === 204 ? undefined : response.json();
-    },
-  };
-  return {
-    Packages: {
-      get: (name: string): Promise<PackageDetails> =>
-        operations.get.call(context, name),
-      search: (query = ''): Promise<{ items: Array<{ id: string }> }> =>
-        operations.search.call(context, query),
-      getReadme: (name: string, version: string): Promise<PackageReadme> =>
-        operations.getReadme.call(context, name, version),
-      downloadBundle: (name: string, version: string) =>
-        operations.downloadBundle.call(context, name, version),
-      update: (input: UpdatePackageMetadataInput): Promise<PackageDetails> =>
-        operations.update.call(context, input as any),
-    },
-    Auth: {
-      async signInWithPassword(input: {
-        endpoint: string;
-        email: string;
-        password: string;
-      }): Promise<{ accessToken: string }> {
-        const response = await transport(input.endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: input.email,
-            password: input.password,
-            returnSecureToken: true,
-          }),
-          cache: 'no-store',
-        });
-        if (!response.ok)
-          throw new RegistryHttpError(response.status, 'Sign in failed');
-        const identity = await response.json();
-        if (typeof identity.idToken !== 'string')
-          throw new RegistryHttpError(502, 'Missing identity token');
-        return context._fetch('auth/exchange', {
-          method: 'POST',
-          body: { token: identity.idToken },
-        });
-      },
-      me: (): Promise<{ id?: string; uid?: string }> =>
-        context._fetch('auth/me'),
-      exchange: (token: string): Promise<{ accessToken: string }> =>
-        context._fetch('auth/exchange', { method: 'POST', body: { token } }),
-      logout: () => context._fetch('auth/logout', { method: 'POST' }),
-    },
+    _request: (path, requestOptions) => context.request(path, requestOptions),
+    _fetch: (path, requestOptions) => context.fetchJson(path, requestOptions),
   };
 }

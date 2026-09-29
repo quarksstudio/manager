@@ -2,7 +2,8 @@ import type { APIRoute } from 'astro';
 import { registry, statusFor } from '../../../../lib/registry';
 export const GET: APIRoute = async ({ params, cookies }) => {
   try {
-    const upstream = await registry(cookies).Packages.downloadBundle(
+    const client = await registry(cookies);
+    const upstream = await client.Packages.downloadBundle(
       decodeURIComponent(params.packageName!),
       decodeURIComponent(params.versionPackage!),
     );

@@ -1,8 +1,7 @@
+import { resetConfig } from '@quarks.studio/config';
+import { uploadPackageArchive } from '@quarks.studio/registry/upload';
+
 import { publishPackage } from '../src/index';
-import {
-  configureRegistry,
-  uploadPackageArchive,
-} from '@quarks.studio/registry/upload';
 
 jest.mock('react', () => {
   throw new Error('Headless publication must not load React');
@@ -13,7 +12,8 @@ jest.mock('ink', () => {
 
 describe('headless public API', () => {
   afterEach(() => {
-    configureRegistry('');
+    delete process.env['QUARK_REGISTRY_URL'];
+    resetConfig();
     jest.restoreAllMocks();
   });
 
@@ -24,7 +24,8 @@ describe('headless public API', () => {
   });
 
   it('configures and invokes the real upload transport without UI', async () => {
-    configureRegistry('https://registry.test/api');
+    process.env['QUARK_REGISTRY_URL'] = 'https://registry.test/api';
+    resetConfig();
     const send = jest
       .spyOn(globalThis, 'fetch')
       .mockResolvedValueOnce(

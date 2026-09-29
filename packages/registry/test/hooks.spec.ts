@@ -13,7 +13,7 @@ import {
   useUpdatePackageMetadata,
 } from '../src/hooks';
 
-jest.mock('../src/lib', () => {
+jest.mock('../src/composition/ambient-client', () => {
   const api = {
     search: jest.fn(),
     get: jest.fn(),
@@ -36,33 +36,33 @@ jest.mock('../src/lib', () => {
   };
 });
 
-jest.mock('@quarks.studio/use-storage', () => ({
+jest.mock('@quarks.studio/use-storage/storage', () => ({
   createStorage: () => ({ removeItem: mockRemoveSession }),
 }));
 const mockRemoveSession = jest.fn();
 
-jest.mock('../src/search-packages', () => ({
+jest.mock('../src/composition/ambient-search', () => ({
   searchPackages: jest.fn(),
   fetchRemotePackages: jest.fn(),
 }));
 
-jest.mock('../src/auth-login', () => ({
+jest.mock('../src/composition/ambient-login', () => ({
   loginWithProvider: jest.fn(),
   submitManualLoginCode: jest.fn(),
 }));
 
-const authApi = jest.requireMock('../src/auth-login') as {
+const authApi = jest.requireMock('../src/composition/ambient-login') as {
   loginWithProvider: jest.Mock;
   submitManualLoginCode: jest.Mock;
 };
 
-const hybridApi = jest.requireMock('../src/search-packages') as {
+const hybridApi = jest.requireMock('../src/composition/ambient-search') as {
   searchPackages: jest.Mock;
   fetchRemotePackages: jest.Mock;
 };
 
 const api = (
-  jest.requireMock('../src/lib') as {
+  jest.requireMock('../src/composition/ambient-client') as {
     __api: {
       search: jest.Mock;
       get: jest.Mock;

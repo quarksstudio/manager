@@ -3,7 +3,7 @@ import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-import { apiFetch, apiRequest, Client } from '@quarks.studio/registry';
+import { apiFetch, apiRequest, Client } from '@quarks.studio/registry/headless';
 import { cacheSkill, readCachedSkill } from '@quarks.studio/local-store';
 import {
   parseYaml,
@@ -321,7 +321,7 @@ async function readRootDependencies(
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
   }
-  const legacy = path.join(target, 'skill.json');
+  const legacy = path.join(target, 'skill.yml');
   try {
     const manifest = JSON.parse(await fs.readFile(legacy, 'utf8')) as {
       dependencies?: Record<string, string>;

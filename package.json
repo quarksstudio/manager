@@ -78,7 +78,6 @@
   },
   "dependencies": {
     "commander": "^15.0.0",
-    "ini": "^7.0.0",
     "ink": "^7.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

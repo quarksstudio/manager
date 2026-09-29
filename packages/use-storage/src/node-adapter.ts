@@ -8,9 +8,9 @@ import type { RawStorageAdapter } from './types';
 export class NodeStorageAdapter implements RawStorageAdapter {
   readonly basePath: string;
 
-  constructor(namespace: string, basePath?: string) {
+  constructor(namespace: string, basePath?: string, isConfig?: boolean) {
     this.basePath = path.resolve(
-      basePath ?? path.join(os.homedir(), '.cache', namespace, 'storage'),
+      basePath ?? path.join(os.homedir(), isConfig ? 'quarks' : '.cache', namespace, 'storage'),
     );
   }
 

@@ -69,10 +69,12 @@ Tier 1 is the exception: the server performs it synchronously while ingesting th
 
 Set `wait: true` to poll the certification resource until it reaches a terminal status. Remote server URLs require HTTPS; plain HTTP is accepted only for localhost development.
 
-The CLI uses `MANAGER_SERVER_TOKEN` so bearer credentials do not appear in the process arguments:
+The CLI reads the bearer credential from the configuration, so it does not appear
+in the process arguments. Set `QUARK_TOKEN`, or log in and let the stored session
+supply it:
 
 ```bash
-MANAGER_SERVER_TOKEN=... quark-tester server my-skill \
+QUARK_TOKEN=... quark-tester server my-skill \
   --server https://api.manager.dev --version 1.0.0 --product tier-3 --wait
 ```
 

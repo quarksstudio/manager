@@ -1,21 +1,19 @@
-import { createStorage } from '@quarks.studio/use-storage';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Client } from './lib';
+import { Client } from './composition/ambient-client';
+import {
+  loginWithProvider,
+  submitManualLoginCode,
+} from './composition/ambient-login';
+import { createConfigSessionRepository } from './identity/infrastructure/config-session-repository';
 import {
   fetchRemotePackages,
   searchPackages as runSearchPackages,
   type PackageSearchItem,
   type SearchFilters,
   type SearchOptions,
-} from './search-packages';
-import {
-  loginWithProvider,
-  submitManualLoginCode,
-  type AuthSession,
-  type AuthStep,
-  type LoginOptions,
-} from './auth-login';
+} from './composition/ambient-search';
+import type { AuthSession, AuthStep, LoginOptions } from './identity/domain/auth-session';
 import {
   certificationsForVersion,
   highestVersion,
@@ -24,7 +22,7 @@ import {
   type PackageReadme,
   type PackageVersion,
   type UpdatePackageMetadataInput,
-} from './package-details';
+} from './distribution/domain/package-details';
 
 export interface RegistryQuery<T> {
   data: T | null;
@@ -44,7 +42,6 @@ interface RegistryPackages {
 interface RegistryAuth {
   me<T = Record<string, unknown>>(): Promise<T>;
   logout(): Promise<unknown>;
-  getUrlLogin(provider: string, continueUri: string): Promise<string>;
 }
 
 export interface RegistryClient {
@@ -61,10 +58,13 @@ export interface UseAuthLoginReturn {
   user: AuthSession['user'] | null;
   error: Error | null;
   reset: () => void;
+  detailStep?: string;
 }
 
 export function useAuthLogin(): UseAuthLoginReturn {
   const [currentStep, setCurrentStep] = useState<AuthStep>('idle');
+  const [detailStep, setDetailStep] = useState<string>('');
+
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<AuthSession['user'] | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -75,8 +75,11 @@ export function useAuthLogin(): UseAuthLoginReturn {
     setIsLoading(true);
     setError(null);
     try {
-      const session = await loginWithProvider(options, (step) => {
-        if (currentRequest === authRequest.current) setCurrentStep(step);
+      const session = await loginWithProvider(options, (step, detaitls = "") => {
+        if (currentRequest === authRequest.current) {
+          setCurrentStep(step);
+          setDetailStep(detaitls);
+        }
       });
       if (currentRequest === authRequest.current) setUser(session.user);
       return session;
@@ -106,6 +109,7 @@ export function useAuthLogin(): UseAuthLoginReturn {
     login,
     submitManualCode,
     currentStep,
+    detailStep,
     isLoading,
     isAuthenticated: currentStep === 'authenticated' && user !== null,
     user,
@@ -394,7 +398,7 @@ export function useAuthLogout() {
     setError(null);
     try {
       await client.Auth.logout();
-      await createStorage({ namespace: 'app' }).removeItem('auth:session');
+      await createConfigSessionRepository().clear();
       setStatus('success');
     } catch (reason) {
       const failure =

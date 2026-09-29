@@ -34,7 +34,7 @@ export function LoginScreen({
   localServerPort,
 }: LoginScreenProps) {
   const { exit } = useApp();
-  const { login, submitManualCode, currentStep, error } = useAuthLogin();
+  const { login, submitManualCode, currentStep, error, detailStep } = useAuthLogin();
   const [code, setCode] = useState('');
   const initialProvider = PROVIDERS.includes(provider as AuthProvider)
     ? (provider as AuthProvider)
@@ -95,6 +95,7 @@ export function LoginScreen({
                 : 'running'
           }
           message={error?.message ?? STATUS[visibleStep]}
+          detail={detailStep}
         />
         {!selectedProvider && (
           <Box marginTop={1}>

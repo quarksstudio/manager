@@ -7,15 +7,14 @@ transport.
 
 ```ts
 import { publishPackage } from '@quarks.studio/publisher';
-import { configureRegistry } from '@quarks.studio/registry/upload';
 
-configureRegistry('https://registry.example/api');
 const result = await publishPackage({ sourceDir: './my-skill', dryRun: true });
 ```
 
 `dryRun: true` (or `upload: false`) validates, writes the snapshot and packages
-without uploading. To upload, omit `dryRun` and provide a `token` or
-`MANAGER_SERVER_TOKEN`. The endpoint is shared with `Client.API`.
+without uploading. To upload, omit `dryRun` and provide a `token` or set
+`QUARK_TOKEN`. The endpoint is the configured `registryUrl` (`Client.API` reads
+the same value), overridable with `QUARK_REGISTRY_URL`.
 
 `publishPackage(options, onProgress?)` reports the `validate`, `verify`, `pack`
 and `upload` stages. A failed verification throws `VerificationFailure` before

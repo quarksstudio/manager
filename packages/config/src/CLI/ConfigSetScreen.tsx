@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from 'ink';
-import { useConfig } from '../index';
+import { setConfigValue } from '../lib/config-repository';
 import { EXIT_CODES } from '@quarks.studio/ui/CLI';
 import { Result, Screen, StatusLine } from '@quarks.studio/ui/CLI';
 
@@ -11,20 +11,14 @@ export function ConfigSetScreen({
   configKey?: string;
   value?: string;
 }) {
-  const { loading, error: loadError, updateConfig } = useConfig();
   const { exit } = useApp();
   const [error, setError] = useState<Error | null>(null);
   const [done, setDone] = useState(false);
   const started = useRef(false);
   useEffect(() => {
-    if (loading || started.current) return;
+    if (started.current) return;
     started.current = true;
-    if (loadError) {
-      process.exitCode = EXIT_CODES.configurationFailure;
-      exit();
-      return;
-    }
-    void updateConfig({ [configKey]: value }).then(
+    void setConfigValue(configKey, value).then(
       () => {
         setDone(true);
         exit();
@@ -35,12 +29,11 @@ export function ConfigSetScreen({
         exit();
       },
     );
-  }, [loading, loadError, configKey, value, updateConfig, exit]);
-  const failure = loadError ?? error;
+  }, [configKey, value, exit]);
   return (
     <Screen title="Config">
-      {failure ? (
-        <Result success={false} message={failure.message} />
+      {error ? (
+        <Result success={false} message={error.message} />
       ) : done ? (
         <Result success message={`Set ${configKey}`} />
       ) : (

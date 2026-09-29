@@ -26,6 +26,11 @@
       "types": "./src/client.d.ts",
       "require": "./src/client.js",
       "default": "./src/client.js"
+    },
+    "./headless": {
+      "types": "./src/headless.d.ts",
+      "require": "./src/headless.js",
+      "default": "./src/headless.js"
     }
   },
   "files": [
@@ -39,6 +44,7 @@
   },
   "dependencies": {
     "@simplewebauthn/browser": "^13.2.2",
+    "@quarks.studio/config": "workspace:*",
     "@quarks.studio/use-storage": "workspace:*",
     "@quarks.studio/logger": "workspace:*",
     "@quarks.studio/types": "workspace:*",

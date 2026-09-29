@@ -12,6 +12,11 @@
       "require": "./src/index.js",
       "default": "./src/index.js"
     },
+    "./hooks": {
+      "types": "./src/hooks.d.ts",
+      "require": "./src/hooks.js",
+      "default": "./src/hooks.js"
+    },
     "./CLI": {
       "types": "./src/CLI/index.d.ts",
       "import": "./src/CLI/index.mjs",
@@ -30,7 +35,6 @@
   "dependencies": {
     "@quarks.studio/use-storage": "workspace:*",
     "@quarks.studio/logger": "workspace:*",
-    "ini": "^7.0.0",
     "tslib": "^2.3.0",
     "@quarks.studio/ui": "workspace:*",
     "ink": "^7.0.2"

@@ -1,3 +1,4 @@
+import { getConfig } from '@quarks.studio/config';
 import { spawn } from 'child_process';
 
 import type { SecurityRunner } from '../../types';
@@ -10,7 +11,7 @@ export class CliSecurityRunner implements SecurityRunner {
       [
         'scan',
         '--config',
-        process.env['SEMGREP_RULES_PATH'] ?? 'auto',
+        getConfig().semgrepRulesPath || 'auto',
         '--json',
         targetDir,
       ],

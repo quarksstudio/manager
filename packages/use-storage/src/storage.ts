@@ -7,13 +7,16 @@ import {
   type StorageOptions,
 } from './types';
 
+export type { IStorageEngine, StorageOptions };
+
 class LazyNodeStorageAdapter implements RawStorageAdapter {
   private adapter?: Promise<RawStorageAdapter>;
 
   constructor(
     private readonly namespace: string,
     private readonly basePath?: string,
-  ) {}
+    private readonly isConfig?: boolean,
+  ) { }
 
   get(key: string): Promise<string | null> {
     return this.load().then((adapter) => adapter.get(key));
@@ -34,7 +37,7 @@ class LazyNodeStorageAdapter implements RawStorageAdapter {
   private load(): Promise<RawStorageAdapter> {
     this.adapter ??= import('./node-adapter').then(
       ({ NodeStorageAdapter }) =>
-        new NodeStorageAdapter(this.namespace, this.basePath),
+        new NodeStorageAdapter(this.namespace, this.basePath, !!this.isConfig),
     );
     return this.adapter;
   }
@@ -107,8 +110,13 @@ class StorageEngine implements InspectableStorageEngine {
     return this.adapter.remove(this.storageKey(key));
   }
 
-  clear(): Promise<void> {
-    return this.adapter.clear(this.prefix);
+  /**
+   * Removes every entry, or only the ones whose key starts with `keyPrefix`.
+   * The adapters have always been prefix-aware; the prefix was just never
+   * reachable from here.
+   */
+  clear(keyPrefix?: string): Promise<void> {
+    return this.adapter.clear(this.prefix + (keyPrefix ?? ''));
   }
 
   async hasItem(key: string): Promise<boolean> {
@@ -160,7 +168,7 @@ export function createStorage(options: StorageOptions = {}): IStorageEngine {
   const adapter =
     backend === 'browser'
       ? new BrowserStorageAdapter(resolveBrowserStorage(options))
-      : new LazyNodeStorageAdapter(namespace, options.basePath);
+      : new LazyNodeStorageAdapter(namespace, options.basePath, !!options.isConfig);
 
   return new StorageEngine(namespace, ttl, adapter);
 }

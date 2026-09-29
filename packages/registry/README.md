@@ -16,10 +16,38 @@ the built bundle.
 
 Node workflows can use the lower-level `apiFetch` and `apiRequest` exports.
 
-Archive publication without React or Ink uses `configureRegistry(api)` and
-`uploadPackageArchive(input)` from `@quarks.studio/registry/upload`. The endpoint is
-shared with `Client.API`. Upload accepts archive bytes, filename, package name,
-version, description and an optional token (otherwise `MANAGER_SERVER_TOKEN`).
+## Authentication
+
+`loginWithProvider({ provider })` drives the whole browser handshake
+(`deep-link`, `local-server` and `manual-code`), but it never talks to the
+identity provider itself. The client only builds one URL and opens it:
+
+```
+<registryUrl>/auth/login/<provider>/<continueUri>
+```
+
+because `registryUrl` already carries the `/v1` prefix, the effective route is
+`GET /v1/auth/login/:provider/:callback`. The server is expected to:
+
+1. map `:provider` to its identity identifier (`google` → `google.com`), reusing
+   the `Provider` enum from `@quarks.studio/types/client`;
+2. call `POST <authBase>/accounts:createAuthUri?key=<authKey>` with
+   `{ providerId, continueUri }` where `continueUri` is `:callback` decoded and
+   must be an absolute `http(s)` URL;
+3. answer `302` with `Location: <authUri>` and `Cache-Control: no-store`
+   (`400` for an unknown provider or callback, `502` when the identity provider
+   fails).
+
+The server credential never reaches this package, so `authKey` and `authBase`
+are not part of `@quarks.studio/config`. The provider token still comes back
+through the callback and is exchanged with `POST /v1/auth/exchange`.
+
+Archive publication without React or Ink uses `uploadPackageArchive(input)` from
+`@quarks.studio/registry/upload`. The endpoint comes from the configuration:
+`QUARK_REGISTRY_URL` in the environment, or `quark config set registryUrl`. The
+same value backs `Client.API`. Upload accepts archive bytes, filename, package
+name, version, description and an optional token (otherwise the configured
+`QUARK_TOKEN` or the stored session).
 
 It also exposes `registerAuditorPasskey` and `signAuditDecision`, which run the
 WebAuthn S4 ceremonies against the server endpoints without handling private

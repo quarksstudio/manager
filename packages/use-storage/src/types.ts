@@ -17,6 +17,7 @@ export interface StorageOptions {
   ttl?: number;
   backend?: StorageBackend;
   browserStorage?: WebStorage;
+  isConfig?: boolean,
 }
 
 export interface StorageItem<T = unknown> {
@@ -35,7 +36,7 @@ export interface IStorageEngine {
   getItem<T>(key: string, options?: { force?: boolean }): Promise<T | null>;
   setItem<T>(key: string, value: T, ttlMs?: number): Promise<void>;
   removeItem(key: string): Promise<void>;
-  clear(): Promise<void>;
+  clear(keyPrefix?: string): Promise<void>;
   hasItem(key: string): Promise<boolean>;
   isExpired(key: string): Promise<boolean>;
 }

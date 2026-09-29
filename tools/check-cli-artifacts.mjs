@@ -34,11 +34,11 @@ const commands = {
   ui: ['Screen', 'renderAction'],
 };
 const readJson = async (file) => JSON.parse(await readFile(file, 'utf8'));
-function run(code) {
+function run(code, env) {
   const result = spawnSync(
     process.execPath,
     ['--input-type=module', '-e', code],
-    { cwd: stage, encoding: 'utf8' },
+    { cwd: stage, encoding: 'utf8', env: { ...process.env, ...env } },
   );
   assert.ifError(result.error);
   assert.equal(result.status, 0, result.stderr || result.stdout);
@@ -90,15 +90,20 @@ try {
     const req = Module.createRequire(process.cwd() + '/entry.cjs');
     for (const name of ${JSON.stringify(names.filter((name) => name !== 'ui'))}) req('@quarks.studio/' + name);
   `);
-  run(`import Module from 'node:module';
+  run(
+    `import Module from 'node:module';
     const load = Module._load;
     Module._load = function(id, ...args) { if (/^(react|ink)(\\/|$)/.test(id)) throw new Error('Publisher loaded UI'); return load.call(this, id, ...args); };
     const req = Module.createRequire(process.cwd() + '/entry.cjs');
     const { publishPackage } = req('@quarks.studio/publisher');
-    const { configureRegistry } = req('@quarks.studio/registry/upload');
-    configureRegistry('https://registry.test/api');
+    const { registryConfiguration } = req('@quarks.studio/registry/upload');
+    const { loadConfig } = req('@quarks.studio/config');
+    await loadConfig();
+    if (registryConfiguration.registryUrl !== 'https://registry.test/api') throw new Error('Registry endpoint did not come from the environment');
     if (typeof publishPackage !== 'function') throw new Error('Missing publisher');
-  `);
+  `,
+    { QUARK_REGISTRY_URL: 'https://registry.test/api' },
+  );
   run(`for (const [name, commands] of Object.entries(${JSON.stringify(commands)})) {
     const api = await import('@quarks.studio/' + name + '/CLI');
     for (const command of commands) if (typeof api[command] !== 'function') throw new Error(name + ':' + command);

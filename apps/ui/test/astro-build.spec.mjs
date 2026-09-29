@@ -28,7 +28,7 @@ test('astro build emits the SSR server bundle, client assets and antd.css', () =
   );
 });
 
-test('RENDER_MODE=client serves shells with islands instead of server data', async () => {
+test('QUARK_RENDER_MODE=client serves shells with islands instead of server data', async () => {
   const api = http.createServer(async (req, res) => {
     if (req.url === '/v1/package?query=') {
       res.setHeader('Content-Type', 'application/json');
@@ -63,10 +63,10 @@ test('RENDER_MODE=client serves shells with islands instead of server data', asy
     cwd: resolve(app, '../..'),
     env: {
       ...process.env,
-      RENDER_MODE: 'client',
+      QUARK_RENDER_MODE: 'client',
       HOST: '127.0.0.1',
       PORT: String(port),
-      REGISTRY_API_URL: `http://127.0.0.1:${apiPort}/v1`,
+      QUARK_REGISTRY_URL: `http://127.0.0.1:${apiPort}/v1`,
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
@@ -93,7 +93,7 @@ test('RENDER_MODE=client serves shells with islands instead of server data', asy
     assert.match(html, /_astro\//, 'island assets must be wired');
     assert.ok(
       !html.includes('Tier 1 - Basic Certification'),
-      'server rendering must be disabled under RENDER_MODE=client',
+      'server rendering must be disabled under QUARK_RENDER_MODE=client',
     );
     const page = await request('/packages/%40scope%2Fdemo/1.0.0');
     assert.equal(page.status, 200);

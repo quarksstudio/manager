@@ -71,6 +71,19 @@ describe('Node storage', () => {
     await expect(beta.getItem('same')).resolves.toBe('beta');
   });
 
+  it('clears only the entries that match a key prefix', async () => {
+    const storage = createStorage({ backend: 'node', basePath });
+    await storage.setItem('request:GET:/a', 1);
+    await storage.setItem('request:GET:/b', 2);
+    await storage.setItem('session:token', 3);
+
+    await storage.clear('request:GET:/a');
+
+    await expect(storage.getItem('request:GET:/a')).resolves.toBeNull();
+    await expect(storage.getItem('request:GET:/b')).resolves.toBe(2);
+    await expect(storage.getItem('session:token')).resolves.toBe(3);
+  });
+
   it('encodes hostile keys without allowing path traversal', async () => {
     const storage = createStorage({ backend: 'node', basePath });
     await storage.setItem('../../outside', 'safe');

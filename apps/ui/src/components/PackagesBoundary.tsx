@@ -8,7 +8,7 @@ import {
 import { PackageDetails } from '@quarks.studio/ui/web';
 
 const registryBaseUrl =
-  (import.meta.env.PUBLIC_REGISTRY_API_URL as string | undefined) ??
+  (import.meta.env.QUARK_API as string | undefined) ??
   'http://localhost:8081/v1';
 
 function encode(value: string) {

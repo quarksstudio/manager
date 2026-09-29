@@ -7,10 +7,6 @@ export const apiCache = createStorage({
   ttl: CACHE_TTL_MS,
 });
 
-export function packageCacheKey(name: string): string {
-  return `pkg:${name}`;
-}
-
-export function readmeCacheKey(name: string, version: string): string {
-  return `readme:${name}@${version}`;
+export function cacheKey(key: string, name: string): string {
+  return `${key}:${name}`;
 }

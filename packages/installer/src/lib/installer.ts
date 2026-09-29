@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import * as tar from 'tar';
-import { Client, apiFetch, apiRequest } from '@quarks.studio/registry';
+import { Client, apiFetch, apiRequest } from '@quarks.studio/registry/headless';
 import { logger } from '@quarks.studio/logger';
 import { parseManifest } from '@quarks.studio/manifest';
 import {
@@ -172,8 +172,8 @@ async function performInstallSkill(
           throw new Error('Bundle is too large when unpacked');
       },
     });
-    if (!seen.has('package/skill.json'))
-      throw new Error('Bundle does not contain package/skill.json');
+    if (!seen.has('package/skill.yml'))
+      throw new Error('Bundle does not contain package/skill.yml');
 
     logger.verbose(
       `extracting bundle (${fileCount} files, ${unpackedBytes} bytes)`,
@@ -187,7 +187,7 @@ async function performInstallSkill(
     const stagedPackage = path.join(extractDir, 'package');
     const manifest = parseManifest(
       JSON.parse(
-        fs.readFileSync(path.join(stagedPackage, 'skill.json'), 'utf8'),
+        fs.readFileSync(path.join(stagedPackage, 'skill.yml'), 'utf8'),
       ),
     );
     if (manifest.name !== name || manifest.version !== version) {
@@ -221,7 +221,7 @@ async function performInstallSkill(
         );
       }
     }
-    const entrypoint = path.resolve(stagedPackage, manifest.entrypoint);
+    const entrypoint = path.resolve(stagedPackage, manifest.entrypoint ?? "");
     if (
       !entrypoint.startsWith(`${path.resolve(stagedPackage)}${path.sep}`) ||
       !fs.existsSync(entrypoint)

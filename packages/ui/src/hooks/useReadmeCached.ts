@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useRegistryClient, type PackageReadme } from '@quarks.studio/registry';
 
-import { readmeCacheKey } from '../lib/storage';
+import { cacheKey } from '../lib/storage';
 import { useCachedQuery, type CachedQuery } from './useCachedQuery';
 
 export function useReadmeCached(
@@ -14,8 +14,9 @@ export function useReadmeCached(
     () => client.Packages.getReadme<PackageReadme>(name, version as string),
     [client, name, version],
   );
+
   return useCachedQuery(
-    readmeCacheKey(name, (version as string) ?? ''),
+    cacheKey('readme', `${name}@${version}`),
     load,
     !!name && !!version,
     ttlMs,

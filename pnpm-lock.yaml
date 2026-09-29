@@ -14,9 +14,6 @@ importers:
       commander:
         specifier: ^15.0.0
         version: 15.0.0
-      ini:
-        specifier: ^7.0.0
-        version: 7.0.0
       ink:
         specifier: ^7.0.2
         version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
@@ -268,9 +265,6 @@ importers:
       '@quarks.studio/use-storage':
         specifier: workspace:*
         version: link:../use-storage
-      ini:
-        specifier: ^7.0.0
-        version: 7.0.0
       ink:
         specifier: ^7.0.2
         version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
@@ -391,6 +385,9 @@ importers:
 
   packages/registry:
     dependencies:
+      '@quarks.studio/config':
+        specifier: workspace:*
+        version: link:../config
       '@quarks.studio/logger':
         specifier: workspace:*
         version: link:../logger
@@ -448,6 +445,9 @@ importers:
 
   packages/tester:
     dependencies:
+      '@quarks.studio/config':
+        specifier: workspace:*
+        version: link:../config
       '@quarks.studio/ui':
         specifier: workspace:*
         version: link:../ui
@@ -6260,10 +6260,6 @@ packages:
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
-
-  ini@7.0.0:
-    resolution: {integrity: sha512-ifK0CgjALofS5bkrcTy4RaQ9Vx2Knf/eLeIO+NaswQEpH1UblrtTSCIvN71qQDMq0PeQ/SSPojvEJp9vvvfr+w==}
-    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
   ink@7.1.1:
     resolution: {integrity: sha512-Y43xxa1ZSPvpmfLHcN5o+OdP8Rf8ykkNJEuKYOUNZKT8wXVNLFTtEm1nSDMQkfBH+YANF4Xuu0hhZ4ejqAtN2w==}
@@ -16428,8 +16424,6 @@ snapshots:
       wrappy: 1.0.2
 
   inherits@2.0.4: {}
-
-  ini@7.0.0: {}
 
   ink@7.1.1(@types/react@19.2.18)(react@19.2.8):
     dependencies:

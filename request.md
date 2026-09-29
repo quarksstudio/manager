@@ -3262,8 +3262,8 @@ index 936c239..939987d 100644
  import { Test } from '@quark/tester/CLI';
  import { parseCertificationTier, type CertificationTier } from '@quark/tester';
  
-+if (process.env['QUARK_REGISTRY_API_URL'])
-+  configureRegistry(process.env['QUARK_REGISTRY_API_URL']);
++if (process.env['QUARK_REGISTRY_URL'])
++  configureRegistry(process.env['QUARK_REGISTRY_URL']);
 +
 +if (
 +  process.env['QUARK_ENV'] === 'local' &&
