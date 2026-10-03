@@ -3,12 +3,21 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/ui/src",
   "projectType": "library",
-  "tags": ["type:presentation", "scope:manager"],
+  "tags": [
+    "type:presentation",
+    "scope:manager"
+  ],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build-lib", "build-web", "build-hooks"],
-      "outputs": ["{workspaceRoot}/dist/packages/ui"],
+      "dependsOn": [
+        "build-lib",
+        "build-web",
+        "build-hooks"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/ui"
+      ],
       "cache": true,
       "inputs": [
         "production",
@@ -21,8 +30,12 @@
     },
     "build-web": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build-lib"],
-      "outputs": ["{workspaceRoot}/dist/packages/ui/src/web/index.mjs"],
+      "dependsOn": [
+        "build-lib"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/ui/src/web/index.mjs"
+      ],
       "cache": true,
       "inputs": [
         "production",
@@ -35,8 +48,12 @@
     },
     "build-hooks": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build-lib"],
-      "outputs": ["{workspaceRoot}/dist/packages/ui/src/hooks/index.mjs"],
+      "dependsOn": [
+        "build-lib"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/ui/src/hooks/index.mjs"
+      ],
       "cache": true,
       "inputs": [
         "production",
@@ -49,13 +66,21 @@
     },
     "build-lib": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/ui",
         "main": "packages/ui/src/CLI/index.ts",
         "tsConfig": "packages/ui/tsconfig.lib.json",
-        "assets": ["packages/ui/*.md", "packages/ui/src/web/*.css"]
-      }
+        "assets": [
+          "packages/ui/*.md",
+          "packages/ui/src/web/*.css"
+        ]
+      },
+      "dependsOn": [
+        "^build"
+      ]
     }
   }
 }

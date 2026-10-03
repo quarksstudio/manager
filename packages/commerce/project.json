@@ -1,0 +1,74 @@
+{
+  "name": "commerce",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/commerce/src",
+  "projectType": "library",
+  "tags": [
+    "type:context",
+    "scope:commerce"
+  ],
+  "targets": {
+    "build": {
+      "executor": "nx:noop",
+      "dependsOn": [
+        "build-lib",
+        "build-web"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/commerce"
+      ],
+      "cache": true,
+      "inputs": [
+        "production",
+        "^production"
+      ]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/commerce/jest.config.cts"
+      }
+    },
+    "build-lib": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/packages/commerce",
+        "main": "packages/commerce/src/index.ts",
+        "tsConfig": "packages/commerce/tsconfig.lib.json",
+        "assets": [
+          "packages/commerce/*.md"
+        ]
+      },
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "build-web": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build-lib"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/commerce/src/web/index.mjs"
+      ],
+      "cache": true,
+      "inputs": [
+        "production",
+        "^production",
+        "{workspaceRoot}/tools/build-functional-web.mjs"
+      ],
+      "options": {
+        "command": "node tools/build-functional-web.mjs commerce"
+      }
+    },
+    "test-web": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/commerce/jest.web.config.cts"
+      }
+    }
+  }
+}

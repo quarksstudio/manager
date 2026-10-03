@@ -1,14 +1,14 @@
-import { createSearchPackages } from '../catalog/application/search-packages';
-import { createHttpPackageSearch } from '../catalog/infrastructure/http-package-search';
-import { createStoragePackageCatalog } from '../catalog/infrastructure/storage-package-catalog';
+import { createSearchPackages } from '@quarks.studio/package-search';
+import { createHttpPackageSearch } from '@quarks.studio/package-search/http';
+import { createStoragePackageCatalog } from '@quarks.studio/package-search/http';
 import { createGlobalContext } from './ambient-context';
 import { registryConfiguration } from './registry-configuration';
-import type { PackageCatalogRepository } from '../catalog/application/package-catalog.repository';
+import type { PackageCatalogRepository } from '@quarks.studio/package-search';
 import type {
   RemoteSearchPage,
   SearchFilters,
   SearchOptions,
-} from '../catalog/domain/package-search-item';
+} from '@quarks.studio/package-search';
 
 /**
  * The catalog is process state: one copy per host, shared by every caller, so
@@ -47,17 +47,13 @@ function resetPackageCatalogMemory(): void {
   catalog.reset();
 }
 
-export {
-  fetchRemotePackages,
-  resetPackageCatalogMemory,
-  searchPackages,
-};
-export { CATALOG_KEY } from '../catalog/infrastructure/storage-package-catalog';
-export { filterPackages } from '../catalog/domain/package-search-query';
+export { fetchRemotePackages, resetPackageCatalogMemory, searchPackages };
+export { CATALOG_KEY } from '@quarks.studio/package-search/http';
+export { filterPackages } from '@quarks.studio/package-search';
 export type {
   HybridSearchResult,
   PackageSearchItem,
   SearchFilters,
   SearchOptions,
   RemoteSearchPage,
-} from '../catalog/domain/package-search-item';
+} from '@quarks.studio/package-search';

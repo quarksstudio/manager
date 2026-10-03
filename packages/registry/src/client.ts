@@ -1,5 +1,5 @@
 import { createApi, type RegistryApi } from './composition/api';
-import { createHttpIdentityGateway } from './identity/infrastructure/http-identity-gateway';
+import { createHttpIdentityGateway } from '@quarks.studio/identity/http';
 import {
   createHttpContext,
   RegistryHttpError,
@@ -7,10 +7,10 @@ import {
   type RegistryCache,
   type RegistryRequestOptions,
 } from './transport/http-context';
-import type { AuthSession } from './identity/domain/auth-session';
+import type { AuthSession } from '@quarks.studio/identity';
 
-export * from './distribution/domain/package-details';
-export { AUTH_MESSAGE } from './identity/domain/auth-callback-protocol';
+export * from '@quarks.studio/distribution';
+export { AUTH_MESSAGE } from '@quarks.studio/identity';
 export {
   ApiError,
   RegistryHttpError,
@@ -28,11 +28,53 @@ export {
 } from './transport/storage-cache';
 export type {
   AuthApi,
+  CatalogApi,
   GatewayApi,
   PackagesApi,
   RegistryApi,
 } from './composition/api';
 export type { AuthSession };
+
+export { browsePlans, browseTierLadder } from '@quarks.studio/commerce';
+export type { CatalogRemote } from '@quarks.studio/commerce';
+export {
+  isPlanProduct,
+  isTierProduct,
+  tierName,
+  type CatalogProduct,
+  type ProductKind,
+} from '@quarks.studio/commerce';
+export { formatPrice } from '@quarks.studio/commerce';
+export {
+  hasTierOverlap,
+  isPurchasable,
+  sortByPrice,
+  type TierOffer,
+} from '@quarks.studio/commerce';
+export {
+  partitionPlanSystems,
+  planSignupNote,
+  type PaymentSystem,
+  type PaymentSystems,
+  type PendingSystem,
+  type PlanSystems,
+} from '@quarks.studio/commerce';
+export {
+  paymentLinkPath,
+  type PaymentLinkRequest,
+  type PaymentLinkTarget,
+} from '@quarks.studio/commerce';
+export {
+  paymentLinkFailure,
+  type PaymentLinkFailure,
+} from '@quarks.studio/commerce';
+export { heldTier } from '@quarks.studio/certification';
+export type {
+  CreatedSubscription,
+  PaymentLink,
+  SubscriptionCancelResult,
+  SubscriptionRecord,
+} from '@quarks.studio/commerce';
 
 export interface RegistryClientOptions {
   baseUrl: string;
@@ -103,3 +145,9 @@ export function createRegistryClient(
     _fetch: (path, requestOptions) => context.fetchJson(path, requestOptions),
   };
 }
+
+export type {
+  PaymentRecord,
+  PaymentPage,
+  PaymentListOptions,
+} from '@quarks.studio/commerce';

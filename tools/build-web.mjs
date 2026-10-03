@@ -22,6 +22,10 @@ await build({
     {
       name: 'block-ink',
       setup(context) {
+        context.onResolve({ filter: /^@quarks\.studio\// }, ({ path }) => ({
+          path,
+          external: true,
+        }));
         context.onResolve({ filter: /^ink$/ }, () => {
           throw new Error('The web entry must not load Ink.');
         });

@@ -2,8 +2,9 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input } from 'antd';
 
 import { QuarkTheme } from '../../lib/theme';
+import { PropsWithChildren } from 'react';
 
-export interface SiteNavbarProps {
+export interface  SiteNavbarProps extends PropsWithChildren  {
   logo: string;
   searchAction?: string;
   searchPlaceholder?: string;
@@ -15,6 +16,7 @@ export function SiteNavbar({
   searchAction,
   searchPlaceholder,
   loginUrl,
+  children,
 }: SiteNavbarProps) {
   return (
     <QuarkTheme>
@@ -52,7 +54,7 @@ export function SiteNavbar({
             />
           </form>
           <div className="shrink-0">
-            <span>Login</span>
+            {children}
           </div>
         </div>
       </header>

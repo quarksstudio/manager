@@ -1,0 +1,72 @@
+{
+  "name": "package-search",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/package-search/src",
+  "projectType": "library",
+  "tags": [
+    "type:context",
+    "scope:package-search"
+  ],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/package-search/jest.config.cts"
+      }
+    },
+    "build-lib": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/packages/package-search",
+        "main": "packages/package-search/src/index.ts",
+        "tsConfig": "packages/package-search/tsconfig.lib.json",
+        "assets": [
+          "packages/package-search/*.md"
+        ]
+      },
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build-lib",
+        "build-web"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/package-search"
+      ],
+      "options": {
+        "command": "node tools/build-cli.mjs package-search"
+      }
+    },
+    "build-web": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build-lib"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/package-search/src/web/index.mjs"
+      ],
+      "cache": true,
+      "inputs": [
+        "production",
+        "^production",
+        "{workspaceRoot}/tools/build-functional-web.mjs"
+      ],
+      "options": {
+        "command": "node tools/build-functional-web.mjs package-search"
+      }
+    },
+    "test-web": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/package-search/jest.web.config.cts"
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "web-ui",
+  "sourceRoot": "packages/web-ui/src",
+  "projectType": "library",
+  "tags": [
+    "type:presentation",
+    "scope:web"
+  ],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build-lib"
+      ],
+      "options": {
+        "command": "node tools/build-functional-web.mjs web-ui"
+      },
+      "outputs": [
+        "{workspaceRoot}/dist/packages/web-ui"
+      ]
+    },
+    "build-lib": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "outputPath": "dist/packages/web-ui",
+        "main": "packages/web-ui/src/index.ts",
+        "tsConfig": "packages/web-ui/tsconfig.lib.json",
+        "assets": [
+          "packages/web-ui/*.md"
+        ]
+      }
+    },
+    "test-web": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/web-ui/jest.web.config.cts"
+      }
+    }
+  }
+}

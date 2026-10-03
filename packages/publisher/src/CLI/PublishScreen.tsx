@@ -8,13 +8,13 @@ import {
   type PublishProgress,
 } from '../index';
 
-import { EXIT_CODES } from '@quarks.studio/ui/CLI';
+import { EXIT_CODES } from '@quarks.studio/terminal-ui';
 import {
   Result,
   Screen,
   StepList,
   type WorkflowStep,
-} from '@quarks.studio/ui/CLI';
+} from '@quarks.studio/terminal-ui';
 
 interface PublishScreenProps {
   sourceDir?: string;

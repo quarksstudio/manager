@@ -16,6 +16,11 @@
       "types": "./src/storage.d.ts",
       "require": "./src/storage.js",
       "default": "./src/storage.js"
+    },
+    "./query": {
+      "types": "./src/query.d.ts",
+      "require": "./src/query.js",
+      "default": "./src/query.js"
     }
   },
   "files": [
@@ -27,7 +32,8 @@
     "access": "public"
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@quarks.studio/types": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0"

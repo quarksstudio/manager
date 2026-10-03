@@ -1,9 +1,10 @@
 ---
+import { registryBaseUrl as browserRegistryBaseUrl } from '../../../lib/registry-base';
 import { loadConfig } from '@quarks.studio/config';
 import Layout from '../../../layouts/Layout.astro';
 import { PackageDetails } from '@quarks.studio/ui/web';
-import { highestVersion } from '@quarks.studio/registry/client';
-import PackagesBoundary from '../../../components/PackagesBoundary';
+import { highestVersion } from '@quarks.studio/distribution';
+import { PackagesBoundary } from '@quarks.studio/registry/web';
 import { packageUrl, registry, statusFor } from '../../../lib/registry';
 const client = (await loadConfig()).config.renderMode === 'client';
 const name = decodeURIComponent(Astro.params.packageName ?? '');
@@ -25,7 +26,7 @@ if (!client) {
 <Layout title={name}>
   {
     client ? (
-      <PackagesBoundary client:only="react" packageName={name} />
+      <PackagesBoundary apiBaseUrl={browserRegistryBaseUrl} client:only="react" packageName={name} />
     ) : (
       <PackageDetails
         client:load

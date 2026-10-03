@@ -1,18 +1,42 @@
-export { PackageDetails } from './components/package-details/PackageDetails';
-export { PackageHeader } from './components/package-details/PackageHeader';
-export { PackageTabs } from './components/package-details/PackageTabs';
-export { ReadmeTab } from './components/package-details/ReadmeTab';
-export { VersionsTab } from './components/package-details/VersionsTab';
-export { CertsTab } from './components/package-details/CertsTab';
-export { ConfigTab } from './components/package-details/ConfigTab';
-export { PackageSidebar } from './components/package-details/PackageSidebar';
-export { PackageStateNotice } from './components/package-details/PackageStateNotice';
-export { PackageDetailsSkeleton } from './components/package-details/PackageDetailsSkeleton';
+export { PackageDetails } from '@quarks.studio/registry/web';
+export { PackageHeader } from '@quarks.studio/distribution/web';
+export { PackageTabs } from '@quarks.studio/distribution/web';
+export { ReadmeTab } from '@quarks.studio/distribution/web';
+export { VersionsTab } from '@quarks.studio/distribution/web';
+export { CertsTab } from '@quarks.studio/distribution/web';
+export { ConfigTab } from '@quarks.studio/distribution/web';
+export { PackageSidebar } from '@quarks.studio/distribution/web';
+export { PackageStateNotice } from '@quarks.studio/distribution/web';
+export { PackageDetailsSkeleton } from '@quarks.studio/distribution/web';
+export {
+  PackagePlansPanel,
+  type PackagePlansPanelProps,
+} from '@quarks.studio/commerce/web';
+export { CertificationCta } from '@quarks.studio/commerce/web';
+export { PaymentSystemButtons } from '@quarks.studio/commerce/web';
+export { PlanGrid, type PlanGridProps } from '@quarks.studio/commerce/web';
+export {
+  PricingCard,
+  type PricingCardProps,
+} from '@quarks.studio/commerce/web';
+export {
+  PricingModeNav,
+  type PricingMode,
+  type PricingModeNavProps,
+} from '@quarks.studio/commerce/web';
+export {
+  SystemHints,
+  type SystemHintsProps,
+} from '@quarks.studio/commerce/web';
+export {
+  TierMatrix,
+  type TierMatrixProps,
+} from '@quarks.studio/commerce/web';
 export {
   certificationBadge,
   type CertificationBadge,
 } from './lib/certification';
-export type { PackageDetailsProps } from './components/package-details/PackageDetails';
+export type { PackageDetailsProps } from '@quarks.studio/registry/web';
 
 export { renderMarkdown } from './lib/markdown';
 export {
@@ -21,15 +45,15 @@ export {
   newestVersion,
   isValidVersion,
 } from './lib/versions';
-export { formatCount, formatDate, formatSinceDate } from './lib/format';
-export { QuarkTheme, type QuarkThemeProps } from './lib/theme';
+export { formatCount, formatDate, formatSinceDate } from '@quarks.studio/web-ui';
+export { QuarkTheme, type QuarkThemeProps } from '@quarks.studio/web-ui';
 
 export { Home, type HomeProps } from './components/Home';
-export { LandingHero } from './components/landing/LandingHero';
-export { LandingTierMatrix } from './components/landing/LandingTierMatrix';
-export { LandingTierSection } from './components/landing/LandingTierSection';
-export { PackageRankColumn } from './components/landing/PackageRankColumn';
-export { PackageRankCard } from './components/landing/PackageRankCard';
+export { LandingHero } from '@quarks.studio/package-search/web';
+export { LandingTierMatrix } from '@quarks.studio/package-search/web';
+export { LandingTierSection } from '@quarks.studio/package-search/web';
+export { PackageRankColumn } from '@quarks.studio/package-search/web';
+export { PackageRankCard } from '@quarks.studio/package-search/web';
 export { SiteNavbar } from './components/site/SiteNavbar';
 export { SiteFooter, type SiteFooterLink } from './components/site/SiteFooter';
 export {
@@ -38,9 +62,12 @@ export {
   truncateHash,
   type TierMeta,
   type TierColor,
-} from './components/landing/tiers';
+} from '@quarks.studio/package-search/web';
 export {
   type LandingTier,
   type LandingPackage,
   type LandingTierColumns,
-} from './components/landing/types';
+} from '@quarks.studio/package-search/web';
+export { UserAvatarMenu } from './components/UserMenu/UserButton';
+
+export { PaymentHistory, type PaymentHistoryProps } from '@quarks.studio/commerce/web';

@@ -1,18 +1,14 @@
-import React from 'react';
-
-import { renderAction } from '@quarks.studio/ui/CLI';
-import LoginScreen from './LoginScreen';
-import LogoutScreen from './LogoutScreen';
-import MeScreen from './MeScreen';
-
-export function Login(props: React.ComponentProps<typeof LoginScreen>): void {
-  renderAction(React.createElement(LoginScreen, props));
+import { Login as LoginCommand } from '@quarks.studio/identity/CLI';
+import { Logout as LogoutCommand } from '@quarks.studio/identity/CLI';
+import { Me as MeCommand } from '@quarks.studio/identity/CLI';
+import { createPresentationServices } from '../composition/presentation-services';
+import type { LoginScreenProps } from '@quarks.studio/identity/CLI';
+export async function Login(props: LoginScreenProps): Promise<void> {
+  LoginCommand(props, createPresentationServices().identity);
 }
-
-export function Me(): void {
-  renderAction(React.createElement(MeScreen));
+export async function Logout(): Promise<void> {
+  LogoutCommand(createPresentationServices().identity);
 }
-
-export function Logout(): void {
-  renderAction(React.createElement(LogoutScreen));
+export async function Me(): Promise<void> {
+  MeCommand(createPresentationServices().identity);
 }

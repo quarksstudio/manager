@@ -32,3 +32,9 @@ Screens and command adapters live in `src/CLI`, one React component per file.
 Import them through `@quarks.studio/publisher/CLI`; the main entrypoint keeps
 its business API and does not load CLI presentation. Shared Ink components and
 terminal helpers come from `@quarks.studio/ui/CLI`.
+
+## Direct archive upload
+
+`@quarks.studio/publisher/upload` exposes `uploadPackageArchive` and its input
+types without loading filesystem, verification, packaging or React. Registry's
+`/upload` entry delegates to this implementation for compatibility.

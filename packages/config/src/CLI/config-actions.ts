@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderAction } from '@quarks.studio/ui/CLI';
+import { renderAction } from '@quarks.studio/terminal-ui';
 import { ConfigGetScreen } from './ConfigGetScreen';
 import { ConfigSetScreen } from './ConfigSetScreen';
 import { ConfigListScreen } from './ConfigListScreen';

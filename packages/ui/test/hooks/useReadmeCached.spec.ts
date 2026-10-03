@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { apiCache, readmeCacheKey } from '../../src/lib/storage';
+import { apiCache, cacheKey } from '../../src/lib/storage';
 import { useReadmeCached } from '../../src/hooks/useReadmeCached';
 
 const mockGetReadme = jest.fn();
@@ -32,7 +32,7 @@ describe('useReadmeCached', () => {
   });
 
   it('serves from cache without fetching', async () => {
-    await apiCache.setItem(readmeCacheKey('pkg', '1.0.0'), README);
+    await apiCache.setItem(cacheKey('readme', 'pkg@1.0.0'), README);
     const { result } = renderHook(() => useReadmeCached('pkg', '1.0.0'));
     await act(async () => {
       await Promise.resolve();
@@ -66,7 +66,7 @@ describe('useReadmeCached', () => {
   });
 
   it('respects TTL expiry', async () => {
-    await apiCache.setItem(readmeCacheKey('pkg', '1.0.0'), README, 100);
+    await apiCache.setItem(cacheKey('readme', 'pkg@1.0.0'), README, 100);
     jest.useFakeTimers();
     jest.setSystemTime(Date.now() + 200);
     mockGetReadme.mockResolvedValue(README);

@@ -9,6 +9,7 @@ import {
   useFetchPackage,
   usePackageCertifications,
   usePackageReadme,
+  usePaymentLink,
   useSearchPackages,
   useUpdatePackageMetadata,
 } from '../src/hooks';
@@ -283,6 +284,68 @@ describe('useAuthLogin', () => {
     });
     await act(async () => result.current.submitManualCode('code'));
     expect(authApi.submitManualLoginCode).toHaveBeenCalledWith('code');
+  });
+});
+
+describe('usePaymentLink', () => {
+  const REGISTRY = 'https://registry.test/v1';
+  const navigate = jest.fn();
+  const plan = {
+    kind: 'plan',
+    packageId: 'demo',
+    productId: 'PL1',
+    system: 'paypal',
+  } as const;
+  let fetchMock: jest.Mock;
+
+  beforeEach(() => {
+    navigate.mockReset();
+    fetchMock = jest.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+  });
+
+  const answer = (body: unknown, status = 200) =>
+    fetchMock.mockResolvedValue({
+      status,
+      ok: status >= 200 && status < 300,
+      statusText: status === 200 ? 'OK' : 'Error',
+      json: async () => body,
+    });
+
+  it('asks the gateway for the hosted page and forwards the payer there', async () => {
+    answer({
+      system: 'paypal',
+      url: 'https://paypal.test/checkout',
+      reference: 'ref-1',
+    });
+    const { result } = renderHook(() =>
+      usePaymentLink({ apiBaseUrl: REGISTRY, navigate }),
+    );
+
+    await act(async () => {
+      await result.current.pay(plan);
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${REGISTRY}/gateway/paypal/PL1/demo`,
+      expect.objectContaining({ method: 'GET' }),
+    );
+    expect(navigate).toHaveBeenCalledWith('https://paypal.test/checkout');
+    expect(result.current).toMatchObject({ failure: null, isPaying: false });
+  });
+
+  it('names the failure instead of writing the payer a sentence', async () => {
+    answer({}, 401);
+    const { result } = renderHook(() =>
+      usePaymentLink({ apiBaseUrl: REGISTRY, navigate }),
+    );
+
+    await act(async () => {
+      await result.current.pay(plan);
+    });
+
+    expect(navigate).not.toHaveBeenCalled();
+    expect(result.current.failure).toBe('unauthenticated');
   });
 });
 

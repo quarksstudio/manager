@@ -3,14 +3,7 @@ import * as path from 'path';
 
 const SRC = path.resolve(__dirname, '../src');
 
-const CONTEXTS = [
-  'billing',
-  'catalog',
-  'certification',
-  'distribution',
-  'identity',
-  'publication',
-];
+const CONTEXTS = ['commerce', 'package-search', 'certification', 'distribution', 'identity', 'publisher'];
 
 const FORBIDDEN = [
   /^react$/,
@@ -72,9 +65,7 @@ async function resolveRelative(
 
 function layerFiles(layer: string): Promise<string[]> {
   return Promise.all(
-    CONTEXTS.map((context) =>
-      sourcesUnder(path.join(SRC, context, layer)),
-    ),
+    CONTEXTS.map((context) => sourcesUnder(path.resolve(SRC, '../../', context, 'src', layer))),
   ).then((groups) => groups.flat());
 }
 
@@ -166,11 +157,13 @@ describe('a bounded context depends on its own layers only', () => {
     for (const layer of ['domain', 'application', 'infrastructure']) {
       for (const file of await layerFiles(layer)) {
         const source = (await read(file)) as string;
+        for (const specifier of importsOf(source)) {
+          expect(specifier).not.toMatch(/^@quarks\.studio\/registry(?:\/|$)/);
+          expect(specifier).not.toMatch(/^@quarks\.studio\/[^/]+\/src\//);
+        }
         const context = path.relative(SRC, file).split(path.sep)[0];
         for (const specifier of importsOf(source)) {
-          const target = specifier
-            .replace(/^\.{1,2}\//, '')
-            .split('/')[0];
+          const target = specifier.replace(/^\.{1,2}\//, '').split('/')[0];
           if (
             CONTEXTS.includes(target) &&
             target !== context &&
@@ -209,6 +202,12 @@ describe('the headless entrypoint stays headless', () => {
           throw new Error(
             `${path.relative(SRC, file)} imports ${specifier}, which is not headless`,
           );
+        }
+        if (specifier.startsWith('@quarks.studio/')) {
+          const config = JSON.parse(await fs.readFile(path.resolve(SRC, '../../../tsconfig.base.json'), 'utf8'));
+          const target = config.compilerOptions.paths[specifier]?.[0];
+          if (target) queue.push(path.resolve(SRC, '../../..', target));
+          continue;
         }
         if (!specifier.startsWith('.')) continue;
         if (/(^|\/)hooks$/.test(specifier)) {

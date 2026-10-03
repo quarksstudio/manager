@@ -1,9 +1,6 @@
 import { useCallback, useState } from 'react';
-import {
-  useCurrentUser,
-  useUpdatePackageMetadata,
-  type PackageDetails,
-} from '@quarks.studio/registry';
+import { useCurrentUser, useUpdatePackageMetadata } from '@quarks.studio/registry';
+import { type PackageDetails } from '@quarks.studio/distribution';
 
 const MAX_DESCRIPTION = 500;
 const MAX_TAG_LENGTH = 32;

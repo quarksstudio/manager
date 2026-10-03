@@ -1,0 +1,25 @@
+{
+  "name": "terminal-ui",
+  "sourceRoot": "packages/terminal-ui/src",
+  "projectType": "library",
+  "tags": ["type:presentation", "scope:terminal"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-lib"],
+      "options": {
+        "command": "node tools/build-terminal.mjs"
+      },
+      "outputs": ["{workspaceRoot}/dist/packages/terminal-ui"]
+    },
+    "build-lib": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "outputPath": "dist/packages/terminal-ui",
+        "main": "packages/terminal-ui/src/index.ts",
+        "tsConfig": "packages/terminal-ui/tsconfig.lib.json",
+        "assets": ["packages/terminal-ui/*.md"]
+      }
+    }
+  }
+}

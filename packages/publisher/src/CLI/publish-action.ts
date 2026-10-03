@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderAction } from '@quarks.studio/ui/CLI';
+import { renderAction } from '@quarks.studio/terminal-ui';
 import { PublishScreen } from './PublishScreen';
 import type { CertificationTier } from '@quarks.studio/tester';
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text, useApp } from 'ink';
 
-import { EXIT_CODES } from '@quarks.studio/ui/CLI';
+import { EXIT_CODES } from '@quarks.studio/terminal-ui';
 import { runLocalTests, type TestOptions, type TestResult } from '../index';
-import { Result, Screen, StatusLine } from '@quarks.studio/ui/CLI';
+import { Result, Screen, StatusLine } from '@quarks.studio/terminal-ui';
 
 interface TestScreenProps extends TestOptions {
   json?: boolean;

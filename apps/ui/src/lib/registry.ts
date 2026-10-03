@@ -1,9 +1,6 @@
 import type { AstroCookies } from 'astro';
 import { loadConfig } from '@quarks.studio/config';
-import {
-  createRegistryClient,
-  RegistryHttpError,
-} from '@quarks.studio/registry/client';
+import { createRegistryClient, RegistryHttpError } from '@quarks.studio/registry/client';
 
 export const sessionCookie = 'quark-session';
 

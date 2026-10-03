@@ -1,0 +1,33 @@
+{
+  "name": "identity",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/identity/src",
+  "projectType": "library",
+  "tags": ["type:context", "scope:identity"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/identity/jest.config.cts"
+      }
+    },
+    "build-lib": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/identity",
+        "main": "packages/identity/src/index.ts",
+        "tsConfig": "packages/identity/tsconfig.lib.json",
+        "assets": ["packages/identity/*.md"]
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-lib"],
+      "outputs": ["{workspaceRoot}/dist/packages/identity"],
+      "options": {
+        "command": "node tools/build-cli.mjs identity"
+      }
+    }
+  }
+}

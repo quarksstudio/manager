@@ -1,11 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { loadConfig } from '@quarks.studio/config';
-import {
-  AUTH_MESSAGE,
-  createRegistryClient,
-  type AuthSession,
-} from '@quarks.studio/registry/client';
+import { AUTH_MESSAGE, type AuthSession } from '@quarks.studio/identity';
+import { createRegistryClient } from '@quarks.studio/registry/client';
 
 const state = Astro.url.searchParams.get('state');
 const idToken =

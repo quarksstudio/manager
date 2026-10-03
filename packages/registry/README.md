@@ -79,50 +79,43 @@ terminal helpers come from `@quarks.studio/ui/CLI`.
 
 Existing client and hook entry points remain available for compatibility. Pure package/version types and helpers are also exported by the `client` entry.
 
-## Internal structure
+## Functional packages
 
-The code is organised as bounded contexts, one directory per business area. The
-public entry points above are the contract; the layout below is an
-implementation detail and may change without a major version bump.
+Registry owns HTTP, cache and composition. Business implementations live in:
 
-```
-src/
-  identity/        who is asking        (auth, sessions, passkeys)
-  catalog/         what exists           (package search, local cache)
-  distribution/    how it is published    (versions, readme, metadata)
-  billing/         what it costs          (payment gateway)
-  certification/   whether it is trusted  (audit decisions, WebAuthn)
-  publication/     how an archive ships   (upload, tarball)
-  transport/       shared HTTP kernel     (no business rules)
-  composition/     wiring                 (the ambient roots)
-  CLI/             Ink presentation
-```
+- `identity`: authentication and sessions.
+- `package-search`: local/remote search and filters.
+- `commerce`: commercial catalog, subscriptions, payment links and payment history.
+- `distribution`: package metadata, versions, README and streaming downloads.
+- `certification`: certification rules and WebAuthn ceremonies (WebAuthn driver).
+- `publisher`: validation, packaging and archive upload through `publisher/upload`.
 
-Each context is layered inward, and a layer only knows the ones above it:
+The existing root, `/client`, `/headless`, `/upload` and `/CLI` contracts remain
+available. Domain consumers should import their owning functional package.
+Each functionality exports headless models and ports at its root, adapters at
+`/http`, and React hooks/providers at `/react` where applicable. Adapters receive
+the transport through ports from `@quarks.studio/types/http`; functionalities
+never import registry.
 
-- `domain/` — the model and the rules, with no I/O. It is the one layer worth
-  reading first: everything else serves it.
-- `application/` — a use case. It depends on ports (`identity.port.ts`,
-  `package-registry.port.ts`, …) that it never implements.
-- `infrastructure/` — the adapters that satisfy those ports over HTTP, storage,
-  the filesystem or a browser API.
-- `composition/` — the only place that chooses an implementation. `ambient-*.ts`
-  wires the adapters to the real transport, storage and configuration for
-  callers that have no injection point of their own, which is why the public
-  functions are so short. `ambient-client.ts` and `ambient-context.ts` hold the
-  process-wide singletons, so a package is not fetched twice per process.
+`RegistryProvider` from `@quarks.studio/registry/react` wires functional React
+providers to the configured client. Hosts may instead supply services directly
+to individual providers. Existing registry hooks remain available without a
+provider and delegate to the same functional hooks.
 
-Two rules keep the contexts from quietly merging, and both are enforced by
-`test/architecture.spec.ts` rather than by convention:
+CLI screens live in their functional package and share hooks with Web/UI.
+Registry's compatible commands compose these screens with configured services. Terminal components
+come from `terminal-ui`; `ui/CLI` remains a compatible entry.
 
-- A `domain` imports no adapter, and an `application` imports no adapter. If a
-  use case needs a new capability, add it to its port.
-- `domain` and `application` never reach the transport, the composition root or
-  the entry points, and never import React, Ink, the configuration singleton or
-  `use-storage`. That is what lets a CLI, a server renderer and a browser share
-  the same use cases.
+`client.Gateway.listPayments({ limit?, cursor? })` calls `GET /v1/payments/me`.
+The server returns only the authenticated user's recorded transactions, without
+private provider data. `usePayments` from `commerce/react` manages loading,
+retries and pagination. The Web billing page reads this API through a same-origin
+proxy, using the user's bearer token or session cookie, never the server's
+ambient token. Historical transactions are shown as recorded, without inventing
+missing amounts or statuses.
 
-`src/CLI/` is deliberately the exception: it reaches into `../index` for its
-business API, and `tools/build-cli.mjs` externalises exactly that specifier. Any
-other import from `src/CLI/` would be inlined into the CLI bundle, so it stays
-import-style minimal.
+Architecture tests enforce inward layer dependencies, no reverse registry
+imports, and headless entry points. Build and artifact checks also validate
+functional exports and the existing facade.
+
+`/web` composes commerce, distribution and package-search views. Astro supplies endpoint URLs; functionality packages never import registry.

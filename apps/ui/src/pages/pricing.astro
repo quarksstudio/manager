@@ -1,0 +1,57 @@
+---
+import { registryBaseUrl as browserRegistryBaseUrl } from '../lib/registry-base';
+import { loadConfig } from '@quarks.studio/config';
+import { PlanGrid, PricingModeNav } from '@quarks.studio/ui/web';
+import { PricingBoundary } from '@quarks.studio/registry/web';
+import Layout from '../layouts/Layout.astro';
+import { loadPricing } from '../lib/pricing';
+import { registryBaseUrl } from '../lib/registry-base';
+
+const client = (await loadConfig()).config.renderMode === 'client';
+const mode =
+  Astro.url.searchParams.get('mode') === 'plans' ? 'plans' : 'products';
+const pricing = client ? null : await loadPricing(Astro.cookies);
+---
+
+<Layout title="Pricing · Quark // Skills">
+  <main class="mx-auto w-full max-w-6xl px-4 py-8">
+    <h1 class="text-2xl font-semibold text-slate-900">Pricing</h1>
+    <p class="mt-1 text-sm text-slate-500">
+      Certifications per level and monthly support plans. The catalog is global:
+      there is no package to sign up for here.
+    </p>
+
+    <div class="mt-4">
+      <PricingModeNav client:load mode={mode} baseUrl="/pricing" />
+    </div>
+
+    {
+      client ? (
+        <PricingBoundary apiBaseUrl={browserRegistryBaseUrl} client:only="react" mode={mode} />
+      ) : (
+        <>
+          <section hidden={mode !== 'products'}>
+            <p class="text-sm text-slate-500">
+              A certification is bought for one concrete version of a package.
+              Open the package you want to certify to see its ladder.
+            </p>
+          </section>
+          <section hidden={mode !== 'plans'}>
+            <PlanGrid
+              client:load
+              plans={pricing?.plans ?? []}
+              systems={pricing?.planSystems ?? { eligible: [], pending: [] }}
+              apiBaseUrl={registryBaseUrl}
+            />
+          </section>
+        </>
+      )
+    }
+
+    {
+      pricing?.error ? (
+        <p class="mt-6 text-sm text-slate-400">{pricing.error}</p>
+      ) : null
+    }
+  </main>
+</Layout>

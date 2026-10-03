@@ -88,6 +88,72 @@ const readme = {
   version: '1.0.0',
 };
 
+const systems = [
+  { id: 'paypal', name: 'PayPal', countries: null },
+  { id: 'wompi', name: 'Wompi', countries: ['CO'] },
+];
+
+const plans = [
+  {
+    id: 'PL1',
+    kind: 'plan',
+    name: 'Monthly plan',
+    description: 'Monthly credit for the package author.',
+    amountCents: 900,
+    currency: 'USD',
+    country: null,
+    tier: 0,
+    active: true,
+    features: ['Monthly credit'],
+    period: 'month',
+  },
+  {
+    id: 'PL2',
+    kind: 'plan',
+    name: 'Yearly plan',
+    description: 'Twelve months at a lower price.',
+    amountCents: 9000,
+    currency: 'USD',
+    country: null,
+    tier: 0,
+    active: false,
+    features: ['Twelve months', 'Lower price'],
+  },
+];
+
+const tiers = [1, 2, 3, 4].map((tier) => ({
+  product: {
+    id: `N${tier}`,
+    kind: 'tier',
+    name: `Tier ${tier}`,
+    description: `Certification level ${tier}.`,
+    amountCents: tier * 1000,
+    currency: 'USD',
+    country: null,
+    tier,
+    active: true,
+    features: [`Includes level ${tier}`],
+  },
+  held: 0,
+  purchasable: true,
+}));
+
+const subscription = {
+  id: 'sub-1',
+  productId: 'PL1',
+  packageId: 'demo',
+  userId: 'user-1',
+  system: 'paypal',
+  status: 'active',
+  amountCents: 900,
+  currency: 'USD',
+  period: 'month',
+  currentPeriodStart: '2026-09-01T00:00:00.000Z',
+  currentPeriodEnd: '2026-10-01T00:00:00.000Z',
+  createdAt: '2026-09-01T00:00:00.000Z',
+  updatedAt: '2026-09-01T00:00:00.000Z',
+};
+
 const cache = createCache();
 renderToStaticMarkup(
   <StyleProvider cache={cache}>
@@ -116,6 +182,50 @@ renderToStaticMarkup(
         },
         metadata: '/packages/demo/1.0.0',
       }}
+      plans={{
+        plans: [subscription],
+        plansBase: '/packages/demo/payment',
+        catalog: plans,
+      }}
+    />
+    <UI.PackagePlansPanel
+      packageName="demo"
+      plans={[]}
+      plansBase="/packages/demo/payment"
+    />
+    <UI.PricingModeNav mode="plans" baseUrl="/pricing" />
+    <UI.PlanGrid
+      plans={plans}
+      systems={{
+        eligible: [systems[0]],
+        pending: [{ ...systems[1], reason: 'Needs a stored card first.' }],
+      }}
+      packageId="demo"
+    />
+    <UI.PlanGrid
+      plans={[]}
+      systems={{ eligible: [], pending: [] }}
+      packageId="demo"
+    />
+    <UI.TierMatrix
+      offers={tiers}
+      systems={systems}
+      packageId="demo"
+      versionId="1.0.0"
+    />
+    <UI.TierMatrix
+      offers={[]}
+      systems={systems}
+      packageId="demo"
+      versionId="1.0.0"
+    />
+    <UI.SystemHints
+      pending={[{ ...systems[1], reason: 'Needs a stored card first.' }]}
+    />
+    <UI.CertificationCta
+      href="/packages/demo/1.0.0/payment"
+      versionId="1.0.0"
+      held={1}
     />
     <UI.PackageTabs
       packageName="demo2"

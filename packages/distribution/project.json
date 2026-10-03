@@ -1,0 +1,72 @@
+{
+  "name": "distribution",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/distribution/src",
+  "projectType": "library",
+  "tags": [
+    "type:context",
+    "scope:distribution"
+  ],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/distribution/jest.config.cts"
+      }
+    },
+    "build-lib": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/packages/distribution",
+        "main": "packages/distribution/src/index.ts",
+        "tsConfig": "packages/distribution/tsconfig.lib.json",
+        "assets": [
+          "packages/distribution/*.md"
+        ]
+      },
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build-lib",
+        "build-web"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/distribution"
+      ],
+      "options": {
+        "command": "node tools/build-cli.mjs distribution"
+      }
+    },
+    "build-web": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build-lib"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/distribution/src/web/index.mjs"
+      ],
+      "cache": true,
+      "inputs": [
+        "production",
+        "^production",
+        "{workspaceRoot}/tools/build-functional-web.mjs"
+      ],
+      "options": {
+        "command": "node tools/build-functional-web.mjs distribution"
+      }
+    },
+    "test-web": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/distribution/jest.web.config.cts"
+      }
+    }
+  }
+}

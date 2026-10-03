@@ -1,0 +1,43 @@
+{
+  "name": "@quarks.studio/certification",
+  "version": "0.2.0",
+  "private": false,
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./http": {
+      "types": "./src/http.d.ts",
+      "require": "./src/http.js",
+      "default": "./src/http.js"
+    },
+    "./react": {
+      "types": "./src/react.d.ts",
+      "require": "./src/react.js",
+      "default": "./src/react.js"
+    }
+  },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "**/*.mjs",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@quarks.studio/types": "workspace:*",
+    "tslib": "^2.3.0",
+    "@simplewebauthn/browser": "^13.2.2"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

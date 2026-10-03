@@ -20,6 +20,17 @@ const ALIASES: Record<string, ConfigKey> = {
 
 export type EnvSource = Record<string, string | undefined>;
 
+/**
+ * Environment injected by the bundler as a plain object literal.
+ *
+ * The literal `import.meta.env` cannot be used here: this package is compiled
+ * to CommonJS for the CLI, where `import.meta` is a syntax error. Every
+ * consumer instead pre-resolves the `QUARK_`-prefixed variables at build time
+ * and defines this global (see `apps/ui/astro.config.mjs`), which survives both
+ * the CommonJS emit and the browser bundle.
+ */
+declare const __QUARK_ENV__: EnvSource | undefined;
+
 export function camelize(name: string): string {
   return name
     .toLowerCase()
@@ -29,7 +40,9 @@ export function camelize(name: string): string {
 }
 
 export function currentEnv(): EnvSource {
-  return typeof process === 'undefined' ? {} : (process.env ?? {});
+  if (typeof process !== 'undefined' && process.env)
+    return process.env as EnvSource;
+  return typeof __QUARK_ENV__ === 'undefined' ? {} : __QUARK_ENV__;
 }
 
 function coerce(key: ConfigKey, raw: string): ConfigValue | undefined {

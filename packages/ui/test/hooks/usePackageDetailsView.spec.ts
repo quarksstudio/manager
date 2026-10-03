@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { ApiError, type PackageDetails } from '@quarks.studio/registry';
 
-import { apiCache, packageCacheKey } from '../../src/lib/storage';
+import { apiCache, cacheKey } from '../../src/lib/storage';
 import { usePackageDetailsView } from '../../src/hooks/usePackageDetailsView';
 
 const mockGet = jest.fn();
@@ -51,7 +51,7 @@ describe('usePackageDetailsView', () => {
   });
 
   it('returns cached detail without hitting the API', async () => {
-    await apiCache.setItem(packageCacheKey('demo'), DETAIL);
+    await apiCache.setItem(cacheKey('pkg', 'demo'), DETAIL);
     const { result } = renderHook(() => usePackageDetailsView('demo'));
     await act(async () => {
       await Promise.resolve();
@@ -161,7 +161,7 @@ describe('usePackageDetailsView', () => {
   });
 
   it('respects TTL expiry', async () => {
-    await apiCache.setItem(packageCacheKey('demo'), DETAIL, 100);
+    await apiCache.setItem(cacheKey('pkg', 'demo'), DETAIL, 100);
     jest.useFakeTimers();
     jest.setSystemTime(Date.now() + 200);
     mockGet.mockResolvedValue(DETAIL);

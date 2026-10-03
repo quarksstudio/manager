@@ -1,8 +1,5 @@
-import React from 'react';
-
-import { renderAction } from '@quarks.studio/ui/CLI';
-import SearchScreen from './SearchScreen';
-
-export default function Search(query: string): void {
-  renderAction(React.createElement(SearchScreen, { query }));
+import { Search as SearchCommand } from '@quarks.studio/package-search/CLI';
+import { createPresentationServices } from '../composition/presentation-services';
+export default async function Search(query: string): Promise<void> {
+  SearchCommand(query, createPresentationServices().search);
 }

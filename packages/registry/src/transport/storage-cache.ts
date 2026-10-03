@@ -1,6 +1,10 @@
 import { createStorage } from '@quarks.studio/use-storage/storage';
 
-import type { CachedResponse, CacheReadOptions, RegistryCache } from './http-context';
+import type {
+  CachedResponse,
+  CacheReadOptions,
+  RegistryCache,
+} from './http-context';
 
 /**
  * Two hours. Long enough for a CLI to reuse a manifest across a resolve, short

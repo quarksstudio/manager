@@ -1,16 +1,20 @@
-import { createLoginWithEmulator } from '../identity/application/login-with-emulator';
-import { createLoginWithProvider } from '../identity/application/login-with-provider';
-import { createConfigSessionRepository } from '../identity/infrastructure/config-session-repository';
-import { createHttpEmulatorIdentityProvider } from '../identity/infrastructure/emulator-identity-provider';
-import { createHttpIdentityGateway } from '../identity/infrastructure/http-identity-gateway';
-import { createLoopbackCallback } from '../identity/infrastructure/loopback-callback-server';
-import { createManualCodeChannel } from '../identity/infrastructure/manual-code-channel';
-import { createPopupCallback } from '../identity/infrastructure/popup-callback';
-import { createSystemBrowserLauncher } from '../identity/infrastructure/system-browser-launcher';
+import { createLoginWithEmulator } from '@quarks.studio/identity';
+import { createLoginWithProvider } from '@quarks.studio/identity';
+import { createConfigSessionRepository } from '@quarks.studio/identity/http';
+import { createHttpEmulatorIdentityProvider } from '@quarks.studio/identity/http';
+import { createHttpIdentityGateway } from '@quarks.studio/identity/http';
+import { createLoopbackCallback } from '@quarks.studio/identity/http';
+import { createManualCodeChannel } from '@quarks.studio/identity/http';
+import { createPopupCallback } from '@quarks.studio/identity/http';
+import { createSystemBrowserLauncher } from '@quarks.studio/identity/http';
 import { createGlobalContext } from './ambient-context';
 import { registryConfiguration } from './registry-configuration';
-import type { LoginEnvironment } from '../identity/application/identity.port';
-import type { AuthSession, LoginOptions, StepListener } from '../identity/domain/auth-session';
+import type { LoginEnvironment } from '@quarks.studio/identity';
+import type {
+  AuthSession,
+  LoginOptions,
+  StepListener,
+} from '@quarks.studio/identity';
 
 /**
  * The manual-code channel is module state on purpose: the code is typed into
@@ -20,8 +24,7 @@ const codes = createManualCodeChannel();
 
 /** A browser is the only place with an origin to redirect back to. */
 const environment: LoginEnvironment = {
-  origin: () =>
-    typeof window === 'undefined' ? null : window.location.origin,
+  origin: () => (typeof window === 'undefined' ? null : window.location.origin),
   randomState: () => {
     const bytes = new Uint8Array(32);
     crypto.getRandomValues(bytes);

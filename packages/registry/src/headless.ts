@@ -51,14 +51,14 @@ export {
   type StorageCacheOptions,
 } from './transport/storage-cache';
 
-export { AUTH_MESSAGE } from './identity/domain/auth-callback-protocol';
+export { AUTH_MESSAGE } from '@quarks.studio/identity';
 export {
   type AuthProvider,
   type AuthSession,
   type AuthStep,
   type LoginOptions,
   type LoginStrategy,
-} from './identity/domain/auth-session';
+} from '@quarks.studio/identity';
 export {
   loginWithEmulator,
   loginWithProvider,
@@ -75,11 +75,54 @@ export {
   type PackageVersion,
   type PackageReadme,
   type UpdatePackageMetadataInput,
-} from './distribution/domain/package-details';
+} from '@quarks.studio/distribution';
 
 export type {
   AuthApi,
+  CatalogApi,
   GatewayApi,
   PackagesApi,
   RegistryApi,
 } from './composition/api';
+
+export { browsePlans, browseTierLadder } from '@quarks.studio/commerce';
+export type { CatalogRemote } from '@quarks.studio/commerce';
+export {
+  isPlanProduct,
+  isTierProduct,
+  tierName,
+  type CatalogProduct,
+  type ProductKind,
+} from '@quarks.studio/commerce';
+export { formatPrice } from '@quarks.studio/commerce';
+export {
+  hasTierOverlap,
+  isPurchasable,
+  sortByPrice,
+  type TierOffer,
+} from '@quarks.studio/commerce';
+export {
+  partitionPlanSystems,
+  planSignupNote,
+  type PaymentSystem,
+  type PaymentSystems,
+  type PendingSystem,
+  type PlanSystems,
+} from '@quarks.studio/commerce';
+export {
+  paymentLinkPath,
+  type PaymentLinkTarget,
+} from '@quarks.studio/commerce';
+export { heldTier } from '@quarks.studio/certification';
+export type {
+  CreatedSubscription,
+  PaymentLink,
+  SubscriptionCancelResult,
+  SubscriptionRecord,
+} from '@quarks.studio/commerce';
+
+export type {
+  PaymentRecord,
+  PaymentPage,
+  PaymentListOptions,
+} from '@quarks.studio/commerce';

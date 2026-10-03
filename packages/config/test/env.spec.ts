@@ -1,6 +1,11 @@
 import { DEFAULT_CONFIG, SECRET_KEYS } from '../src/domain/config';
 import { camelize, envOverrides } from '../src/domain/env';
 
+declare global {
+  // eslint-disable-next-line no-var
+  var __QUARK_ENV__: Record<string, string> | undefined;
+}
+
 const previousEnv = { ...process.env };
 
 afterEach(() => {
@@ -33,9 +38,10 @@ describe('environment overlay', () => {
     ).toBe('http://legacy:8080');
   });
 
-  it('maps the log level and token aliases', () => {
+  it('maps the log level alias and token setting', () => {
     const overrides = withEnv({
       QUARK_LOG_LEVEL: 'verbose',
+      QUARK_TOKEN: 'server-token',
     });
     expect(overrides).toMatchObject({
       log: 'verbose',
@@ -69,5 +75,51 @@ describe('environment overlay', () => {
 
   it('declares every default under a known key', () => {
     for (const key of SECRET_KEYS) expect(DEFAULT_CONFIG).toHaveProperty(key);
+  });
+
+  describe('bundler-injected environment', () => {
+    const original = globalThis.process;
+
+    afterEach(() => {
+      Object.defineProperty(globalThis, 'process', {
+        value: original,
+        configurable: true,
+        writable: true,
+      });
+      jest.resetModules();
+    });
+
+    function inBrowser(env: Record<string, string>) {
+      jest.resetModules();
+      Object.defineProperty(globalThis, 'process', {
+        value: undefined,
+        configurable: true,
+        writable: true,
+      });
+      globalThis.__QUARK_ENV__ = env;
+      return require('../src/domain/env') as typeof import('../src/domain/env');
+    }
+
+    afterEach(() => {
+      delete (globalThis as { __QUARK_ENV__?: unknown }).__QUARK_ENV__;
+    });
+
+    it('reads the variables the bundler defined', () => {
+      const { currentEnv, envOverrides } = inBrowser({
+        QUARK_EDITOR: 'vim',
+        QUARK_REGISTRY_URL: 'http://registry.test/v1',
+      });
+      expect(currentEnv()).toMatchObject({ QUARK_EDITOR: 'vim' });
+      expect(envOverrides()).toEqual({
+        editor: 'vim',
+        registryUrl: 'http://registry.test/v1',
+      });
+    });
+
+    it('falls back to an empty source when the bundler defined nothing', () => {
+      const { currentEnv, envOverrides } = inBrowser({});
+      expect(currentEnv()).toEqual({});
+      expect(envOverrides()).toEqual({});
+    });
   });
 });

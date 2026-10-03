@@ -4,8 +4,8 @@
 import { saveSession } from '@quarks.studio/config';
 
 import { loginWithProvider } from '../../../src/composition/ambient-login';
-import { AUTH_MESSAGE } from '../../../src/identity/domain/auth-callback-protocol';
-import type { AuthSession } from '../../../src/identity/domain/auth-session';
+import { AUTH_MESSAGE } from '@quarks.studio/identity';
+import type { AuthSession } from '@quarks.studio/identity';
 
 const close = jest.fn();
 
@@ -47,7 +47,7 @@ describe('deep-link login', () => {
       expect.any(String),
       expect.not.stringContaining('noopener'),
     );
-    expect(callback.pathname).toBe('/auth/callback');
+    expect(callback.pathname).toBe('/callback');
     expect(state).toEqual(expect.any(String));
   });
 

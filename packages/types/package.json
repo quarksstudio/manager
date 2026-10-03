@@ -21,6 +21,16 @@
       "types": "./src/models/index.d.ts",
       "require": "./src/models/index.js",
       "default": "./src/models/index.js"
+    },
+    "./http": {
+      "types": "./src/http.d.ts",
+      "require": "./src/http.js",
+      "default": "./src/http.js"
+    },
+    "./query": {
+      "types": "./src/query.d.ts",
+      "require": "./src/query.js",
+      "default": "./src/query.js"
     }
   },
   "files": [

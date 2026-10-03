@@ -15,7 +15,6 @@ export default [
         'error',
         {
           enforceBuildableLibDependency: true,
-          ignoredCircularDependencies: [['cli-ui', 'registry']],
           allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
           depConstraints: [
             {
@@ -67,10 +66,7 @@ export default [
   {
     // A domain model is the part that has to survive every host, so it is
     // reached for a flat `src/domain` or for a context's own `src/<context>/domain`.
-    files: [
-      'packages/*/src/domain/**/*.ts',
-      'packages/*/src/*/domain/**/*.ts',
-    ],
+    files: ['packages/*/src/domain/**/*.ts', 'packages/*/src/*/domain/**/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -226,6 +222,7 @@ export default [
         {
           patterns: [
             '@quarks.studio/*',
+            '!@quarks.studio/terminal-ui',
             '../web',
             '../web/**',
             '../../web',
@@ -303,5 +300,9 @@ export default [
         },
       ],
     },
+  },
+  {
+    files: ['packages/terminal-ui/src/index.ts', 'packages/web-ui/src/index.ts'],
+    rules: { 'no-restricted-syntax': 'off' },
   },
 ];

@@ -1,5 +1,5 @@
 import { resetConfig } from '@quarks.studio/config';
-import { uploadPackageArchive } from '@quarks.studio/registry/upload';
+import { uploadPackageArchive } from '../src/upload';
 
 import { publishPackage } from '../src/index';
 

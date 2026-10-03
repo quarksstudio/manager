@@ -10,50 +10,200 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "paths": {
-      "@quarks.studio/types": ["./packages/types/src/index.ts"],
-      "@quarks.studio/types/*": ["./packages/types/src/*"],
-      "@quarks.studio/config": ["./packages/config/src/index.ts"],
-      "@quarks.studio/config/hooks": ["./packages/config/src/hooks.ts"],
-      "@quarks.studio/registry": ["./packages/registry/src/index.ts"],
-      "@quarks.studio/manifest": ["./packages/manifest/src/index.ts"],
-      "@quarks.studio/installer": ["./packages/installer/src/index.ts"],
-      "@quarks.studio/runtime": ["./packages/runtime/src/index.ts"],
-      "@quarks.studio/permissions": ["./packages/permissions/src/index.ts"],
-      "@quarks.studio/local-store": ["./packages/local-store/src/index.ts"],
-      "@quarks.studio/logger": ["./packages/logger/src/index.ts"],
-      "@quarks.studio/logger/*": ["./packages/logger/src/*"],
-      "@quarks.studio/use-storage": ["./packages/use-storage/src/index.ts"],
+      "@quarks.studio/types": [
+        "./packages/types/src/index.ts"
+      ],
+      "@quarks.studio/types/*": [
+        "./packages/types/src/*"
+      ],
+      "@quarks.studio/config": [
+        "./packages/config/src/index.ts"
+      ],
+      "@quarks.studio/config/hooks": [
+        "./packages/config/src/hooks.ts"
+      ],
+      "@quarks.studio/registry": [
+        "./packages/registry/src/index.ts"
+      ],
+      "@quarks.studio/manifest": [
+        "./packages/manifest/src/index.ts"
+      ],
+      "@quarks.studio/installer": [
+        "./packages/installer/src/index.ts"
+      ],
+      "@quarks.studio/runtime": [
+        "./packages/runtime/src/index.ts"
+      ],
+      "@quarks.studio/permissions": [
+        "./packages/permissions/src/index.ts"
+      ],
+      "@quarks.studio/local-store": [
+        "./packages/local-store/src/index.ts"
+      ],
+      "@quarks.studio/logger": [
+        "./packages/logger/src/index.ts"
+      ],
+      "@quarks.studio/logger/*": [
+        "./packages/logger/src/*"
+      ],
+      "@quarks.studio/use-storage": [
+        "./packages/use-storage/src/index.ts"
+      ],
       "@quarks.studio/use-storage/storage": [
         "./packages/use-storage/src/storage.ts"
       ],
-      "@quarks.studio/targz": ["./packages/targz/src/index.ts"],
-      "@quarks.studio/tester": ["./packages/tester/src/index.ts"],
-      "@quarks.studio/publisher": ["./packages/publisher/src/index.ts"],
+      "@quarks.studio/targz": [
+        "./packages/targz/src/index.ts"
+      ],
+      "@quarks.studio/tester": [
+        "./packages/tester/src/index.ts"
+      ],
+      "@quarks.studio/publisher": [
+        "./packages/publisher/src/index.ts"
+      ],
       "@quarks.studio/registry/upload": [
         "./packages/registry/src/infrastructure/upload-package-archive.ts"
       ],
-      "@quarks.studio/installer/CLI": ["./packages/installer/src/CLI/index.ts"],
-      "@quarks.studio/registry/CLI": ["./packages/registry/src/CLI/index.ts"],
-      "@quarks.studio/config/CLI": ["./packages/config/src/CLI/index.ts"],
+      "@quarks.studio/installer/CLI": [
+        "./packages/installer/src/CLI/index.ts"
+      ],
+      "@quarks.studio/registry/CLI": [
+        "./packages/registry/src/CLI/index.ts"
+      ],
+      "@quarks.studio/config/CLI": [
+        "./packages/config/src/CLI/index.ts"
+      ],
       "@quarks.studio/local-store/CLI": [
         "./packages/local-store/src/CLI/index.ts"
       ],
-      "@quarks.studio/publisher/CLI": ["./packages/publisher/src/CLI/index.ts"],
-      "@quarks.studio/tester/CLI": ["./packages/tester/src/CLI/index.ts"],
-      "@quarks.studio/ui/CLI": ["./packages/ui/src/CLI/index.ts"],
-      "@quarks.studio/ui/hooks": ["./packages/ui/src/hooks/index.ts"],
-      "@quarks.studio/ui/web": ["./packages/ui/src/web/index.ts"],
-      "@quarks.studio/ui/web/styles.css": ["./packages/ui/src/web/styles.css"],
-      "ink": ["./node_modules/ink/build/index.d.ts"],
-      "@quarks.studio/registry/client": ["./packages/registry/src/client.ts"],
+      "@quarks.studio/publisher/CLI": [
+        "./packages/publisher/src/CLI/index.ts"
+      ],
+      "@quarks.studio/tester/CLI": [
+        "./packages/tester/src/CLI/index.ts"
+      ],
+      "@quarks.studio/ui/CLI": [
+        "./packages/ui/src/CLI/index.ts"
+      ],
+      "@quarks.studio/ui/hooks": [
+        "./packages/ui/src/hooks/index.ts"
+      ],
+      "@quarks.studio/ui/web": [
+        "./packages/ui/src/web/index.ts"
+      ],
+      "@quarks.studio/ui/web/styles.css": [
+        "./packages/ui/src/web/styles.css"
+      ],
+      "ink": [
+        "./node_modules/ink/build/index.d.ts"
+      ],
+      "@quarks.studio/registry/client": [
+        "./packages/registry/src/client.ts"
+      ],
       "@quarks.studio/registry/headless": [
         "./packages/registry/src/headless.ts"
+      ],
+      "@quarks.studio/identity": [
+        "./packages/identity/src/index.ts"
+      ],
+      "@quarks.studio/identity/http": [
+        "./packages/identity/src/http.ts"
+      ],
+      "@quarks.studio/identity/react": [
+        "./packages/identity/src/react.ts"
+      ],
+      "@quarks.studio/package-search": [
+        "./packages/package-search/src/index.ts"
+      ],
+      "@quarks.studio/package-search/http": [
+        "./packages/package-search/src/http.ts"
+      ],
+      "@quarks.studio/package-search/react": [
+        "./packages/package-search/src/react.ts"
+      ],
+      "@quarks.studio/commerce": [
+        "./packages/commerce/src/index.ts"
+      ],
+      "@quarks.studio/commerce/http": [
+        "./packages/commerce/src/http.ts"
+      ],
+      "@quarks.studio/commerce/react": [
+        "./packages/commerce/src/react.ts"
+      ],
+      "@quarks.studio/distribution": [
+        "./packages/distribution/src/index.ts"
+      ],
+      "@quarks.studio/distribution/http": [
+        "./packages/distribution/src/http.ts"
+      ],
+      "@quarks.studio/distribution/react": [
+        "./packages/distribution/src/react.ts"
+      ],
+      "@quarks.studio/certification": [
+        "./packages/certification/src/index.ts"
+      ],
+      "@quarks.studio/certification/http": [
+        "./packages/certification/src/http.ts"
+      ],
+      "@quarks.studio/certification/react": [
+        "./packages/certification/src/react.ts"
+      ],
+      "@quarks.studio/publisher/upload": [
+        "./packages/publisher/src/upload.ts"
+      ],
+      "@quarks.studio/registry/react": [
+        "./packages/registry/src/react.ts"
+      ],
+      "@quarks.studio/use-storage/query": [
+        "./packages/use-storage/src/query.ts"
+      ],
+      "@quarks.studio/terminal-ui": [
+        "./packages/terminal-ui/src/index.ts"
+      ],
+      "@quarks.studio/identity/CLI": [
+        "./packages/identity/src/CLI/index.ts"
+      ],
+      "@quarks.studio/distribution/CLI": [
+        "./packages/distribution/src/CLI/index.ts"
+      ],
+      "@quarks.studio/package-search/CLI": [
+        "./packages/package-search/src/CLI/index.ts"
+      ],
+      "@quarks.studio/registry/http": [
+        "./packages/registry/src/http.ts"
+      ],
+      "@quarks.studio/types/http": [
+        "./packages/types/src/http.ts"
+      ],
+      "@quarks.studio/types/query": [
+        "./packages/types/src/query.ts"
+      ],
+      "@quarks.studio/web-ui": [
+        "./packages/web-ui/src/index.ts"
+      ],
+      "@quarks.studio/commerce/web": [
+        "./packages/commerce/src/web/index.ts"
+      ],
+      "@quarks.studio/distribution/web": [
+        "./packages/distribution/src/web/index.ts"
+      ],
+      "@quarks.studio/package-search/web": [
+        "./packages/package-search/src/web/index.ts"
+      ],
+      "@quarks.studio/registry/web": [
+        "./packages/registry/src/web/index.tsx"
       ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

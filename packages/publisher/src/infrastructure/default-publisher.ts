@@ -1,6 +1,6 @@
 import { runAgentTests, runSkillTests } from '@quarks.studio/tester';
 import { pack } from '@quarks.studio/targz';
-import { uploadPackageArchive } from '@quarks.studio/registry/upload';
+import { uploadPackageArchive } from '../upload';
 import { createPublishPackage } from '../application/publish-package';
 import { nodeProject } from './node-project';
 

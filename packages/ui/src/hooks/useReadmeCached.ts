@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
-import { useRegistryClient, type PackageReadme } from '@quarks.studio/registry';
+import { useRegistryClient } from '@quarks.studio/registry';
+import { type PackageReadme } from '@quarks.studio/distribution';
 
 import { cacheKey } from '../lib/storage';
 import { useCachedQuery, type CachedQuery } from './useCachedQuery';

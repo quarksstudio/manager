@@ -228,9 +228,27 @@ importers:
 
   apps/ui:
     dependencies:
+      '@quarks.studio/certification':
+        specifier: workspace:*
+        version: link:../../packages/certification
+      '@quarks.studio/commerce':
+        specifier: workspace:*
+        version: link:../../packages/commerce
+      '@quarks.studio/distribution':
+        specifier: workspace:*
+        version: link:../../packages/distribution
+      '@quarks.studio/identity':
+        specifier: workspace:*
+        version: link:../../packages/identity
+      '@quarks.studio/package-search':
+        specifier: workspace:*
+        version: link:../../packages/package-search
       '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../../packages/registry
+      '@quarks.studio/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@quarks.studio/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -254,14 +272,119 @@ importers:
         specifier: ^26.0.12
         version: 26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@8.1.1)
 
+  packages/certification:
+    dependencies:
+      '@quarks.studio/types':
+        specifier: workspace:*
+        version: link:../types
+      '@simplewebauthn/browser':
+        specifier: ^13.2.2
+        version: 13.3.0
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  packages/commerce:
+    dependencies:
+      '@ant-design/icons':
+        specifier: ^6.3.4
+        version: 6.3.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@quarks.studio/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@quarks.studio/types':
+        specifier: workspace:*
+        version: link:../types
+      '@quarks.studio/use-storage':
+        specifier: workspace:*
+        version: link:../use-storage
+      '@quarks.studio/web-ui':
+        specifier: workspace:*
+        version: link:../web-ui
+      antd:
+        specifier: ^6.6.5
+        version: 6.6.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
   packages/config:
     dependencies:
       '@quarks.studio/logger':
         specifier: workspace:*
         version: link:../logger
-      '@quarks.studio/ui':
+      '@quarks.studio/terminal-ui':
         specifier: workspace:*
-        version: link:../ui
+        version: link:../terminal-ui
+      '@quarks.studio/use-storage':
+        specifier: workspace:*
+        version: link:../use-storage
+      ink:
+        specifier: ^7.0.2
+        version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  packages/distribution:
+    dependencies:
+      '@ant-design/icons':
+        specifier: ^6.3.4
+        version: 6.3.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@quarks.studio/certification':
+        specifier: workspace:*
+        version: link:../certification
+      '@quarks.studio/terminal-ui':
+        specifier: workspace:*
+        version: link:../terminal-ui
+      '@quarks.studio/types':
+        specifier: workspace:*
+        version: link:../types
+      '@quarks.studio/use-storage':
+        specifier: workspace:*
+        version: link:../use-storage
+      '@quarks.studio/web-ui':
+        specifier: workspace:*
+        version: link:../web-ui
+      antd:
+        specifier: ^6.6.5
+        version: 6.6.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      ink:
+        specifier: ^7.0.2
+        version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
+      marked:
+        specifier: ^15.0.7
+        version: 15.0.12
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      sanitize-html:
+        specifier: 2.17.0
+        version: 2.17.0
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  packages/identity:
+    dependencies:
+      '@quarks.studio/config':
+        specifier: workspace:*
+        version: link:../config
+      '@quarks.studio/terminal-ui':
+        specifier: workspace:*
+        version: link:../terminal-ui
+      '@quarks.studio/types':
+        specifier: workspace:*
+        version: link:../types
       '@quarks.studio/use-storage':
         specifier: workspace:*
         version: link:../use-storage
@@ -347,6 +470,39 @@ importers:
         specifier: ^3.25.76
         version: 3.25.76
 
+  packages/package-search:
+    dependencies:
+      '@ant-design/icons':
+        specifier: ^6.3.4
+        version: 6.3.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@quarks.studio/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@quarks.studio/terminal-ui':
+        specifier: workspace:*
+        version: link:../terminal-ui
+      '@quarks.studio/types':
+        specifier: workspace:*
+        version: link:../types
+      '@quarks.studio/use-storage':
+        specifier: workspace:*
+        version: link:../use-storage
+      '@quarks.studio/web-ui':
+        specifier: workspace:*
+        version: link:../web-ui
+      antd:
+        specifier: ^6.6.5
+        version: 6.6.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      ink:
+        specifier: ^7.0.2
+        version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
   packages/permissions:
     dependencies:
       '@quarks.studio/manifest':
@@ -358,21 +514,21 @@ importers:
 
   packages/publisher:
     dependencies:
+      '@quarks.studio/config':
+        specifier: workspace:*
+        version: link:../config
       '@quarks.studio/logger':
         specifier: workspace:*
         version: link:../logger
-      '@quarks.studio/registry':
-        specifier: workspace:*
-        version: link:../registry
       '@quarks.studio/targz':
         specifier: workspace:*
         version: link:../targz
+      '@quarks.studio/terminal-ui':
+        specifier: workspace:*
+        version: link:../terminal-ui
       '@quarks.studio/tester':
         specifier: workspace:*
         version: link:../tester
-      '@quarks.studio/ui':
-        specifier: workspace:*
-        version: link:../ui
       ink:
         specifier: ^7.0.2
         version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
@@ -385,24 +541,39 @@ importers:
 
   packages/registry:
     dependencies:
+      '@quarks.studio/certification':
+        specifier: workspace:*
+        version: link:../certification
+      '@quarks.studio/commerce':
+        specifier: workspace:*
+        version: link:../commerce
       '@quarks.studio/config':
         specifier: workspace:*
         version: link:../config
+      '@quarks.studio/distribution':
+        specifier: workspace:*
+        version: link:../distribution
+      '@quarks.studio/identity':
+        specifier: workspace:*
+        version: link:../identity
       '@quarks.studio/logger':
         specifier: workspace:*
         version: link:../logger
+      '@quarks.studio/package-search':
+        specifier: workspace:*
+        version: link:../package-search
+      '@quarks.studio/publisher':
+        specifier: workspace:*
+        version: link:../publisher
+      '@quarks.studio/terminal-ui':
+        specifier: workspace:*
+        version: link:../terminal-ui
       '@quarks.studio/types':
         specifier: workspace:*
         version: link:../types
-      '@quarks.studio/ui':
-        specifier: workspace:*
-        version: link:../ui
       '@quarks.studio/use-storage':
         specifier: workspace:*
         version: link:../use-storage
-      '@simplewebauthn/browser':
-        specifier: ^13.2.2
-        version: 13.3.0
       ink:
         specifier: ^7.0.2
         version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
@@ -443,14 +614,26 @@ importers:
         specifier: ^2.9.0
         version: 2.9.0
 
+  packages/terminal-ui:
+    dependencies:
+      ink:
+        specifier: ^7.0.2
+        version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
   packages/tester:
     dependencies:
       '@quarks.studio/config':
         specifier: workspace:*
         version: link:../config
-      '@quarks.studio/ui':
+      '@quarks.studio/terminal-ui':
         specifier: workspace:*
-        version: link:../ui
+        version: link:../terminal-ui
       ajv:
         specifier: ^8.20.0
         version: 8.20.0
@@ -490,12 +673,36 @@ importers:
       '@ant-design/icons':
         specifier: ^6.3.4
         version: 6.3.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@quarks.studio/certification':
+        specifier: workspace:*
+        version: link:../certification
+      '@quarks.studio/commerce':
+        specifier: workspace:*
+        version: link:../commerce
+      '@quarks.studio/distribution':
+        specifier: workspace:*
+        version: link:../distribution
+      '@quarks.studio/identity':
+        specifier: workspace:*
+        version: link:../identity
+      '@quarks.studio/package-search':
+        specifier: workspace:*
+        version: link:../package-search
       '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../registry
+      '@quarks.studio/terminal-ui':
+        specifier: workspace:*
+        version: link:../terminal-ui
+      '@quarks.studio/types':
+        specifier: workspace:*
+        version: link:../types
       '@quarks.studio/use-storage':
         specifier: workspace:*
         version: link:../use-storage
+      '@quarks.studio/web-ui':
+        specifier: workspace:*
+        version: link:../web-ui
       antd:
         specifier: ^6.6.5
         version: 6.6.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -532,6 +739,27 @@ importers:
 
   packages/use-storage:
     dependencies:
+      '@quarks.studio/types':
+        specifier: workspace:*
+        version: link:../types
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  packages/web-ui:
+    dependencies:
+      '@ant-design/cssinjs':
+        specifier: ^2.1.2
+        version: 2.1.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@ant-design/icons':
+        specifier: ^6.3.4
+        version: 6.3.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      antd:
+        specifier: ^6.6.5
+        version: 6.6.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react:
         specifier: ^19.0.0
         version: 19.2.8

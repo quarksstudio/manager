@@ -7,5 +7,5 @@
 export {
   uploadPackageArchive,
   type UploadPackageArchiveInput,
-} from '../publication/infrastructure/upload-package-archive';
+} from '@quarks.studio/publisher/upload';
 export { registryConfiguration } from '../composition/registry-configuration';

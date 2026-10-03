@@ -1,3 +1,4 @@
+const workspaceMappings = require('../../tools/jest-workspace-mappings.cjs');
 module.exports = {
   displayName: 'registry',
   preset: '../../jest.preset.js',
@@ -7,6 +8,7 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'html'],
   moduleNameMapper: {
+    ...workspaceMappings,
     '^@quarks.studio/config$': '<rootDir>/../config/src/index.ts',
     '^@quarks.studio/config/hooks$': '<rootDir>/../config/src/hooks.ts',
     '^@quarks.studio/logger$': '<rootDir>/../logger/src/index.ts',

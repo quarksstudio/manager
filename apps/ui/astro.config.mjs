@@ -12,6 +12,13 @@ const paths = JSON.parse(
 const publicOrigin = process.env.WEB_ORIGIN
   ? new URL(process.env.WEB_ORIGIN)
   : undefined;
+// `@quarks.studio/config` compiles to CommonJS, so it cannot read
+// `import.meta.env` directly; hand it the browser-visible variables instead.
+const quarkEnv = Object.fromEntries(
+  Object.entries(process.env).filter(
+    ([name]) => name.startsWith('QUARK_') && name !== 'QUARK_TOKEN',
+  ),
+);
 export default defineConfig({
   output: 'server',
   adapter: node({ mode: 'standalone' }),
@@ -46,6 +53,7 @@ export default defineConfig({
       'import.meta.env.QUARK_API': JSON.stringify(
         process.env.QUARK_REGISTRY_URL || 'http://localhost:8081/v1',
       ),
+      __QUARK_ENV__: JSON.stringify(quarkEnv),
     },
   },
 });

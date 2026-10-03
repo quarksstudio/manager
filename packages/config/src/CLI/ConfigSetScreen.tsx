@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from 'ink';
 import { setConfigValue } from '../lib/config-repository';
-import { EXIT_CODES } from '@quarks.studio/ui/CLI';
-import { Result, Screen, StatusLine } from '@quarks.studio/ui/CLI';
+import { EXIT_CODES } from '@quarks.studio/terminal-ui';
+import { Result, Screen, StatusLine } from '@quarks.studio/terminal-ui';
 
 export function ConfigSetScreen({
   configKey = '',

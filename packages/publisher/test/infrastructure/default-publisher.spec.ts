@@ -10,7 +10,7 @@ jest.mock('@quarks.studio/tester', () => ({
   runSkillTests: jest.fn(),
   runAgentTests: jest.fn(),
 }));
-jest.mock('@quarks.studio/registry/upload', () => ({
+jest.mock('../../src/upload', () => ({
   uploadPackageArchive: jest.fn(),
 }));
 jest.mock('@quarks.studio/targz', () => ({

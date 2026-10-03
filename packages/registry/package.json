@@ -31,6 +31,21 @@
       "types": "./src/headless.d.ts",
       "require": "./src/headless.js",
       "default": "./src/headless.js"
+    },
+    "./react": {
+      "types": "./src/react.d.ts",
+      "require": "./src/react.js",
+      "default": "./src/react.js"
+    },
+    "./http": {
+      "types": "./src/http.d.ts",
+      "require": "./src/http.js",
+      "default": "./src/http.js"
+    },
+    "./web": {
+      "types": "./src/web/index.d.ts",
+      "import": "./src/web/index.mjs",
+      "default": "./src/web/index.mjs"
     }
   },
   "files": [
@@ -43,14 +58,19 @@
     "access": "public"
   },
   "dependencies": {
-    "@simplewebauthn/browser": "^13.2.2",
     "@quarks.studio/config": "workspace:*",
     "@quarks.studio/use-storage": "workspace:*",
     "@quarks.studio/logger": "workspace:*",
     "@quarks.studio/types": "workspace:*",
     "tslib": "^2.3.0",
-    "@quarks.studio/ui": "workspace:*",
-    "ink": "^7.0.2"
+    "ink": "^7.0.2",
+    "@quarks.studio/identity": "workspace:*",
+    "@quarks.studio/package-search": "workspace:*",
+    "@quarks.studio/commerce": "workspace:*",
+    "@quarks.studio/distribution": "workspace:*",
+    "@quarks.studio/certification": "workspace:*",
+    "@quarks.studio/publisher": "workspace:*",
+    "@quarks.studio/terminal-ui": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0"

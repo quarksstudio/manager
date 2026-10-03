@@ -18,6 +18,13 @@ const stage = await mkdtemp(join(tmpdir(), 'quark-cli-artifacts-'));
 const names = [
   'installer',
   'registry',
+  'identity',
+  'distribution',
+  'commerce',
+  'certification',
+  'package-search',
+  'terminal-ui',
+  'web-ui',
   'config',
   'local-store',
   'publisher',
@@ -27,6 +34,9 @@ const names = [
 const commands = {
   installer: ['Add', 'Remove'],
   registry: ['Search', 'Info', 'Login', 'Logout', 'Me'],
+  identity: ['Login', 'Logout', 'Me'],
+  distribution: ['Info'],
+  'package-search': ['Search'],
   config: ['Get', 'Set', 'List'],
   'local-store': ['List', 'Verify', 'Clean'],
   publisher: ['Publish'],
@@ -60,6 +70,12 @@ try {
     const target = join(stage, 'node_modules', pkg.name);
     await mkdir(resolve(target, '..'), { recursive: true });
     await cp(join(root, 'dist/packages', dir), target, { recursive: true });
+    if (['registry', 'identity', 'distribution', 'commerce', 'certification', 'package-search', 'terminal-ui'].includes(dir)) {
+      for (const entry of Object.values(pkg.exports ?? {})) {
+        if (typeof entry === 'object' && entry.types) await access(join(target, entry.types));
+      }
+    }
+
     for (const name of Object.keys(pkg.dependencies ?? {}))
       if (!name.startsWith('@quarks.studio/')) external.add(name);
   }
@@ -88,7 +104,15 @@ try {
     const load = Module._load;
     Module._load = function(id, ...args) { if (/^ink(\\/|$)/.test(id)) throw new Error('Business loaded Ink'); return load.call(this, id, ...args); };
     const req = Module.createRequire(process.cwd() + '/entry.cjs');
-    for (const name of ${JSON.stringify(names.filter((name) => name !== 'ui'))}) req('@quarks.studio/' + name);
+    for (const name of ${JSON.stringify(names.filter((name) => !['ui', 'terminal-ui'].includes(name)))}) req('@quarks.studio/' + name);
+  `);
+  run(`import Module from 'node:module';
+    const load = Module._load;
+    Module._load = function(id, ...args) { if (/^(react|ink)(\\/|$)/.test(id)) throw new Error('Functional API loaded UI'); return load.call(this, id, ...args); };
+    const req = Module.createRequire(process.cwd() + '/entry.cjs');
+    for (const name of ['identity', 'distribution', 'commerce', 'certification', 'package-search']) req('@quarks.studio/' + name);
+    req('@quarks.studio/registry/http');
+    req('@quarks.studio/publisher/upload');
   `);
   run(
     `import Module from 'node:module';

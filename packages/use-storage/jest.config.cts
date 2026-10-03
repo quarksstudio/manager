@@ -1,4 +1,6 @@
+const workspaceMappings = require('../../tools/jest-workspace-mappings.cjs');
 module.exports = {
+  moduleNameMapper: workspaceMappings,
   displayName: 'use-storage',
   preset: '../../jest.preset.js',
   testEnvironment: 'node',

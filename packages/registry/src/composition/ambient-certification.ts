@@ -1,12 +1,9 @@
-import { createAuditCertification } from '../certification/application/audit-decision';
-import { createHttpCertificationRegistry } from '../certification/infrastructure/http-certification-registry';
-import { createWebAuthnDriver } from '../certification/infrastructure/webauthn-ceremony';
+import { createAuditCertification } from '@quarks.studio/certification';
+import { createHttpCertificationRegistry } from '@quarks.studio/certification/http';
+import { createWebAuthnDriver } from '@quarks.studio/certification/http';
 import { createGlobalContext } from './ambient-context';
-import type { CeremonyTransport } from '../certification/infrastructure/http-certification-registry';
-import type {
-  AuditDecision,
-  AuditTarget,
-} from '../certification/application/audit-decision';
+import type { CeremonyTransport } from '@quarks.studio/certification/http';
+import type { AuditDecision, AuditTarget } from '@quarks.studio/certification';
 
 /**
  * The certification routes live on the same registry as everything else, so the

@@ -8,6 +8,9 @@ if (
     'config',
     'installer',
     'registry',
+    'identity',
+    'distribution',
+    'package-search',
     'local-store',
     'publisher',
     'tester',
@@ -31,13 +34,18 @@ await build({
     {
       name: 'owning-business-api',
       setup(context) {
-        context.onResolve({ filter: /^\.\.\/index$/ }, (args) => {
-          if (
-            resolve(args.resolveDir) === resolve(`packages/${name}/src/CLI`)
-          ) {
-            return { path: '../index.js', external: true };
-          }
-        });
+        context.onResolve(
+          {
+            filter: /^\.\.\/(index|react|composition\/presentation-services)$/,
+          },
+          (args) => {
+            if (
+              resolve(args.resolveDir) === resolve(`packages/${name}/src/CLI`)
+            ) {
+              return { path: `${args.path}.js`, external: true };
+            }
+          },
+        );
       },
     },
   ],

@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import * as tar from 'tar';
-import { Client, apiFetch, apiRequest } from '@quarks.studio/registry/headless';
+import { registryConfiguration, apiFetch, apiRequest } from '@quarks.studio/registry/http';
 import { logger } from '@quarks.studio/logger';
 import { parseManifest } from '@quarks.studio/manifest';
 import {
@@ -61,7 +61,7 @@ const MAX_PATH_LENGTH = 1_024;
 const MAX_UNPACKED_BYTES = 250 * 1024 * 1024;
 
 function packageUrl(name: string, version: string, suffix = ''): string {
-  const base = Client.API.replace(/\/$/, '');
+  const base = registryConfiguration.registryUrl.replace(/\/$/, '');
   return `${base}/package/${encodeURIComponent(name)}/${encodeURIComponent(version)}${suffix}`;
 }
 
@@ -205,7 +205,7 @@ async function performInstallSkill(
           {
             name,
             version,
-            registry: Client.API,
+            registry: registryConfiguration.registryUrl,
             hash: actualHash,
           },
           options.cacheDir,
@@ -234,7 +234,7 @@ async function performInstallSkill(
     try {
       registerInstall(name, version, isGlobal, cwd, {
         hash: actualHash,
-        source: Client.API,
+        source: registryConfiguration.registryUrl,
         dependencies: manifest.dependencies,
       });
     } catch (error) {

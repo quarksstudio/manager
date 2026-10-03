@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 @source './';
+@source '../../../commerce/src/web';
+@source '../../../distribution/src/web';
+@source '../../../package-search/src/web';
+@source '../../../web-ui/src';
 
 @custom-variant dark (&:is(.dark *));
 

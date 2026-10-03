@@ -1,0 +1,64 @@
+---
+import { registryBaseUrl as browserRegistryBaseUrl } from '../../../lib/registry-base';
+import { loadConfig } from '@quarks.studio/config';
+import { PlanGrid, PricingModeNav } from '@quarks.studio/ui/web';
+import { PricingBoundary } from '@quarks.studio/registry/web';
+import Layout from '../../../layouts/Layout.astro';
+import { loadPricing } from '../../../lib/pricing';
+import { registryBaseUrl } from '../../../lib/registry-base';
+import { packageUrl } from '../../../lib/registry';
+
+const client = (await loadConfig()).config.renderMode === 'client';
+const name = decodeURIComponent(Astro.params.packageName ?? '');
+const mode =
+  Astro.url.searchParams.get('mode') === 'products' ? 'products' : 'plans';
+const pricing = client ? null : await loadPricing(Astro.cookies);
+---
+
+<Layout title={`Plans · ${name}`}>
+  <main class="mx-auto w-full max-w-6xl px-4 py-8">
+    <h1 class="text-2xl font-semibold text-slate-900">Plans for {name}</h1>
+    <p class="mt-1 text-sm text-slate-500">
+      An active subscription adds monthly credit to {name}. Every renewal
+      charges the listed amount.
+    </p>
+
+    <div class="mt-4">
+      <PricingModeNav
+        client:load
+        mode={mode}
+        baseUrl={packageUrl(name, undefined) + '/payment'}
+      />
+    </div>
+
+    {
+      client ? (
+        <PricingBoundary apiBaseUrl={browserRegistryBaseUrl} client:only="react" mode="plans" packageName={name} />
+      ) : (
+        <>
+          <section hidden={mode !== 'plans'}>
+            <PlanGrid
+              client:load
+              packageId={name}
+              plans={pricing?.plans ?? []}
+              systems={pricing?.planSystems ?? { eligible: [], pending: [] }}
+              apiBaseUrl={registryBaseUrl}
+            />
+          </section>
+          <section hidden={mode !== 'products'}>
+            <p class="text-sm text-slate-500">
+              A certification is bought for one concrete version.{' '}
+              <a href={packageUrl(name)}>Open the package</a> and pick it.
+            </p>
+          </section>
+        </>
+      )
+    }
+
+    {
+      pricing?.error && (
+        <p class="mt-6 text-sm text-slate-400">{pricing.error}</p>
+      )
+    }
+  </main>
+</Layout>

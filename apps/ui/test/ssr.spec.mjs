@@ -28,6 +28,10 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
       res.statusCode = 401;
       return res.end('{}');
     }
+    if (req.url.startsWith('/v1/payments/me')) {
+      if (!req.headers.authorization) { res.statusCode = 401; return res.end('{}'); }
+      return res.end(JSON.stringify({ items: [{ id: req.headers.authorization, kind: 'subscription', provider: 'paypal', executedAt: '2026-09-01T00:00:00Z' }], nextCursor: null }));
+    }
     if (req.method === 'PATCH') {
       if (!req.headers.authorization) {
         res.statusCode = 403;
@@ -107,6 +111,14 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
       }
     }
     assert.ok(ready, logs);
+    assert.equal((await request('/api/payments')).status, 401);
+    assert.equal((await request('/api/payments?limit=101', { headers: { cookie: 'quark-session=alice' } })).status, 400);
+    const payments = await request('/api/payments?limit=25', { headers: { cookie: 'quark-session=alice' } });
+    assert.equal(payments.status, 200);
+    assert.match(payments.headers.get('cache-control'), /no-store/);
+    assert.equal((await payments.json()).items[0].id, 'Bearer alice');
+    const otherPayments = await request('/api/payments', { headers: { Authorization: 'Bearer bob' } });
+    assert.equal((await otherPayments.json()).items[0].id, 'Bearer bob');
     const latest = await request('/packages/%40scope%2Fdemo');
     assert.equal(latest.status, 302);
     assert.equal(latest.headers.get('location'), route);
@@ -187,23 +199,11 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
     });
     assert.equal(expired.status, 401);
     assert.match(expired.headers.get('set-cookie'), /quark-session=/);
-    const login = await request('/auth/local', {
-      method: 'POST',
-      headers: { origin: base },
-      body: new URLSearchParams({ user: 'developer' }),
-    });
-    assert.equal(login.status, 303, logs);
-    assert.match(login.headers.get('set-cookie'), /HttpOnly/i);
-    const logout = await request('/auth/logout', {
-      method: 'POST',
-      headers: { origin: base, cookie: 'quark-session=alice' },
-    });
-    assert.equal(logout.status, 303);
     // The popup exchanges the provider token server-side and hands the session
     // back to the opener: the token is never trusted from the client again.
     const before = requests.filter((r) => r.url === '/v1/auth/exchange').length;
     const callback = await request(
-      '/auth/callback?state=state-1&idToken=id-token&refreshToken=refresh-token',
+      '/~/callback?state=state-1&idToken=id-token&refreshToken=refresh-token',
     );
     assert.equal(callback.status, 200, await callback.clone().text());
     assert.match(callback.headers.get('cache-control'), /no-store/);
@@ -224,7 +224,7 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
       'the provider token stays out of the page',
     );
     // Without the state the opener generated there is nothing to answer.
-    const orphan = await request('/auth/callback?idToken=id-token');
+    const orphan = await request('/~/callback?idToken=id-token');
     assert.equal(orphan.status, 302);
     assert.equal(orphan.headers.get('location'), '/');
   } catch (error) {

@@ -14,10 +14,10 @@ const fetchMock = jest.fn();
 const REGISTRY = 'https://registry.test/v1';
 
 /**
- * The billing service does not exist yet. This suite is not a behavioural
- * contract with a backend: it pins the request shape the client produces today
- * so that whoever implements the service makes a deliberate choice between
- * `gatewayPath()` (path-scoped) and the flat paths with `system` in the body.
+ * The card routes below still describe a service shape the client never
+ * reached. `listSystems`, `listSubscriptions` and `createPaymentLink` are real:
+ * each is pinned to the route the server actually exposes, so a path change
+ * becomes a deliberate edit instead of a 404 in production.
  */
 describe('Gateway requests', () => {
   let gateway: Client['Gateway'];
@@ -117,5 +117,76 @@ describe('Gateway requests', () => {
       productId: 'pro',
       versionId: '1.0.0',
     });
+  });
+
+  it('reads the gateways for the resolved country and sends no country of its own', async () => {
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          country: 'CO',
+          source: 'ip',
+          systems: [{ id: 'paypal', name: 'PayPal', countries: null }],
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      ),
+    );
+
+    const systems = await gateway.listSystems();
+
+    expect(lastCall().url).toBe(REGISTRY + '/gateway/systems');
+    expect(lastCall().url).not.toContain('country');
+    expect(systems).toEqual({
+      country: 'CO',
+      source: 'ip',
+      systems: [{ id: 'paypal', name: 'PayPal', countries: null }],
+    });
+  });
+
+  it('turns a missing systems body into an empty list instead of throwing', async () => {
+    fetchMock.mockResolvedValueOnce(
+      new Response('null', {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    await expect(gateway.listSystems()).resolves.toEqual({
+      country: null,
+      source: 'unknown',
+      systems: [],
+    });
+  });
+
+  it('lists every subscription; the route has no system filter', async () => {
+    fetchMock.mockResolvedValueOnce(
+      new Response('[]', {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    await expect(gateway.listSubscriptions()).resolves.toEqual([]);
+    expect(lastCall().url).toBe(REGISTRY + '/subscriptions/me');
+  });
+
+  it('routes a plan link by its two segments', async () => {
+    await gateway.createPaymentLink('paypal', {
+      kind: 'plan',
+      packageId: 'demo',
+      productId: 'PL1',
+    });
+
+    expect(lastCall().url).toBe(REGISTRY + '/gateway/paypal/PL1/demo');
+  });
+
+  it('routes a certification link pinned to the version', async () => {
+    await gateway.createPaymentLink('paypal', {
+      kind: 'certification',
+      packageId: 'demo',
+      versionId: '1.0.0',
+      productId: 'N2',
+    });
+
+    expect(lastCall().url).toBe(REGISTRY + '/gateway/paypal/N2/demo@1.0.0');
   });
 });

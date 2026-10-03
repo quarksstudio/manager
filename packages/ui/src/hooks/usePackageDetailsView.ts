@@ -1,14 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
-import {
-  ApiError,
-  certificationsForVersion,
-  highestVersion,
-  sortVersions,
-  useRegistryClient,
-  type Certification,
-  type PackageDetails,
-  type PackageVersion,
-} from '@quarks.studio/registry';
+import { ApiError, useRegistryClient } from '@quarks.studio/registry';
+import { certificationsForVersion, highestVersion, sortVersions, type Certification, type PackageDetails, type PackageVersion } from '@quarks.studio/distribution';
 
 import { cacheKey } from '../lib/storage';
 import { useCachedQuery } from './useCachedQuery';

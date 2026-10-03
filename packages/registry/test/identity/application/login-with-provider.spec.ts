@@ -1,7 +1,10 @@
 import { createStorage } from '@quarks.studio/use-storage';
 import { APP_NAME } from '@quarks.studio/config';
 
-import { loginWithProvider, submitManualLoginCode } from '../../../src/composition/ambient-login';
+import {
+  loginWithProvider,
+  submitManualLoginCode,
+} from '../../../src/composition/ambient-login';
 import { createGlobalContext } from '../../../src/composition/ambient-context';
 
 const setItem = jest.fn();
@@ -59,7 +62,7 @@ describe('loginWithProvider', () => {
       method: 'POST',
       body: { token: 'id-token' },
     });
-    expect(createStorage).toHaveBeenCalledWith({ namespace: APP_NAME });
+    expect(createStorage).toHaveBeenCalledWith({ namespace: APP_NAME, isConfig: true });
     expect(setItem).toHaveBeenCalledWith('auth:session', session);
     expect(steps.at(-1)).toBe('authenticated');
   });

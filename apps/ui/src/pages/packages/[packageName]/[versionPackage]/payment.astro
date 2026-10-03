@@ -1,0 +1,85 @@
+---
+import { registryBaseUrl as browserRegistryBaseUrl } from '../../../../lib/registry-base';
+import { loadConfig } from '@quarks.studio/config';
+import { PricingModeNav, TierMatrix } from '@quarks.studio/ui/web';
+import { PricingBoundary } from '@quarks.studio/registry/web';
+import Layout from '../../../../layouts/Layout.astro';
+import { loadLadder, loadPricing } from '../../../../lib/pricing';
+import { registryBaseUrl } from '../../../../lib/registry-base';
+import { packageUrl } from '../../../../lib/registry';
+
+const client = (await loadConfig()).config.renderMode === 'client';
+const name = decodeURIComponent(Astro.params.packageName ?? '');
+const version = decodeURIComponent(Astro.params.versionPackage ?? '');
+const mode =
+  Astro.url.searchParams.get('mode') === 'plans' ? 'plans' : 'products';
+const [pricing, ladder] = client
+  ? [null, null]
+  : await Promise.all([
+      loadPricing(Astro.cookies),
+      loadLadder(Astro.cookies, name, version),
+    ]);
+---
+
+<Layout title={`Certifications · ${name} ${version}`}>
+  <main class="mx-auto w-full max-w-6xl px-4 py-8">
+    <h1 class="text-2xl font-semibold text-slate-900">
+      Certifications of {name}
+      {version}
+    </h1>
+    <p class="mt-1 text-sm text-slate-500">
+      {
+        ladder?.held
+          ? `You already hold level ${ladder.held}: you can only move up.`
+          : 'Pick the level you want to take this version to.'
+      }
+    </p>
+
+    <div class="mt-4">
+      <PricingModeNav
+        client:load
+        mode={mode}
+        baseUrl={`${packageUrl(name, version)}/payment`}
+      />
+    </div>
+
+    {
+      client ? (
+        <PricingBoundary apiBaseUrl={browserRegistryBaseUrl}
+          client:only="react"
+          mode={mode}
+          packageName={name}
+          versionId={version}
+        />
+      ) : (
+        <>
+          <section hidden={mode !== 'products'}>
+            <TierMatrix
+              client:load
+              offers={ladder?.offers ?? []}
+              systems={pricing?.systems ?? []}
+              packageId={name}
+              versionId={version}
+              apiBaseUrl={registryBaseUrl}
+            />
+          </section>
+          <section hidden={mode !== 'plans'}>
+            <p class="text-sm text-slate-500">
+              Plans are global.{' '}
+              <a href={`${packageUrl(name)}/payment`}>
+                See the plans of {name}
+              </a>
+              .
+            </p>
+          </section>
+        </>
+      )
+    }
+
+    {
+      ladder?.error ? (
+        <p class="mt-6 text-sm text-slate-400">{ladder.error}</p>
+      ) : null
+    }
+  </main>
+</Layout>
