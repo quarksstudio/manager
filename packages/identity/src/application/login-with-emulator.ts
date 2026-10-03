@@ -38,7 +38,7 @@ export function createLoginWithEmulator({
     endpoint: string,
     email: string,
     password: string,
-  ): Promise<void> {
+  ): Promise<AuthSession> {
     const identity = await emulator.signIn(endpoint, email, password);
     const session = await gateway.exchange(
       identity.idToken,
@@ -48,6 +48,7 @@ export function createLoginWithEmulator({
       throw new Error('Invalid local authentication session');
     }
     await sessions.save(session, Number(identity.expiresIn) * 1000);
+    return session;
   };
 }
 

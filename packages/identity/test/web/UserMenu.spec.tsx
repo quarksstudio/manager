@@ -20,7 +20,7 @@ beforeEach(() => {
 
 it('maps the provider choices, including X, to identity providers', () => {
   const select = jest.fn();
-  const { result } = renderHook(() => useLogInItems(select));
+  const { result } = renderHook(() => useLogInItems(false, select));
   for (const [key, provider] of [
     ['google', 'google'],
     ['github', 'github'],
@@ -62,4 +62,61 @@ it('shows login or the authenticated avatar from identity hooks', () => {
   expect(screen.getByRole('img').getAttribute('src')).toBe(
     'https://image.test/avatar.png',
   );
+});
+
+it.each([undefined, 'production', 'development'])(
+  'hides emulator login outside local (%s)',
+  (environment) => {
+    const { result } = renderHook(() =>
+      useLogInItems(false, jest.fn(), environment),
+    );
+    expect(result.current?.some((item) => item?.key === 'emulator')).toBe(
+      false,
+    );
+  },
+);
+
+it('uses the same callback for emulator and providers and blocks all items while loading', () => {
+  const login = jest.fn();
+  const { result, rerender } = renderHook(
+    ({ isLoading }) => useLogInItems(isLoading, login, 'local'),
+    { initialProps: { isLoading: false } },
+  );
+  const emulator = result.current?.find((item) => item?.key === 'emulator') as {
+    onClick: () => void;
+    label: string;
+  };
+  expect(emulator.label).toBe('Ingresar con emulador');
+  act(() => emulator.onClick());
+  expect(login).toHaveBeenLastCalledWith('emulator');
+  rerender({ isLoading: true });
+  for (const item of result.current ?? []) {
+    const entry = item as {
+      key: string;
+      disabled: boolean;
+      onClick?: () => void;
+    };
+    expect(entry.disabled).toBe(true);
+    act(() => entry.onClick?.());
+  }
+  expect(login).toHaveBeenCalledTimes(1);
+});
+
+it('consumes asynchronous and synchronous callback failures', async () => {
+  const login = jest
+    .fn()
+    .mockRejectedValueOnce(new Error('offline'))
+    .mockImplementationOnce(() => {
+      throw new Error('offline');
+    });
+  const { result } = renderHook(() => useLogInItems(false, login));
+  const item = result.current?.find((item) => item?.key === 'google') as {
+    onClick: () => void;
+  };
+  await act(async () => {
+    item.onClick();
+    await Promise.resolve();
+  });
+  expect(() => item.onClick()).not.toThrow();
+  expect(login).toHaveBeenCalledTimes(2);
 });

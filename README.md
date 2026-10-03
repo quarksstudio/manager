@@ -135,6 +135,10 @@ of generated JS in `src/`, `format:check`, and `lint`/`test`/`build`.
 
 Each owning package exposes commands and screens through `@quarks.studio/<package>/CLI`: `identity`, `distribution`, `package-search`, `installer`, `config`, `storage`, `publisher`, and `tester`. `apps/cli` imports these subpaths directly. Shared components and terminal helpers live in `@quarks.studio/terminal-ui`. Each hook lives in its owner's `src/hooks/useX.ts`, shared by CLI and Web.
 
+The application build bundles every imported `@quarks.studio/*` module into
+`dist/apps/cli/main.js`. Its generated manifest and lockfile contain only
+third-party runtime dependencies; the CLI runs independently of `dist/packages`.
+
 Business entrypoints do not re-export CLI code; lint enforces that boundary.
 
 CLI subpaths are ESM entrypoints because Ink uses top-level await. Business

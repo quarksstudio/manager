@@ -48,7 +48,8 @@ Every setting is read through `loadConfig()` from `@quarks.studio/config`, so th
 - `QUARK_REGISTRY_URL` — registry base URL (default `http://localhost:8081/v1`).
 - `QUARK_RENDER_MODE` — `ssr` (web) or `client` (Electron); set by the desktop shell.
 - `QUARK_TOKEN` — bearer credential, otherwise read from the stored session.
-- `QUARK_ENV`, `QUARK_AUTH_EMULATOR_HOST` — local auth emulator (see `src/pages/auth/local.ts`).
+- `QUARK_ENV=local`, `QUARK_AUTH_EMULATOR_HOST` — enable automatic emulator login in the user menu.
+- `QUARK_AUTH_EMULATOR_EMAIL`, `QUARK_AUTH_EMULATOR_PASSWORD` — optional local account overrides; defaults match the server bootstrap (`developer@quark.local` / `quark-local-password`).
 
 `WEB_ORIGIN` stays raw because Astro reads it while evaluating `astro.config.mjs`,
 before any module of the app is loaded.

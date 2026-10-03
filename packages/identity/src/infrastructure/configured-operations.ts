@@ -1,16 +1,25 @@
-import { createLoginWithEmulator } from '../index';
-import { createLoginWithProvider } from '../index';
-import { createConfigSessionRepository } from '../http';
-import { createHttpEmulatorIdentityProvider } from '../http';
-import { createHttpIdentityGateway } from '../http';
-import { createLoopbackCallback } from '../http';
-import { createManualCodeChannel } from '../http';
-import { createPopupCallback } from '../http';
-import { createSystemBrowserLauncher } from '../http';
-import { createGlobalContext } from '@quarks.studio/config/http';
-import { registryConfiguration } from '@quarks.studio/config/http';
-import type { LoginEnvironment } from '../index';
-import type { AuthSession, LoginOptions, StepListener } from '../index';
+import { currentEnv } from '@quarks.studio/config';
+import {
+  createGlobalContext,
+  registryConfiguration,
+} from '@quarks.studio/config/http';
+
+import { createLoginWithEmulator, createLoginWithProvider } from '../index';
+import {
+  createConfigSessionRepository,
+  createHttpEmulatorIdentityProvider,
+  createHttpIdentityGateway,
+  createLoopbackCallback,
+  createManualCodeChannel,
+  createPopupCallback,
+  createSystemBrowserLauncher,
+} from '../http';
+import type {
+  LoginEnvironment,
+  AuthSession,
+  LoginOptions,
+  StepListener,
+} from '../index';
 
 /**
  * The manual-code channel is module state on purpose: the code is typed into
@@ -64,7 +73,13 @@ async function loginWithEmulator(
   endpoint: string,
   email: string,
   password: string,
-): Promise<void> {
+): Promise<AuthSession> {
+  const env = currentEnv();
+  if ((env['QUARKS_ENV'] ?? env['QUARK_ENV']) !== 'local') {
+    throw new Error(
+      'Emulator login is only available in the local environment',
+    );
+  }
   const run = createLoginWithEmulator({
     gateway: await unauthenticatedGateway(),
     sessions: createConfigSessionRepository(),
@@ -73,4 +88,39 @@ async function loginWithEmulator(
   return run(endpoint, email, password);
 }
 
-export { loginWithEmulator, loginWithProvider, submitManualLoginCode };
+async function loginWithLocalEmulator(): Promise<AuthSession> {
+  const env = currentEnv();
+  if ((env['QUARKS_ENV'] ?? env['QUARK_ENV']) !== 'local') {
+    throw new Error(
+      'Emulator login is only available in the local environment',
+    );
+  }
+  const host = env['QUARK_AUTH_EMULATOR_HOST']?.trim();
+  if (!host)
+    throw new Error('QUARK_AUTH_EMULATOR_HOST is required for emulator login');
+  let endpoint: URL;
+  try {
+    endpoint = new URL(host.includes('://') ? host : `http://${host}`);
+    if (
+      !['http:', 'https:'].includes(endpoint.protocol) ||
+      endpoint.username ||
+      endpoint.password
+    ) {
+      throw new Error('Invalid emulator host');
+    }
+  } catch {
+    throw new Error('QUARK_AUTH_EMULATOR_HOST must be a host:port or HTTP URL');
+  }
+  return loginWithEmulator(
+    endpoint.href.replace(/\/$/, ''),
+    env['QUARK_AUTH_EMULATOR_EMAIL'] || 'developer@quark.local',
+    env['QUARK_AUTH_EMULATOR_PASSWORD'] || 'quark-local-password',
+  );
+}
+
+export {
+  loginWithEmulator,
+  loginWithLocalEmulator,
+  loginWithProvider,
+  submitManualLoginCode,
+};

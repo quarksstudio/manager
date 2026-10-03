@@ -1,5 +1,12 @@
-export type AuthProvider = 'google' | 'github' | 'twitter' | 'facebook';
+export const AUTH_PROVIDERS = [
+  'google',
+  'github',
+  'twitter',
+  'facebook',
+  'emulator',
+] as const;
 
+export type AuthProvider = (typeof AUTH_PROVIDERS)[number];
 export type LoginStrategy = 'manual-code' | 'local-server' | 'deep-link';
 
 export interface LoginOptions {
@@ -37,13 +44,6 @@ export interface CurrentUser {
   displayName?: string | null;
   [key: string]: unknown;
 }
-
-export const AUTH_PROVIDERS: AuthProvider[] = [
-  'google',
-  'github',
-  'twitter',
-  'facebook',
-];
 
 export function validateProvider(
   provider: string,

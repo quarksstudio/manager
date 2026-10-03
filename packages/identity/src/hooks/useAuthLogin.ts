@@ -1,8 +1,10 @@
 import { useCallback, useRef, useState } from 'react';
 import type {
   AuthSession,
+  AuthProvider,
   AuthStep,
   LoginOptions,
+  StepListener,
 } from '../domain/auth-session';
 import {
   type IdentityServices,
@@ -10,7 +12,8 @@ import {
 } from '../presentation/services';
 import { useServices } from './useServices';
 export function useAuthLogin(override?: IdentityServices): UseAuthLoginReturn {
-  const { loginWithProvider, submitManualLoginCode } = useServices(override);
+  const { loginWithProvider, loginWithLocalEmulator, submitManualLoginCode } =
+    useServices(override);
   const [currentStep, setCurrentStep] = useState<AuthStep>('idle');
   const [detailStep, setDetailStep] = useState<string>('');
 
@@ -19,33 +22,59 @@ export function useAuthLogin(override?: IdentityServices): UseAuthLoginReturn {
   const [error, setError] = useState<Error | null>(null);
   const authRequest = useRef(0);
 
-  const login = useCallback(
-    async (options: LoginOptions) => {
+  const runLogin = useCallback(
+    async (authenticate: (onStep: StepListener) => Promise<AuthSession>) => {
       const currentRequest = ++authRequest.current;
       setIsLoading(true);
       setError(null);
       try {
-        const session = await loginWithProvider(
-          options,
-          (step, detaitls = '') => {
-            if (currentRequest === authRequest.current) {
-              setCurrentStep(step);
-              setDetailStep(detaitls);
-            }
-          },
-        );
-        if (currentRequest === authRequest.current) setUser(session.user);
+        const session = await authenticate((step, details = '') => {
+          if (currentRequest === authRequest.current) {
+            setCurrentStep(step);
+            setDetailStep(details);
+          }
+        });
+        if (currentRequest === authRequest.current) {
+          setUser(session.user);
+          setCurrentStep('authenticated');
+        }
         return session;
       } catch (reason) {
         const failure =
           reason instanceof Error ? reason : new Error(String(reason));
-        if (currentRequest === authRequest.current) setError(failure);
+        if (currentRequest === authRequest.current) {
+          setError(failure);
+          setCurrentStep('idle');
+        }
         throw failure;
       } finally {
         if (currentRequest === authRequest.current) setIsLoading(false);
       }
     },
-    [loginWithProvider],
+    [],
+  );
+
+  const pendingEmulator = useRef<Promise<AuthSession> | null>(null);
+  const login = useCallback(
+    (provider: AuthProvider, options?: Omit<LoginOptions, 'provider'>) => {
+      if (provider !== 'emulator') {
+        return runLogin((onStep) =>
+          loginWithProvider({ ...options, provider }, onStep),
+        );
+      }
+      if (pendingEmulator.current) return pendingEmulator.current;
+      const request = runLogin((onStep) => {
+        onStep('exchanging-token', 'Ingresando con emulador');
+        return loginWithLocalEmulator();
+      });
+      pendingEmulator.current = request;
+      const clear = () => {
+        pendingEmulator.current = null;
+      };
+      void request.then(clear, clear);
+      return request;
+    },
+    [runLogin, loginWithProvider, loginWithLocalEmulator],
   );
 
   const submitManualCode = useCallback(

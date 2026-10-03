@@ -1,13 +1,35 @@
-import type { AuthProvider } from '../index';
-import { useMemo, createElement } from 'react';
+import { useMemo, useCallback, createElement, type ReactNode } from 'react';
 import { MenuProps } from 'antd';
 import {
   GoogleOutlined,
   GithubOutlined,
   FacebookOutlined,
+  CodeOutlined,
 } from '@ant-design/icons';
 
-export function useLogInItems(fn: (provider: AuthProvider) => void) {
+import { type AuthProvider, AUTH_PROVIDERS } from '../index';
+
+const ICONS: Record<AuthProvider, ReactNode> = {
+  google: createElement(GoogleOutlined, { style: { color: '#ea4335' } }),
+  github: createElement(GithubOutlined),
+  twitter: createElement(GithubOutlined),
+  facebook: createElement(FacebookOutlined, { style: { color: '#1877f2' } }),
+  emulator: createElement(CodeOutlined),
+};
+
+export function useLogInItems(
+  isLoading: boolean,
+  fn: (provider: AuthProvider) => void | Promise<unknown>,
+  environment?: string,
+): MenuProps['items'] {
+  const select = useCallback(
+    (provider: AuthProvider) => {
+      if (isLoading) return;
+      Promise.resolve(fn(provider)).catch(() => undefined);
+    },
+    [isLoading, fn],
+  );
+
   const loggedInItems: MenuProps['items'] = useMemo(
     () => [
       {
@@ -15,32 +37,18 @@ export function useLogInItems(fn: (provider: AuthProvider) => void) {
         label: createElement('strong', null, 'Iniciar sesión con:'),
         disabled: true,
       },
-      {
-        key: 'google',
-        label: 'Continuar con Google',
-        icon: createElement(GoogleOutlined, { style: { color: '#ea4335' } }),
-        onClick: () => fn('google'),
-      },
-      {
-        key: 'github',
-        label: 'Continuar con GitHub',
-        icon: createElement(GithubOutlined),
-        onClick: () => fn('github'),
-      },
-      {
-        key: 'x',
-        label: 'Continuar con X',
-        icon: createElement(GithubOutlined),
-        onClick: () => fn('twitter'),
-      },
-      {
-        key: 'facebook',
-        label: 'Continuar con Facebook',
-        icon: createElement(FacebookOutlined, { style: { color: '#1877f2' } }),
-        onClick: () => fn('facebook'),
-      },
+
+      ...AUTH_PROVIDERS.filter(
+        (name) => environment === 'local' || name !== 'emulator',
+      ).map((name) => ({
+        key: name,
+        label: 'Continuar con ${name}',
+        icon: ICONS[name],
+        disabled: isLoading,
+        onClick: () => select(name),
+      })),
     ],
-    [fn],
+    [select, environment, isLoading],
   );
 
   return loggedInItems;

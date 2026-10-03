@@ -15,6 +15,7 @@ import { spawnSync } from 'node:child_process';
 
 const root = process.cwd();
 const stage = await mkdtemp(join(tmpdir(), 'quark-cli-artifacts-'));
+const bundledStage = await mkdtemp(join(tmpdir(), 'quark-cli-bundle-'));
 const names = [
   'installer',
   'runtime',
@@ -213,7 +214,34 @@ try {
     const shared = await import('@quarks.studio/web-ui');
     for (const name of ['SiteNavbar', 'SiteFooter', 'cn']) if (typeof shared[name] !== 'function') throw new Error('web-ui missing ' + name);
   `);
-  await cp(join(root, 'dist/apps/cli'), join(stage, 'app'), {
+  for (const field of [
+    'dependencies',
+    'peerDependencies',
+    'optionalDependencies',
+  ]) {
+    assert.ok(
+      !Object.keys(cli[field] ?? {}).some((name) =>
+        name.startsWith('@quarks.studio/'),
+      ),
+      `CLI manifest contains workspace dependencies: ${field}`,
+    );
+  }
+  const metadata = await readJson(join(root, 'dist/apps/cli/meta.json'));
+  for (const output of Object.values(metadata.outputs)) {
+    assert.ok(
+      !output.imports.some(
+        (item) => item.external && item.path.startsWith('@quarks.studio/'),
+      ),
+      'CLI bundle contains workspace imports',
+    );
+  }
+  for (const name of Object.keys(cli.dependencies ?? {})) {
+    const target = await realpath(join(stage, 'node_modules', name));
+    const link = join(bundledStage, 'node_modules', name);
+    await mkdir(resolve(link, '..'), { recursive: true });
+    await symlink(target, link, 'dir');
+  }
+  await cp(join(root, 'dist/apps/cli'), join(bundledStage, 'app'), {
     recursive: true,
     filter: (source) => !source.includes('/node_modules'),
   });
@@ -228,8 +256,8 @@ try {
   ]) {
     const result = spawnSync(
       process.execPath,
-      [join(stage, 'app/main.js'), ...args],
-      { cwd: stage, encoding: 'utf8' },
+      [join(bundledStage, 'app/main.js'), ...args],
+      { cwd: bundledStage, encoding: 'utf8' },
     );
     assert.ifError(result.error);
     assert.equal(result.status, 0, result.stderr);
@@ -240,8 +268,11 @@ try {
     );
   }
   console.log(
-    'Compiled business APIs, all CLI exports and command help passed.',
+    'Compiled business APIs, all CLI exports and isolated bundled CLI commands passed.',
   );
 } finally {
-  await rm(stage, { recursive: true, force: true });
+  await Promise.all([
+    rm(stage, { recursive: true, force: true }),
+    rm(bundledStage, { recursive: true, force: true }),
+  ]);
 }

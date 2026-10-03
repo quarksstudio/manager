@@ -1,9 +1,11 @@
 ---
-import { registryBaseUrl as browserRegistryBaseUrl } from '../../../../lib/registry-base';
 import { loadConfig } from '@quarks.studio/config';
 import { PricingModeNav } from '@quarks.studio/commerce/web';
-import { ConfiguredTierMatrix as TierMatrix } from '@quarks.studio/commerce/web';
-import { ConfiguredPricingBoundary as PricingBoundary } from '@quarks.studio/commerce/web';
+import {
+  ConfiguredTierMatrix as TierMatrix,
+  ConfiguredPricingBoundary as PricingBoundary,
+} from '@quarks.studio/commerce/web';
+
 import Layout from '../../../../layouts/Layout.astro';
 import { loadLadder, loadPricing } from '../../../../lib/pricing';
 import { registryBaseUrl } from '../../../../lib/registry-base';
@@ -47,7 +49,7 @@ const [pricing, ladder] = client
     {
       client ? (
         <PricingBoundary
-          apiBaseUrl={browserRegistryBaseUrl}
+          apiBaseUrl={registryBaseUrl}
           client:only="react"
           mode={mode}
           packageName={name}

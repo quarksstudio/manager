@@ -1,6 +1,7 @@
 import { createContext, createElement, type ReactNode } from 'react';
 import type {
   AuthSession,
+  AuthProvider,
   AuthStep,
   LoginOptions,
   StepListener,
@@ -10,6 +11,7 @@ export interface IdentityServices {
     options: LoginOptions,
     onStep?: StepListener,
   ): Promise<AuthSession>;
+  loginWithLocalEmulator(): Promise<AuthSession>;
   submitManualLoginCode(code: string): void;
   me(): Promise<unknown>;
   logout(): Promise<unknown>;
@@ -26,7 +28,10 @@ export function IdentityProvider({
   return createElement(ServicesContext.Provider, { value: services }, children);
 }
 export interface UseAuthLoginReturn {
-  login: (options: LoginOptions) => Promise<AuthSession>;
+  login: (
+    provider: AuthProvider,
+    options?: Omit<LoginOptions, 'provider'>,
+  ) => Promise<AuthSession>;
   submitManualCode: (code: string) => Promise<void>;
   currentStep: AuthStep;
   isLoading: boolean;

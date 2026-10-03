@@ -1,10 +1,18 @@
-import type { AuthProvider, AuthStep, LoginStrategy } from '../index';
+import { currentEnv } from '@quarks.studio/config';
 import React, { useEffect, useState } from 'react';
 import { Box, Text, useApp, useInput } from 'ink';
 
+import {
+  EXIT_CODES,
+  Panel,
+  Screen,
+  Select,
+  StatusLine,
+} from '@quarks.studio/terminal-ui';
+
+import type { AuthProvider, AuthStep, LoginStrategy } from '../index';
+import { AUTH_PROVIDERS } from '../index';
 import { useAuthLogin } from '../hooks';
-import { EXIT_CODES } from '@quarks.studio/terminal-ui';
-import { Panel, Screen, Select, StatusLine } from '@quarks.studio/terminal-ui';
 
 const STATUS: Record<AuthStep, string> = {
   idle: 'Waiting to start login...',
@@ -22,8 +30,6 @@ export interface LoginScreenProps {
   localServerPort?: number;
 }
 
-const PROVIDERS: AuthProvider[] = ['google', 'github', 'twitter', 'facebook'];
-
 export function LoginScreen({
   provider,
   strategy,
@@ -33,9 +39,16 @@ export function LoginScreen({
   const { login, submitManualCode, currentStep, error, detailStep } =
     useAuthLogin();
   const [code, setCode] = useState('');
-  const initialProvider = PROVIDERS.includes(provider as AuthProvider)
+  const env = currentEnv();
+  const providers: readonly AuthProvider[] =
+    (env['QUARKS_ENV'] ?? env['QUARK_ENV']) === 'local'
+      ? AUTH_PROVIDERS
+      : AUTH_PROVIDERS.filter((e) => e !== 'emulator');
+
+  const initialProvider = providers.includes(provider as AuthProvider)
     ? (provider as AuthProvider)
     : null;
+
   const [selectedProvider, setSelectedProvider] = useState<AuthProvider | null>(
     initialProvider,
   );
@@ -43,7 +56,7 @@ export function LoginScreen({
 
   useEffect(() => {
     if (!selectedProvider) return;
-    void login({ provider: selectedProvider, strategy, localServerPort }).then(
+    void login(selectedProvider, { strategy, localServerPort }).then(
       () => exit(),
       () => {
         process.exitCode = EXIT_CODES.authentication;
@@ -52,15 +65,14 @@ export function LoginScreen({
     );
   }, [exit, localServerPort, login, selectedProvider, strategy]);
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (value: string) =>
     setSelectedProvider(value as AuthProvider);
-  };
 
   const handleMove = (direction: 'up' | 'down') => {
     setProviderIndex((prev) => {
       if (direction === 'up')
-        return prev === 0 ? PROVIDERS.length - 1 : prev - 1;
-      return (prev + 1) % PROVIDERS.length;
+        return prev === 0 ? providers.length - 1 : prev - 1;
+      return (prev + 1) % providers.length;
     });
   };
 
@@ -97,7 +109,7 @@ export function LoginScreen({
         {!selectedProvider && (
           <Box marginTop={1}>
             <Select
-              options={PROVIDERS.map((p) => ({ label: p, value: p }))}
+              options={providers.map((p) => ({ label: p, value: p }))}
               selectedIndex={providerIndex}
               onSelect={handleSelect}
               onMove={handleMove}

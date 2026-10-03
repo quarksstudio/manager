@@ -1,9 +1,11 @@
 ---
-import { registryBaseUrl as browserRegistryBaseUrl } from '../../../lib/registry-base';
 import { loadConfig } from '@quarks.studio/config';
-import { ConfiguredPlanGrid as PlanGrid } from '@quarks.studio/commerce/web';
-import { PricingModeNav } from '@quarks.studio/commerce/web';
-import { ConfiguredPricingBoundary as PricingBoundary } from '@quarks.studio/commerce/web';
+import {
+  PricingModeNav,
+  ConfiguredPricingBoundary as PricingBoundary,
+  ConfiguredPlanGrid as PlanGrid,
+} from '@quarks.studio/commerce/web';
+
 import Layout from '../../../layouts/Layout.astro';
 import { loadPricing } from '../../../lib/pricing';
 import { registryBaseUrl } from '../../../lib/registry-base';
@@ -35,7 +37,7 @@ const pricing = client ? null : await loadPricing(Astro.cookies);
     {
       client ? (
         <PricingBoundary
-          apiBaseUrl={browserRegistryBaseUrl}
+          apiBaseUrl={registryBaseUrl}
           client:only="react"
           mode="plans"
           packageName={name}

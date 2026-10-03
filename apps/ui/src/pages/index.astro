@@ -3,9 +3,10 @@ import { loadConfig } from '@quarks.studio/config';
 import {
   LandingHero,
   LandingTierMatrix,
+  ConfiguredLandingBoundary as LandingBoundary,
 } from '@quarks.studio/package-search/web';
-import { ConfiguredLandingBoundary as LandingBoundary } from '@quarks.studio/package-search/web';
-import { registryBaseUrl as browserRegistryBaseUrl } from '../lib/registry-base';
+
+import { registryBaseUrl } from '../lib/registry-base';
 import Layout from '../layouts/Layout.astro';
 import { landingTiers } from '../lib/landing';
 import { registry, statusFor } from '../lib/registry';
@@ -32,7 +33,7 @@ const tiers = client ? undefined : landingTiers(items);
     {
       client ? (
         <LandingBoundary
-          apiBaseUrl={browserRegistryBaseUrl}
+          apiBaseUrl={registryBaseUrl}
           client:only="react"
           blogUrl={blogUrl}
         />
