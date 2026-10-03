@@ -1,6 +1,7 @@
 import type { AstroCookies } from 'astro';
 import { loadConfig } from '@quarks.studio/config';
-import { createRegistryClient, RegistryHttpError } from '@quarks.studio/registry/client';
+import { createAppApi } from './api';
+import { RegistryHttpError } from '@quarks.studio/registry/http';
 
 export const sessionCookie = 'quark-session';
 
@@ -11,7 +12,7 @@ export const sessionCookie = 'quark-session';
  */
 export async function registry(cookies: AstroCookies) {
   const { registryUrl } = (await loadConfig()).config;
-  return createRegistryClient({
+  return createAppApi({
     baseUrl: registryUrl,
     token: cookies.get(sessionCookie)?.value,
   });

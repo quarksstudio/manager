@@ -7,7 +7,7 @@ import type {
   PaymentLink,
   SubscriptionCancelResult,
   SubscriptionRecord,
-} from '@quarks.studio/types/models';
+} from '../domain/subscription';
 import type {
   BillingSystem,
   CreateSubscriptionInput,

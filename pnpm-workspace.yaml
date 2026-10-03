@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/*
+  - packages/installer/logger
 
 allowBuilds:
   '@swc/core': true

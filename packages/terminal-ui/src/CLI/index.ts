@@ -16,3 +16,7 @@ export {
 } from './terminal/render-action';
 export { EXIT_CODES } from './terminal/exit-codes';
 export { isInteractive } from './terminal/tty';
+export * from './theme';
+export * from './types';
+export * from './components';
+export * from './terminal';

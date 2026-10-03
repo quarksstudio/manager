@@ -32,4 +32,4 @@ pnpm nx build cli
 pnpm nx serve cli
 ```
 
-The executable is emitted to `dist/apps/cli`. Commands are imported directly from the owning packages through their `/CLI` exports. Shared presentation is provided by `@quarks.studio/ui/CLI`.
+The executable is emitted to `dist/apps/cli`. Commands are imported directly from the owning packages through their `/CLI` exports. Shared presentation is provided by `@quarks.studio/terminal-ui`.

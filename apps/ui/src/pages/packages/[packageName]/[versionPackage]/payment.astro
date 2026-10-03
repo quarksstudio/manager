@@ -1,8 +1,9 @@
 ---
 import { registryBaseUrl as browserRegistryBaseUrl } from '../../../../lib/registry-base';
 import { loadConfig } from '@quarks.studio/config';
-import { PricingModeNav, TierMatrix } from '@quarks.studio/ui/web';
-import { PricingBoundary } from '@quarks.studio/registry/web';
+import { PricingModeNav } from '@quarks.studio/commerce/web';
+import { ConfiguredTierMatrix as TierMatrix } from '@quarks.studio/commerce/web';
+import { ConfiguredPricingBoundary as PricingBoundary } from '@quarks.studio/commerce/web';
 import Layout from '../../../../layouts/Layout.astro';
 import { loadLadder, loadPricing } from '../../../../lib/pricing';
 import { registryBaseUrl } from '../../../../lib/registry-base';

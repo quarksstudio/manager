@@ -1,4 +1,4 @@
-import { sortVersions, type PackageVersion } from '@quarks.studio/distribution';
+import { sortVersions, type PackageVersion } from '../../../index';
 import { List, Select, Tag, Typography } from 'antd';
 
 import { formatDate } from '@quarks.studio/web-ui';

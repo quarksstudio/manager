@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useApp } from 'ink';
-import { useInstall } from '../index';
-import { EXIT_CODES } from '@quarks.studio/ui/CLI';
-import { Result, Screen, StatusLine } from '@quarks.studio/ui/CLI';
+import { useInstall } from '../hooks';
+import { EXIT_CODES } from '@quarks.studio/terminal-ui';
+import { Result, Screen, StatusLine } from '@quarks.studio/terminal-ui';
 
 export interface AddScreenProps {
   packageName?: string[];

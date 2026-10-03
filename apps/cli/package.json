@@ -20,10 +20,13 @@
     "commander": "^15.0.0",
     "yaml": "^2.9.1",
     "@quarks.studio/installer": "workspace:*",
-    "@quarks.studio/registry": "workspace:*",
     "@quarks.studio/config": "workspace:*",
-    "@quarks.studio/local-store": "workspace:*",
     "@quarks.studio/publisher": "workspace:*",
-    "@quarks.studio/logger": "workspace:*"
+    "@quarks.studio/logger": "workspace:*",
+    "@quarks.studio/storage": "workspace:*",
+    "@quarks.studio/identity": "workspace:*",
+    "@quarks.studio/distribution": "workspace:*",
+    "@quarks.studio/package-search": "workspace:*",
+    "@quarks.studio/certification": "workspace:*"
   }
 }

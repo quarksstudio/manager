@@ -1,5 +1,5 @@
 import { DownloadOutlined } from '@ant-design/icons';
-import { sortVersions, type PackageVersion } from '@quarks.studio/distribution';
+import { sortVersions, type PackageVersion } from '../../../index';
 import { List, Tag, Typography } from 'antd';
 
 import { certificationBadge } from '../../lib/certification';

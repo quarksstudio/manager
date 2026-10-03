@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Box, Text, useApp } from 'ink';
-import { useSearchPackages } from '../react';
+import { useSearchPackages } from '../hooks';
 
 import {
   EmptyState,

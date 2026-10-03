@@ -1,0 +1,79 @@
+{
+  "name": "@quarks.studio/storage",
+  "version": "0.2.0",
+  "private": false,
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./CLI": {
+      "types": "./src/CLI/index.d.ts",
+      "import": "./src/CLI/index.mjs",
+      "default": "./src/CLI/index.mjs"
+    },
+    "./installations": {
+      "types": "./src/installations.d.ts",
+      "require": "./src/installations.js",
+      "default": "./src/installations.js"
+    },
+    "./query": {
+      "types": "./src/query.d.ts",
+      "require": "./src/query.js",
+      "default": "./src/query.js"
+    },
+    "./hooks": {
+      "types": "./src/hooks/index.d.ts",
+      "require": "./src/hooks/index.js",
+      "default": "./src/hooks/index.js"
+    },
+    "./http-cache": {
+      "types": "./src/http-cache.d.ts",
+      "require": "./src/http-cache.js",
+      "default": "./src/http-cache.js"
+    },
+    "./application": {
+      "types": "./src/application/index.d.ts",
+      "require": "./src/application/index.js",
+      "default": "./src/application/index.js"
+    },
+    "./domain": {
+      "types": "./src/domain/index.d.ts",
+      "require": "./src/domain/index.js",
+      "default": "./src/domain/index.js"
+    },
+    "./infrastructure": {
+      "types": "./src/infrastructure/index.d.ts",
+      "require": "./src/infrastructure/index.js",
+      "default": "./src/infrastructure/index.js"
+    }
+  },
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "README.md",
+    "**/*.mjs"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "ink": "^7.0.2",
+    "@quarks.studio/terminal-ui": "workspace:*",
+    "@quarks.studio/registry": "workspace:*",
+    "@quarks.studio/domain-kernel": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "browser": {
+    "./src/infrastructure/node-adapter.ts": "./src/infrastructure/node-adapter.browser.ts",
+    "./src/infrastructure/node-adapter.js": "./src/infrastructure/node-adapter.browser.js"
+  }
+}

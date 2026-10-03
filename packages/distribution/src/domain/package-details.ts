@@ -1,6 +1,5 @@
-import type { Certification } from '@quarks.studio/types/models';
+import type { Certification } from '@quarks.studio/certification';
 
-export type { Certification } from '@quarks.studio/types/models';
 /** The editor's input belongs to the same aggregate, so it re-exports here. */
 export type { UpdatePackageMetadataInput } from './update-package-metadata';
 

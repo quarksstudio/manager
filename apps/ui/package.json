@@ -9,15 +9,14 @@
   ],
   "dependencies": {
     "@quarks.studio/registry": "workspace:*",
-    "@quarks.studio/ui": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "@quarks.studio/commerce": "workspace:*",
-    "@quarks.studio/types": "workspace:*",
     "@quarks.studio/identity": "workspace:*",
     "@quarks.studio/distribution": "workspace:*",
     "@quarks.studio/certification": "workspace:*",
-    "@quarks.studio/package-search": "workspace:*"
+    "@quarks.studio/package-search": "workspace:*",
+    "@quarks.studio/web-ui": "workspace:*"
   },
   "devDependencies": {
     "@astrojs/react": "^4.4.2",

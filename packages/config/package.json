@@ -13,14 +13,39 @@
       "default": "./src/index.js"
     },
     "./hooks": {
-      "types": "./src/hooks.d.ts",
-      "require": "./src/hooks.js",
-      "default": "./src/hooks.js"
+      "types": "./src/hooks/index.d.ts",
+      "require": "./src/hooks/index.js",
+      "default": "./src/hooks/index.js"
     },
     "./CLI": {
       "types": "./src/CLI/index.d.ts",
       "import": "./src/CLI/index.mjs",
       "default": "./src/CLI/index.mjs"
+    },
+    "./http": {
+      "types": "./src/http.d.ts",
+      "require": "./src/http.js",
+      "default": "./src/http.js"
+    },
+    "./domain": {
+      "types": "./src/domain/index.d.ts",
+      "require": "./src/domain/index.js",
+      "default": "./src/domain/index.js"
+    },
+    "./infrastructure": {
+      "types": "./src/infrastructure/index.d.ts",
+      "require": "./src/infrastructure/index.js",
+      "default": "./src/infrastructure/index.js"
+    },
+    "./lib": {
+      "types": "./src/lib/index.d.ts",
+      "require": "./src/lib/index.js",
+      "default": "./src/lib/index.js"
+    },
+    "./presentation": {
+      "types": "./src/presentation/index.d.ts",
+      "require": "./src/presentation/index.js",
+      "default": "./src/presentation/index.js"
     }
   },
   "files": [
@@ -33,11 +58,12 @@
     "access": "public"
   },
   "dependencies": {
-    "@quarks.studio/use-storage": "workspace:*",
+    "@quarks.studio/storage": "workspace:*",
     "@quarks.studio/logger": "workspace:*",
     "tslib": "^2.3.0",
     "ink": "^7.0.2",
-    "@quarks.studio/terminal-ui": "workspace:*"
+    "@quarks.studio/terminal-ui": "workspace:*",
+    "@quarks.studio/registry": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0"

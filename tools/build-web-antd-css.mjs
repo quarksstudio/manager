@@ -1,9 +1,10 @@
 import { build } from 'esbuild';
+import { resolve } from 'node:path';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 
-const entry = 'packages/ui/tools/build-web-antd-css.entry.tsx';
+const entry = 'tools/build-web-antd-css.entry.tsx';
 // A throwaway esbuild intermediate, not a source file: the entry renders the
 // components to harvest antd's CSS, and the bundle is only needed for the
 // duration of that one import. Under `dist/` so it stays out of the tree.
@@ -18,6 +19,10 @@ await build({
   platform: 'node',
   target: 'node20',
   packages: 'bundle',
+  nodePaths: [
+    resolve('packages/web-ui/node_modules'),
+    resolve('apps/ui/node_modules'),
+  ],
   external: ['react', 'react-dom', 'react/jsx-runtime'],
 });
 // The bundle keeps a few CJS `require('react'|'react-dom')` call sites that

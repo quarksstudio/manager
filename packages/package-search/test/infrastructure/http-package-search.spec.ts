@@ -1,5 +1,5 @@
 import { createHttpPackageSearch } from '../../src/http';
-import type { OperationContext } from '@quarks.studio/types/http';
+import type { OperationContext } from '@quarks.studio/registry/http';
 
 const fetchJson = jest.fn();
 

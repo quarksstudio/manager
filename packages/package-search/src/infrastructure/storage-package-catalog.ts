@@ -1,5 +1,5 @@
 // The headless subpath, not the barrel: the barrel re-exports the React hook.
-import { createStorage } from '@quarks.studio/use-storage/storage';
+import { createStorage } from '@quarks.studio/storage';
 
 import type { PackageSearchItem } from '../domain/package-search-item';
 import type { PackageCatalogRepository } from '../application/package-catalog.repository';

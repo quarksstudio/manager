@@ -3,7 +3,7 @@ import { resetConfig, writeConfig } from '@quarks.studio/config';
 import { uploadPackageArchive } from '../../src/infrastructure/upload-package-archive';
 
 const stored = new Map<string, unknown>();
-jest.mock('@quarks.studio/use-storage/storage', () => ({
+jest.mock('@quarks.studio/storage', () => ({
   createStorage: () => ({
     getItem: jest.fn(async (key: string) => stored.get(key) ?? null),
     setItem: jest.fn(async (key: string, value: unknown) => {

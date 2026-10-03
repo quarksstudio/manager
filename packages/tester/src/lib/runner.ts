@@ -1,3 +1,4 @@
+import type { CertificationTier } from '@quarks.studio/certification';
 import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -21,7 +22,6 @@ import { CliSecurityRunner } from './tiers/tier3/security';
 import { validateAuditContract } from './tiers/tier4';
 import type {
   VerificationResult,
-  CertificationTier,
   CoverageReport,
   TestRunnerOptions,
 } from './types';

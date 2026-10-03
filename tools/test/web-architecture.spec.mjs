@@ -6,6 +6,11 @@ import tseslint from 'typescript-eslint';
 const flatConfig = (await import('../../eslint.config.mjs')).default;
 
 function matches(pattern, filePath) {
+  const choices = pattern.match(/\{([^{}]+)\}/);
+  if (choices)
+    return choices[1]
+      .split(',')
+      .some((choice) => matches(pattern.replace(choices[0], choice), filePath));
   if (pattern.includes('**')) {
     return filePath.startsWith(pattern.split('**')[0]);
   }
@@ -53,22 +58,24 @@ async function violations(code, filePath) {
   );
 }
 
-test('web presentation may import the registry and browser-storage libraries', async () => {
-  for (const specifier of [
-    '@quarks.studio/registry',
-    '@quarks.studio/use-storage',
-  ]) {
-    assert.equal(
-      (
-        await violations(
-          `import { x } from '${specifier}';`,
-          'packages/ui/src/hooks/usePackageDetailsView.ts',
-        )
-      ).length,
-      0,
-      `expected ${specifier} to be allowed`,
-    );
-  }
+test('functional hooks may import shared storage but not registry', async () => {
+  assert.equal(
+    (
+      await violations(
+        "import { useCachedQuery } from '@quarks.studio/storage/query';",
+        'packages/distribution/src/hooks/usePackageDetailsView.ts',
+      )
+    ).length,
+    0,
+  );
+  assert.ok(
+    (
+      await violations(
+        "import { Client } from '@quarks.studio/registry';",
+        'packages/distribution/src/hooks/usePackageDetailsView.ts',
+      )
+    ).length > 0,
+  );
 });
 
 test('web presentation cannot reach the registry CLI surface', async () => {
@@ -80,7 +87,7 @@ test('web presentation cannot reach the registry CLI surface', async () => {
       (
         await violations(
           `import { x } from '${specifier}';`,
-          'packages/ui/src/web/components/package-details/PackageDetails.tsx',
+          'packages/distribution/src/web/components/package-details/PackageDetails.tsx',
         )
       ).length > 0,
       `expected ${specifier} to be restricted`,
@@ -94,10 +101,10 @@ test('web presentation cannot import CLI components or other quark packages', as
     "import { renderAction } from '../../CLI';",
     "import { read } from '@quarks.studio/targz';",
     "import { sortVersions } from '@quarks.studio/registry/CLI';",
-    "import { get } from '@quarks.studio/types';",
+    "import { install } from '@quarks.studio/installer';",
   ]) {
     assert.ok(
-      (await violations(code, 'packages/ui/src/web/components/ui/button.tsx'))
+      (await violations(code, 'packages/web-ui/src/components/button.tsx'))
         .length > 0,
     );
   }
@@ -112,7 +119,7 @@ test('CLI presentation cannot import web components', async () => {
       (
         await violations(
           code,
-          'packages/ui/src/CLI/components/layout/Panel.tsx',
+          'packages/terminal-ui/src/components/layout/Panel.tsx',
         )
       ).length > 0,
     );
@@ -124,7 +131,7 @@ test('CLI presentation cannot import any @quarks.studio/* library', async () => 
     (
       await violations(
         "import { useRegistryClient } from '@quarks.studio/registry';",
-        'packages/ui/src/CLI/components/layout/Panel.tsx',
+        'packages/terminal-ui/src/components/layout/Panel.tsx',
       )
     ).length > 0,
   );
@@ -132,14 +139,14 @@ test('CLI presentation cannot import any @quarks.studio/* library', async () => 
 
 test('package entry points stay free of registry imports', async () => {
   assert.ok(
-    (await violations("export * from './web';", 'packages/ui/src/CLI/index.ts'))
+    (await violations("export * from './web';", 'packages/terminal-ui/src/index.ts'))
       .length === 0,
   );
   assert.ok(
     (
       await violations(
         "import { x } from '@quarks.studio/registry';",
-        'packages/ui/src/CLI/index.ts',
+        'packages/terminal-ui/src/index.ts',
       )
     ).length > 0,
   );
@@ -150,7 +157,7 @@ test('CLI entry cannot import shared hooks', async () => {
     (
       await violations(
         "import { usePackageDetailsView } from '../hooks';",
-        'packages/ui/src/CLI/index.ts',
+        'packages/terminal-ui/src/index.ts',
       )
     ).length > 0,
   );
@@ -163,8 +170,12 @@ test('shared hooks cannot import ink or CLI components', async () => {
     "import { renderAction } from '../../CLI';",
   ]) {
     assert.ok(
-      (await violations(code, 'packages/ui/src/hooks/usePackageDetailsView.ts'))
-        .length > 0,
+      (
+        await violations(
+          code,
+          'packages/distribution/src/hooks/usePackageDetailsView.ts',
+        )
+      ).length > 0,
     );
   }
 });

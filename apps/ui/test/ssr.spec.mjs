@@ -111,14 +111,8 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
       }
     }
     assert.ok(ready, logs);
-    assert.equal((await request('/api/payments')).status, 401);
-    assert.equal((await request('/api/payments?limit=101', { headers: { cookie: 'quark-session=alice' } })).status, 400);
-    const payments = await request('/api/payments?limit=25', { headers: { cookie: 'quark-session=alice' } });
-    assert.equal(payments.status, 200);
-    assert.match(payments.headers.get('cache-control'), /no-store/);
-    assert.equal((await payments.json()).items[0].id, 'Bearer alice');
-    const otherPayments = await request('/api/payments', { headers: { Authorization: 'Bearer bob' } });
-    assert.equal((await otherPayments.json()).items[0].id, 'Bearer bob');
+    assert.equal((await request('/api/payments')).status, 404);
+    assert.equal((await request('/~/me/billing')).status, 200);
     const latest = await request('/packages/%40scope%2Fdemo');
     assert.equal(latest.status, 302);
     assert.equal(latest.headers.get('location'), route);

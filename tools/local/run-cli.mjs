@@ -15,8 +15,8 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const names = [
   'logger',
-  'types',
-  'use-storage',
+  'domain-kernel',
+  'storage',
   'manifest',
   'permissions',
   'targz',
@@ -29,17 +29,23 @@ const names = [
   'package-search',
   'terminal-ui',
   'config',
-  'local-store',
   'publisher',
   'tester',
-  'ui',
 ];
 
 const stage = await mkdtemp(join(tmpdir(), 'quark-run-cli-'));
 const external = new Set();
 for (const dir of names) {
   const pkg = JSON.parse(
-    await readFile(join(root, 'packages', dir, 'package.json'), 'utf8'),
+    await readFile(
+      join(
+        root,
+        'packages',
+        dir === 'logger' ? 'installer/logger' : dir,
+        'package.json',
+      ),
+      'utf8',
+    ),
   );
   await cp(
     join(root, 'dist/packages', dir),
@@ -58,7 +64,15 @@ for (const name of external) {
   let target;
   const candidates = [
     join(root, 'node_modules', name),
-    ...names.map((dir) => join(root, 'packages', dir, 'node_modules', name)),
+    ...names.map((dir) =>
+      join(
+        root,
+        'packages',
+        dir === 'logger' ? 'installer/logger' : dir,
+        'node_modules',
+        name,
+      ),
+    ),
   ];
   for (const candidate of candidates) {
     try {

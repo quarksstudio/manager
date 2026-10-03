@@ -1,0 +1,31 @@
+[
+  {
+    "label": "Debug: Attach to CLI",
+    "adapter": "JavaScript",
+    "type": "pwa-node",
+    "request": "attach",
+    "port": 9229,
+    "cwd": "${workspaceFolder}"
+  },
+  {
+    "label": "Debug CLI Command",
+    "adapter": "JavaScript",
+    "type": "node",
+    "request": "launch",
+    "program": "${workspaceFolder}/dist/apps/cli/main.js",
+    "attachSimplePort": 9229,
+    "args": [
+      "auth",
+      "login",
+      "google"
+    ],
+    "stopOnEntry": true,
+    "sourceMaps": true,
+    "cwd": "${workspaceFolder}",
+    "skipFiles": [
+      "<node_internals>/**",
+      "**/node_modules/**"
+    ],
+    "runtimeExecutable": "node"
+  }
+]

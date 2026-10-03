@@ -9,22 +9,18 @@
   ],
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
-        "build-lib",
-        "build-web"
-      ],
+      "executor": "@nx/js:tsc",
       "outputs": [
-        "{workspaceRoot}/dist/packages/registry"
+        "{options.outputPath}"
       ],
-      "cache": true,
-      "inputs": [
-        "production",
-        "^production",
-        "{workspaceRoot}/tools/build-cli.mjs"
-      ],
+      "dependsOn": [],
       "options": {
-        "command": "node tools/build-cli.mjs registry"
+        "outputPath": "dist/packages/registry",
+        "main": "packages/registry/src/index.ts",
+        "tsConfig": "packages/registry/tsconfig.lib.json",
+        "assets": [
+          "packages/registry/*.md"
+        ]
       }
     },
     "test": {
@@ -41,9 +37,7 @@
       "outputs": [
         "{options.outputPath}"
       ],
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": [],
       "options": {
         "outputPath": "dist/packages/registry",
         "main": "packages/registry/src/index.ts",
@@ -51,24 +45,6 @@
         "assets": [
           "packages/registry/*.md"
         ]
-      }
-    },
-    "build-web": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
-        "build-lib"
-      ],
-      "outputs": [
-        "{workspaceRoot}/dist/packages/registry/src/web/index.mjs"
-      ],
-      "cache": true,
-      "inputs": [
-        "production",
-        "^production",
-        "{workspaceRoot}/tools/build-functional-web.mjs"
-      ],
-      "options": {
-        "command": "node tools/build-functional-web.mjs registry"
       }
     }
   }

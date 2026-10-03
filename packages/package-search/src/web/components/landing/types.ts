@@ -1,4 +1,3 @@
-import type { LandingTier } from '@quarks.studio/web-ui';
 export type { LandingTier } from '@quarks.studio/web-ui';
 
 export interface LandingPackage {

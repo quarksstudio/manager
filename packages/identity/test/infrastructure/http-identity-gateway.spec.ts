@@ -1,5 +1,5 @@
 import { createHttpIdentityGateway } from '../../src/http';
-import type { OperationContext } from '@quarks.studio/types/http';
+import type { OperationContext } from '@quarks.studio/registry/http';
 
 const fetchJson = jest.fn();
 const gateway = createHttpIdentityGateway({

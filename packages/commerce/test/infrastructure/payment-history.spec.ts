@@ -1,5 +1,5 @@
 import { createHttpBillingGateway } from '../../src/infrastructure/http-billing-gateway';
-import type { OperationContext } from '@quarks.studio/types/http';
+import type { OperationContext } from '@quarks.studio/registry/http';
 it('lists payments through the authenticated transport without caching', async () => {
   const fetchJson = jest
     .fn()

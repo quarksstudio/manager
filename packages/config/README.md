@@ -38,7 +38,7 @@ server owns the `accounts:createAuthUri` handshake and holds its own secret.
 ## Storage
 
 Configuration and session share one `createStorage({ namespace: 'quarks' })`
-engine from `@quarks.studio/use-storage`, with the `config` and `auth:session`
+engine from `@quarks.studio/storage`, with the `config` and `auth:session`
 keys. The import is the `/storage` subpath rather than the barrel so this
 package stays importable from a process with no renderer.
 

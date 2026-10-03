@@ -1,7 +1,5 @@
-import type {
-  CertificationTier,
-  VerificationResult,
-} from '@quarks.studio/tester';
+import type { CertificationTier } from '@quarks.studio/certification';
+import type { VerificationResult } from '@quarks.studio/tester';
 import type { PublicationSource } from '../domain/publication';
 
 export interface ArchiveContent {

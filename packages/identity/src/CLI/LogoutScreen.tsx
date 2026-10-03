@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useApp } from 'ink';
 
-import { useAuthLogout } from '../react';
+import { useAuthLogout } from '../hooks';
 import { EXIT_CODES } from '@quarks.studio/terminal-ui';
 import { Screen, StatusLine } from '@quarks.studio/terminal-ui';
 

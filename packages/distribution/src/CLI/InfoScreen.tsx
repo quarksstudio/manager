@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useApp } from 'ink';
-import { useFetchPackage } from '../react';
+import { useFetchPackage } from '../hooks';
 
 import {
   KeyValue,

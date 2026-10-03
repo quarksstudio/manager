@@ -1,0 +1,24 @@
+{
+  "name": "domain-kernel",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/domain-kernel/src",
+  "projectType": "library",
+  "tags": ["type:contract", "scope:shared"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/domain-kernel",
+        "main": "packages/domain-kernel/src/index.ts",
+        "tsConfig": "packages/domain-kernel/tsconfig.lib.json",
+        "assets": ["packages/domain-kernel/*.md"]
+      }
+    },
+    "build-lib": {
+      "executor": "nx:noop",
+      "dependsOn": ["build"],
+      "outputs": ["{workspaceRoot}/dist/packages/domain-kernel"]
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { DomainError } from '@quarks.studio/types';
+import { DomainError } from '@quarks.studio/domain-kernel';
 
 export type InstallationState =
   'requested' | 'authorized' | 'verified' | 'installed' | 'failed';

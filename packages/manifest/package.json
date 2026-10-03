@@ -11,6 +11,11 @@
       "types": "./src/index.d.ts",
       "require": "./src/index.js",
       "default": "./src/index.js"
+    },
+    "./lib": {
+      "types": "./src/lib/index.d.ts",
+      "require": "./src/lib/index.js",
+      "default": "./src/lib/index.js"
     }
   },
   "files": [

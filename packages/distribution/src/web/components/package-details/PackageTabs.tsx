@@ -1,4 +1,4 @@
-import { certificationsForVersion, type PackageDetails } from '@quarks.studio/distribution';
+import { certificationsForVersion, type PackageDetails } from '../../../index';
 import { Tabs, type TabsProps } from 'antd';
 
 import { QuarkTheme } from '@quarks.studio/web-ui';

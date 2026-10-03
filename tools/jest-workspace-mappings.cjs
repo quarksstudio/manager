@@ -1,3 +1,4 @@
+const { resolve } = require('node:path');
 const { compilerOptions } = require('../tsconfig.base.json');
 module.exports = Object.fromEntries(
   Object.entries(compilerOptions.paths)
@@ -6,6 +7,6 @@ module.exports = Object.fromEntries(
     )
     .map(([name, [source]]) => [
       `^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
-      `<rootDir>/../${source.replace(/^\.\/packages\//, '')}`,
+      resolve(__dirname, '..', source),
     ]),
 );

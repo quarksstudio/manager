@@ -9,7 +9,8 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "module": "commonjs",
-    "moduleResolution": "node10"
+    "moduleResolution": "node10",
+    "importHelpers": false
   },
   "include": [
     "src/**/*.ts",

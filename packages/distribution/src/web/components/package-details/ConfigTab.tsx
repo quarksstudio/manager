@@ -1,4 +1,4 @@
-import type { PackageDetails } from '@quarks.studio/distribution';
+import type { PackageDetails } from '../../../index';
 import { Alert, Button, Form, Input } from 'antd';
 
 import { QuarkTheme } from '@quarks.studio/web-ui';

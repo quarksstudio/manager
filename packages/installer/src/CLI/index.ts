@@ -3,3 +3,8 @@ export { default as Remove } from './remove-action';
 export { AddScreen } from './AddScreen';
 export { InstallScreen } from './InstallScreen';
 export { RemoveScreen } from './RemoveScreen';
+export * from './AddScreen';
+export * from './InstallScreen';
+export * from './RemoveScreen';
+export * from './add-action';
+export * from './remove-action';

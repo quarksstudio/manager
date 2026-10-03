@@ -4,14 +4,12 @@ import { resolve } from 'node:path';
 const name = process.argv[2];
 if (
   ![
-    'ui',
     'config',
     'installer',
-    'registry',
     'identity',
     'distribution',
     'package-search',
-    'local-store',
+    'storage',
     'publisher',
     'tester',
   ].includes(name)
@@ -34,15 +32,23 @@ await build({
     {
       name: 'owning-business-api',
       setup(context) {
+        context.onResolve({ filter: /^@quarks\.studio\// }, ({ path }) => ({
+          path,
+          external: true,
+        }));
         context.onResolve(
           {
-            filter: /^\.\.\/(index|react|composition\/presentation-services)$/,
+            filter:
+              /^\.\.\/(index|hooks|presentation|installations|presentation\/configured-services)$/,
           },
           (args) => {
             if (
               resolve(args.resolveDir) === resolve(`packages/${name}/src/CLI`)
             ) {
-              return { path: `${args.path}.js`, external: true };
+              const entry = ['../hooks', '../presentation'].includes(args.path)
+                ? `${args.path}/index.js`
+                : `${args.path}.js`;
+              return { path: entry, external: true };
             }
           },
         );

@@ -11,7 +11,7 @@ const mockStorage = {
   }),
 };
 
-jest.mock('@quarks.studio/use-storage/storage', () => ({
+jest.mock('@quarks.studio/storage', () => ({
   createStorage: () => mockStorage,
 }));
 

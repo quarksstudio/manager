@@ -2,7 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import { loadConfig } from '@quarks.studio/config';
 import { AUTH_MESSAGE, type AuthSession } from '@quarks.studio/identity';
-import { createRegistryClient } from '@quarks.studio/registry/client';
+import { createHttpContext } from '@quarks.studio/registry/http';
+import { createHttpIdentityGateway } from '@quarks.studio/identity/http';
 
 const state = Astro.url.searchParams.get('state');
 const idToken =
@@ -14,12 +15,12 @@ if (!(state && idToken)) {
 }
 
 const { registryUrl } = (await loadConfig()).config;
-const client = createRegistryClient({ baseUrl: registryUrl });
+const client = createHttpIdentityGateway(createHttpContext({ baseUrl: registryUrl }));
 
 let session: AuthSession | null = null;
 let error: string | null = null;
 try {
-  session = await client.Auth.exchange(idToken, refreshToken ?? undefined);
+  session = await client.exchange(idToken, refreshToken ?? undefined);
 } catch (cause) {
   error =
     cause instanceof Error

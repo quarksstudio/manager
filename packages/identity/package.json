@@ -17,15 +17,45 @@
       "require": "./src/http.js",
       "default": "./src/http.js"
     },
-    "./react": {
-      "types": "./src/react.d.ts",
-      "require": "./src/react.js",
-      "default": "./src/react.js"
-    },
     "./CLI": {
       "types": "./src/CLI/index.d.ts",
       "import": "./src/CLI/index.mjs",
       "default": "./src/CLI/index.mjs"
+    },
+    "./web": {
+      "types": "./src/web/index.d.ts",
+      "import": "./src/web/index.mjs",
+      "default": "./src/web/index.mjs"
+    },
+    "./configured": {
+      "types": "./src/configured.d.ts",
+      "require": "./src/configured.js",
+      "default": "./src/configured.js"
+    },
+    "./application": {
+      "types": "./src/application/index.d.ts",
+      "require": "./src/application/index.js",
+      "default": "./src/application/index.js"
+    },
+    "./domain": {
+      "types": "./src/domain/index.d.ts",
+      "require": "./src/domain/index.js",
+      "default": "./src/domain/index.js"
+    },
+    "./hooks": {
+      "types": "./src/hooks/index.d.ts",
+      "require": "./src/hooks/index.js",
+      "default": "./src/hooks/index.js"
+    },
+    "./infrastructure": {
+      "types": "./src/infrastructure/index.d.ts",
+      "require": "./src/infrastructure/index.js",
+      "default": "./src/infrastructure/index.js"
+    },
+    "./presentation": {
+      "types": "./src/presentation/index.d.ts",
+      "require": "./src/presentation/index.js",
+      "default": "./src/presentation/index.js"
     }
   },
   "files": [
@@ -38,12 +68,14 @@
     "access": "public"
   },
   "dependencies": {
-    "@quarks.studio/types": "workspace:*",
     "tslib": "^2.3.0",
     "@quarks.studio/config": "workspace:*",
-    "@quarks.studio/use-storage": "workspace:*",
+    "@quarks.studio/storage": "workspace:*",
     "@quarks.studio/terminal-ui": "workspace:*",
-    "ink": "^7.0.2"
+    "ink": "^7.0.2",
+    "antd": "^6.6.5",
+    "@ant-design/icons": "^6.3.4",
+    "@quarks.studio/registry": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0"

@@ -17,6 +17,7 @@ const root = process.cwd();
 const stage = await mkdtemp(join(tmpdir(), 'quark-cli-artifacts-'));
 const names = [
   'installer',
+  'runtime',
   'registry',
   'identity',
   'distribution',
@@ -26,22 +27,19 @@ const names = [
   'terminal-ui',
   'web-ui',
   'config',
-  'local-store',
+  'storage',
   'publisher',
   'tester',
-  'ui',
 ];
 const commands = {
   installer: ['Add', 'Remove'],
-  registry: ['Search', 'Info', 'Login', 'Logout', 'Me'],
   identity: ['Login', 'Logout', 'Me'],
   distribution: ['Info'],
   'package-search': ['Search'],
   config: ['Get', 'Set', 'List'],
-  'local-store': ['List', 'Verify', 'Clean'],
+  storage: ['List', 'Verify', 'Clean'],
   publisher: ['Publish'],
   tester: ['Test'],
-  ui: ['Screen', 'renderAction'],
 };
 const readJson = async (file) => JSON.parse(await readFile(file, 'utf8'));
 function run(code, env) {
@@ -55,24 +53,39 @@ function run(code, env) {
 }
 try {
   const dirs = [
-    ...names,
+    ...new Set(names),
     'logger',
-    'types',
-    'use-storage',
+    'domain-kernel',
     'manifest',
     'permissions',
     'targz',
   ];
   const external = new Set();
   for (const dir of dirs) {
-    const source = join(root, 'packages', dir);
+    const source = join(
+      root,
+      'packages',
+      dir === 'logger' ? 'installer/logger' : dir,
+    );
     const pkg = await readJson(join(source, 'package.json'));
     const target = join(stage, 'node_modules', pkg.name);
     await mkdir(resolve(target, '..'), { recursive: true });
     await cp(join(root, 'dist/packages', dir), target, { recursive: true });
-    if (['registry', 'identity', 'distribution', 'commerce', 'certification', 'package-search', 'terminal-ui'].includes(dir)) {
+    if (
+      [
+        'registry',
+        'identity',
+        'distribution',
+        'commerce',
+        'certification',
+        'package-search',
+        'terminal-ui',
+        'web-ui',
+      ].includes(dir)
+    ) {
       for (const entry of Object.values(pkg.exports ?? {})) {
-        if (typeof entry === 'object' && entry.types) await access(join(target, entry.types));
+        if (typeof entry === 'object' && entry.types)
+          await access(join(target, entry.types));
       }
     }
 
@@ -86,7 +99,15 @@ try {
     let target;
     for (const candidate of [
       join(root, 'node_modules', name),
-      ...dirs.map((dir) => join(root, 'packages', dir, 'node_modules', name)),
+      ...dirs.map((dir) =>
+        join(
+          root,
+          'packages',
+          dir === 'logger' ? 'installer/logger' : dir,
+          'node_modules',
+          name,
+        ),
+      ),
     ]) {
       try {
         target = await realpath(candidate);
@@ -104,7 +125,7 @@ try {
     const load = Module._load;
     Module._load = function(id, ...args) { if (/^ink(\\/|$)/.test(id)) throw new Error('Business loaded Ink'); return load.call(this, id, ...args); };
     const req = Module.createRequire(process.cwd() + '/entry.cjs');
-    for (const name of ${JSON.stringify(names.filter((name) => !['ui', 'terminal-ui'].includes(name)))}) req('@quarks.studio/' + name);
+    for (const name of ${JSON.stringify(names.filter((name) => !['terminal-ui'].includes(name)))}) req('@quarks.studio/' + name);
   `);
   run(`import Module from 'node:module';
     const load = Module._load;
@@ -120,7 +141,7 @@ try {
     Module._load = function(id, ...args) { if (/^(react|ink)(\\/|$)/.test(id)) throw new Error('Publisher loaded UI'); return load.call(this, id, ...args); };
     const req = Module.createRequire(process.cwd() + '/entry.cjs');
     const { publishPackage } = req('@quarks.studio/publisher');
-    const { registryConfiguration } = req('@quarks.studio/registry/upload');
+    const { registryConfiguration } = req('@quarks.studio/config/http');
     const { loadConfig } = req('@quarks.studio/config');
     await loadConfig();
     if (registryConfiguration.registryUrl !== 'https://registry.test/api') throw new Error('Registry endpoint did not come from the environment');
@@ -128,26 +149,69 @@ try {
   `,
     { QUARK_REGISTRY_URL: 'https://registry.test/api' },
   );
+  run(`import assert from 'node:assert/strict';
+    import { createRequire } from 'node:module';
+    const require = createRequire(process.cwd() + '/entry.cjs');
+    const { DomainError } = require('@quarks.studio/domain-kernel');
+    const { SkillCoordinate, SkillInstallation } = require('@quarks.studio/installer');
+    const { LocalSkillInstallation } = require('@quarks.studio/storage/installations');
+    const { SkillExecution } = require('@quarks.studio/runtime');
+    const cases = [
+      [() => SkillCoordinate.create('../bad', '1.0.0'), 'installation.invalid_name', 'Invalid skill name: ../bad'],
+      [() => SkillCoordinate.create('demo', 'bad'), 'installation.invalid_version', 'Invalid semantic version: bad'],
+      [() => new SkillInstallation(SkillCoordinate.create('demo', '1.0.0')).complete(), 'installation.invalid_transition', 'Cannot transition requested to installed'],
+      [() => LocalSkillInstallation.restore({name: '', version: '', path: ''}), 'local_store.invalid_installation', 'Invalid local skill installation'],
+      [() => new SkillExecution('node', '', [], '.', {}), 'execution.missing_entrypoint', 'Entrypoint is required'],
+    ];
+    for (const [run, code, message] of cases) assert.throws(run, error => error instanceof DomainError && error.name === 'DomainError' && error.code === code && error.message === message);
+    const kernel = require('./node_modules/@quarks.studio/domain-kernel/package.json');
+    assert.deepEqual(Object.keys(kernel.dependencies ?? {}), []);
+  `);
   run(`for (const [name, commands] of Object.entries(${JSON.stringify(commands)})) {
     const api = await import('@quarks.studio/' + name + '/CLI');
     for (const command of commands) if (typeof api[command] !== 'function') throw new Error(name + ':' + command);
   }`);
-  const webEntry = join(root, 'dist/packages/ui/src/web/index.mjs');
-  const webStyles = join(root, 'dist/packages/ui/src/web/styles.css');
-  const hooksEntry = join(root, 'dist/packages/ui/src/hooks/index.mjs');
-  await access(webEntry);
-  await access(webStyles);
-  await access(hooksEntry);
   run(`import Module from 'node:module';
     const load = Module._load;
-    Module._load = function(id, ...args) { if (/^ink(\\/|$)/.test(id)) throw new Error('Web bundle loaded Ink'); return load.call(this, id, ...args); };
-    const web = await import('@quarks.studio/ui/web');
-    for (const name of ['PackageDetails', 'PackageSidebar', 'Home', 'renderMarkdown'])
-      if (typeof web[name] !== 'function') throw new Error('ui:web missing ' + name);
+    Module._load = function(id, ...args) { if (/^ink(\\/|$)/.test(id)) throw new Error('Functional Web loaded Ink'); return load.call(this, id, ...args); };
+    for (const [owner, names] of Object.entries({
+      identity: ['UserAvatarMenu'],
+      commerce: ['BillingBoundary', 'PricingBoundary', 'PaymentHistory'],
+      distribution: ['PackagesBoundary', 'PackageDetails'],
+      'package-search': ['LandingBoundary', 'landingTiers'],
+    })) {
+      const api = await import('@quarks.studio/' + owner + '/web');
+      for (const name of names) if (typeof api[name] !== 'function') throw new Error(owner + ':web missing ' + name);
+    }
+    const shared = await import('@quarks.studio/web-ui');
+    if (typeof shared.QuarkTheme !== 'function') throw new Error('Missing shared theme');
   `);
-  run(`const hooks = await import('@quarks.studio/ui/hooks');
-    for (const name of ['usePackageDetailsView', 'usePackageDownload', 'usePackageMetadataEditor'])
-      if (typeof hooks[name] !== 'function') throw new Error('ui:hooks missing ' + name);
+  await access(join(root, 'dist/packages/web-ui/src/styles.css'));
+  run(`for (const [owner, hook, provider] of [
+      ['identity', 'useAuthLogin', 'IdentityProvider'],
+      ['commerce', 'usePayments', 'CommerceProvider'],
+      ['distribution', 'useFetchPackage', 'DistributionProvider'],
+      ['package-search', 'useSearchPackages', 'PackageSearchProvider'],
+      ['certification', 'useAuditCertification', 'CertificationProvider'],
+    ]) {
+      const hooks = await import('@quarks.studio/' + owner + '/hooks');
+      const presentation = await import('@quarks.studio/' + owner + '/presentation');
+      if (typeof hooks[hook] !== 'function') throw new Error(owner + ':hooks missing ' + hook);
+      if (typeof presentation[provider] !== 'function') throw new Error(owner + ':presentation missing ' + provider);
+      try {
+        await import('@quarks.studio/' + owner + '/react');
+        throw new Error(owner + ': obsolete entry is still exported');
+      } catch (error) {
+        if (error.code !== 'ERR_PACKAGE_PATH_NOT_EXPORTED') throw error;
+      }
+    }
+    const hooks = await import('@quarks.studio/distribution/hooks');
+    for (const name of ['usePackageDetailsView', 'usePackageDownload', 'usePackageMetadataEditor', 'useReadmeCached'])
+      if (typeof hooks[name] !== 'function') throw new Error('distribution:hooks missing ' + name);
+    const query = await import('@quarks.studio/storage/query');
+    if (typeof query.useCachedQuery !== 'function') throw new Error('Missing cache query');
+    const shared = await import('@quarks.studio/web-ui');
+    for (const name of ['SiteNavbar', 'SiteFooter', 'cn']) if (typeof shared[name] !== 'function') throw new Error('web-ui missing ' + name);
   `);
   await cp(join(root, 'dist/apps/cli'), join(stage, 'app'), {
     recursive: true,

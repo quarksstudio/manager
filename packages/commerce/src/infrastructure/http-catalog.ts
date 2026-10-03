@@ -1,5 +1,5 @@
 import { logger } from '@quarks.studio/logger';
-import type { OperationContext } from '@quarks.studio/types/http';
+import type { OperationContext } from '@quarks.studio/registry/http';
 import type { CatalogProduct, ProductKind } from '../domain/product';
 import type { CatalogRemote } from '../application/catalog.port';
 

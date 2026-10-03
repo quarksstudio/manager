@@ -1,4 +1,4 @@
-import type { CertificationTier } from '@quarks.studio/types/models';
+import type { CertificationTier } from '@quarks.studio/certification';
 
 export type ProductKind = 'tier' | 'plan';
 

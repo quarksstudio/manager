@@ -1,15 +1,18 @@
 ---
-import { registryBaseUrl as browserRegistryBaseUrl } from '../lib/registry-base';
 import { loadConfig } from '@quarks.studio/config';
-import { LandingHero, LandingTierMatrix } from '@quarks.studio/ui/web';
-import { LandingBoundary } from '@quarks.studio/registry/web';
+import { LandingHero, LandingTierMatrix } from '@quarks.studio/package-search/web';
+import { ConfiguredLandingBoundary as LandingBoundary } from '@quarks.studio/package-search/web';
+import { registryBaseUrl as browserRegistryBaseUrl } from '../lib/registry-base';
 import Layout from '../layouts/Layout.astro';
 import { landingTiers } from '../lib/landing';
 import { registry, statusFor } from '../lib/registry';
+
 const client = (await loadConfig()).config.renderMode === 'client';
 const blogUrl = 'https://blog.quarks.studio';
+
 let items: Array<{ id: string }> = [];
 let error = '';
+
 if (!client) {
   try {
     items = (await (await registry(Astro.cookies)).Packages.search()).items;
@@ -25,7 +28,11 @@ const tiers = client ? undefined : landingTiers(items);
   <main>
     {
       client ? (
-        <LandingBoundary apiBaseUrl={browserRegistryBaseUrl} client:only="react" blogUrl={blogUrl} />
+        <LandingBoundary
+          apiBaseUrl={browserRegistryBaseUrl}
+          client:only="react"
+          blogUrl={blogUrl}
+        />
       ) : (
         <>
           <LandingHero exploreUrl="/search" blogUrl={blogUrl} />

@@ -16,7 +16,7 @@ const mockHook = {
   failure: null,
   reset: jest.fn(),
 };
-jest.mock('@quarks.studio/commerce/react', () => ({
+jest.mock('@quarks.studio/commerce/hooks', () => ({
   usePaymentLink: () => mockHook,
 }));
 

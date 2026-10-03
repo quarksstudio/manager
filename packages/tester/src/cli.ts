@@ -3,7 +3,8 @@ import { loadConfig } from '@quarks.studio/config';
 
 import { runAgentTests, runSkillTests } from './lib/runner';
 import { requestServerCertification } from './lib/server-client';
-import { parseCertificationTier, type TestRunnerOptions } from './lib/types';
+import { parseCertificationTier } from '@quarks.studio/certification';
+import type { TestRunnerOptions } from './lib/types';
 
 async function main(argv: string[]): Promise<number> {
   const [command, targetDir, ...rest] = argv;

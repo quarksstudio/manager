@@ -1,4 +1,4 @@
-import type { CertificationTier } from '@quarks.studio/tester';
+import type { CertificationTier } from '@quarks.studio/certification';
 
 export interface PublishOptions {
   sourceDir?: string;

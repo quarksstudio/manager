@@ -9,7 +9,7 @@ export type {
   SubscriptionCancelResult,
   SubscriptionRecord,
   TokenizedPaymentMethod,
-} from '@quarks.studio/types/models';
+} from './subscription';
 
 /**
  * The payment provider tokenizes card details on the client side. A card number

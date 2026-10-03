@@ -1,7 +1,8 @@
 /** @jest-environment jsdom */
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { PaymentPage } from '../../src/domain/payment-history';
-import { usePayments, type CommerceServices } from '../../src/react';
+import { usePayments } from '../../src/hooks';
+import { type CommerceServices } from '../../src/presentation';
 const payment = (id: string) => ({
   id,
   kind: 'execution' as const,

@@ -1,4 +1,4 @@
-import { highestVersion, type PackageDetails as Detail } from '@quarks.studio/distribution';
+import { highestVersion, type PackageDetails as Detail } from '../../../index';
 import { certificationBadge } from '../../lib/certification';
 import { QuarkTheme } from '@quarks.studio/web-ui';
 import { PackageHeader } from './PackageHeader';

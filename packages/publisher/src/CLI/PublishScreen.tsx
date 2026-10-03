@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Text, useApp } from 'ink';
-import type { CertificationTier } from '@quarks.studio/tester';
+import type { CertificationTier } from '@quarks.studio/certification';
 import {
   publishPackage,
   VerificationFailure,

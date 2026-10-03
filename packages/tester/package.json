@@ -16,6 +16,21 @@
       "types": "./src/CLI/index.d.ts",
       "import": "./src/CLI/index.mjs",
       "default": "./src/CLI/index.mjs"
+    },
+    "./application": {
+      "types": "./src/application/index.d.ts",
+      "require": "./src/application/index.js",
+      "default": "./src/application/index.js"
+    },
+    "./infrastructure": {
+      "types": "./src/infrastructure/index.d.ts",
+      "require": "./src/infrastructure/index.js",
+      "default": "./src/infrastructure/index.js"
+    },
+    "./lib": {
+      "types": "./src/lib/index.d.ts",
+      "require": "./src/lib/index.js",
+      "default": "./src/lib/index.js"
     }
   },
   "bin": {
@@ -39,7 +54,8 @@
     "zod": "^3.25.76",
     "@quarks.studio/config": "workspace:*",
     "ink": "^7.0.2",
-    "@quarks.studio/terminal-ui": "workspace:*"
+    "@quarks.studio/terminal-ui": "workspace:*",
+    "@quarks.studio/certification": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0"

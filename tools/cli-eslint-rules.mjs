@@ -12,17 +12,17 @@ export const businessRules = {
       'error',
       {
         selector:
-          ':matches(ImportDeclaration, ExportNamedDeclaration, ExportAllDeclaration)[source.value=/CLI|@quarks.studio.ui/]',
+          ':matches(ImportDeclaration, ExportNamedDeclaration, ExportAllDeclaration)[source.value=/CLI|@quarks.studio.ui|@quarks.studio.terminal-ui/]',
         message:
           'Business modules must not import or re-export CLI presentation.',
       },
       {
-        selector: 'ImportExpression[source.value=/CLI|@quarks.studio.ui/]',
+        selector: 'ImportExpression[source.value=/CLI|@quarks.studio.ui|@quarks.studio.terminal-ui/]',
         message: 'Business modules must not load CLI presentation.',
       },
       {
         selector:
-          'CallExpression[callee.name="require"] > Literal[value=/CLI|@quarks.studio.ui/]',
+          'CallExpression[callee.name="require"] > Literal[value=/CLI|@quarks.studio.ui|@quarks.studio.terminal-ui/]',
         message: 'Business modules must not load CLI presentation.',
       },
     ],

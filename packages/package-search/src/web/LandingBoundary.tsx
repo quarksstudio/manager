@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { usePackageSearchWebServices } from './services';
 import { LandingHero } from './components/landing/LandingHero';
 import { LandingTierMatrix } from './components/landing/LandingTierMatrix';
-import type { LandingTier, LandingTierColumns } from './components/landing/types';
+import type {
+  LandingTier,
+  LandingTierColumns,
+} from './components/landing/types';
 import { landingTiers } from './lib/landing';
 
 export interface LandingBoundaryProps {
@@ -11,7 +14,11 @@ export interface LandingBoundaryProps {
   packageUrl: (name: string) => string;
 }
 
-export function LandingBoundary({ blogUrl, exploreUrl, packageUrl }: LandingBoundaryProps) {
+export function LandingBoundary({
+  blogUrl,
+  exploreUrl,
+  packageUrl,
+}: LandingBoundaryProps) {
   const services = usePackageSearchWebServices();
   const [tiers, setTiers] = useState<Record<
     LandingTier,
@@ -37,8 +44,10 @@ export function LandingBoundary({ blogUrl, exploreUrl, packageUrl }: LandingBoun
       <LandingHero exploreUrl={exploreUrl} blogUrl={blogUrl} />
       {tiers ? (
         <LandingTierMatrix tiers={tiers} />
-      ) : error && (
-        <p className="pb-12 text-center text-sm text-slate-400">{error}</p>
+      ) : (
+        error && (
+          <p className="pb-12 text-center text-sm text-slate-400">{error}</p>
+        )
       )}
     </>
   );

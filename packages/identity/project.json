@@ -3,7 +3,10 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/identity/src",
   "projectType": "library",
-  "tags": ["type:context", "scope:identity"],
+  "tags": [
+    "type:context",
+    "scope:identity"
+  ],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
@@ -13,20 +16,56 @@
     },
     "build-lib": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/identity",
         "main": "packages/identity/src/index.ts",
         "tsConfig": "packages/identity/tsconfig.lib.json",
-        "assets": ["packages/identity/*.md"]
-      }
+        "assets": [
+          "packages/identity/*.md"
+        ]
+      },
+      "dependsOn": [
+        "^build"
+      ]
     },
     "build": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build-lib"],
-      "outputs": ["{workspaceRoot}/dist/packages/identity"],
+      "dependsOn": [
+        "build-lib",
+        "build-web"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/identity"
+      ],
       "options": {
         "command": "node tools/build-cli.mjs identity"
+      }
+    },
+    "build-web": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build-lib"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/identity/src/web/index.mjs"
+      ],
+      "cache": true,
+      "inputs": [
+        "production",
+        "^production",
+        "{workspaceRoot}/tools/build-functional-web.mjs"
+      ],
+      "options": {
+        "command": "node tools/build-functional-web.mjs identity"
+      }
+    },
+    "test-web": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/identity/jest.web.config.cts"
       }
     }
   }

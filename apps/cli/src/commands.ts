@@ -1,15 +1,17 @@
 import { homedir } from 'os';
 import { Command } from 'commander';
 import { Add, Remove } from '@quarks.studio/installer/CLI';
-import { Search, Info, Login, Logout, Me } from '@quarks.studio/registry/CLI';
+import { Login, Logout, Me } from '@quarks.studio/identity/CLI';
+import { Info } from '@quarks.studio/distribution/CLI';
+import { Search } from '@quarks.studio/package-search/CLI';
 import * as Config from '@quarks.studio/config/CLI';
-import * as Cache from '@quarks.studio/local-store/CLI';
+import * as Cache from '@quarks.studio/storage/CLI';
 import { Publish } from '@quarks.studio/publisher/CLI';
 import { Test } from '@quarks.studio/tester/CLI';
 import {
   parseCertificationTier,
   type CertificationTier,
-} from '@quarks.studio/tester';
+} from '@quarks.studio/certification';
 
 export function registerCommands(program: Command): void {
   program

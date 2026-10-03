@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react';
-import { browsePlans, browseTierLadder, partitionPlanSystems, type CatalogProduct, type PaymentSystem, type PlanSystems, type TierOffer } from '@quarks.studio/commerce';
-import { RegistryHttpError } from '@quarks.studio/types/http';
-import { useCommerceWebServices } from './services';
-import { PlanGrid } from './components/pricing/PlanGrid';
-import { TierMatrix } from './components/pricing/TierMatrix';
-
+import {
+  browsePlans,
+  browseTierLadder,
+  partitionPlanSystems,
+  type CatalogProduct,
+  type PaymentSystem,
+  type PlanSystems,
+  type TierOffer,
+} from '../index';
+import { RegistryHttpError } from '@quarks.studio/registry/http';
+import { useCommerceWebServices } from '../hooks';
+import { PlanGrid } from './components';
+import { TierMatrix } from './components';
 
 export interface PricingBoundaryProps {
   /** `packages` shows the ladder, `plans` the monthly plans. */
@@ -80,25 +87,27 @@ export function PricingBoundary({
 
   if (mode === 'plans') {
     const planSystems: PlanSystems = partitionPlanSystems(systems);
-    return plans && (
-      <PlanGrid
-        plans={plans}
-        systems={planSystems}
-        packageId={packageId || undefined}
+    return (
+      plans && (
+        <PlanGrid
+          plans={plans}
+          systems={planSystems}
+          packageId={packageId || undefined}
+          apiBaseUrl={apiBaseUrl}
+        />
+      )
+    );
+  }
+
+  return (
+    offers && (
+      <TierMatrix
+        offers={offers}
+        systems={systems}
+        packageId={packageId}
+        versionId={versionId ?? ''}
         apiBaseUrl={apiBaseUrl}
       />
     )
-  }
-
-  return offers && (
-    <TierMatrix
-      offers={offers}
-      systems={systems}
-      packageId={packageId}
-      versionId={versionId ?? ''}
-      apiBaseUrl={apiBaseUrl}
-    />
-  )
+  );
 }
-
-export default PricingBoundary;

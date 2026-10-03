@@ -1,2 +1,2 @@
-export * from './application/audit-decision';
-export * from './domain/certification-ladder';
+export * from './application';
+export * from './domain';

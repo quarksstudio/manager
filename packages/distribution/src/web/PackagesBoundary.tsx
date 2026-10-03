@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { RegistryHttpError } from '@quarks.studio/types/http';
+import { RegistryHttpError } from '@quarks.studio/registry/http';
 import { useDistributionWebServices } from './services';
-import { highestVersion, type PackageDetails as Detail } from '@quarks.studio/distribution';
+import { highestVersion, type PackageDetails as Detail } from '../index';
 import { PackageDetails } from './components/package-details/PackageDetails';
 
 function detailUrls(
@@ -79,8 +79,7 @@ export function PackagesBoundary({
         if (target) {
           try {
             readme = {
-              content: (await services.getReadme(packageName, target))
-                .content,
+              content: (await services.getReadme(packageName, target)).content,
             };
           } catch {
             readme = { content: '', error: 'README unavailable' };
@@ -115,7 +114,13 @@ export function PackagesBoundary({
       error={state.error}
       notFound={state.notFound}
       readme={state.readme}
-      urls={detailUrls(packageName, version, state.detail, packageUrl, downloadUrl)}
+      urls={detailUrls(
+        packageName,
+        version,
+        state.detail,
+        packageUrl,
+        downloadUrl,
+      )}
     />
   );
 }

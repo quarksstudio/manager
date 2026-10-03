@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useApp } from 'ink';
 
-import { useCurrentUser } from '../react';
+import { useCurrentUser } from '../hooks';
 import {
   KeyValue,
   Panel,

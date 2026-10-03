@@ -2,7 +2,7 @@ import type { AuthProvider, AuthStep, LoginStrategy } from '../index';
 import React, { useEffect, useState } from 'react';
 import { Box, Text, useApp, useInput } from 'ink';
 
-import { useAuthLogin } from '../react';
+import { useAuthLogin } from '../hooks';
 import { EXIT_CODES } from '@quarks.studio/terminal-ui';
 import { Panel, Screen, Select, StatusLine } from '@quarks.studio/terminal-ui';
 

@@ -205,7 +205,6 @@ export default [
     files: ['packages/*/src/**/*.{ts,tsx}'],
     ignores: [
       'packages/*/src/CLI/**',
-      'packages/ui/**',
       '**/*.spec.ts',
       '**/*.spec.tsx',
       '**/*.test.ts',
@@ -214,7 +213,7 @@ export default [
     ...businessRules,
   },
   {
-    files: ['packages/ui/src/CLI/**/*.{ts,tsx}'],
+    files: ['packages/terminal-ui/src/**/*.{ts,tsx}'],
     ignores: ['**/*.spec.ts', '**/*.spec.tsx', '**/*.test.ts', '**/*.test.tsx'],
     rules: {
       'no-restricted-imports': [
@@ -238,58 +237,25 @@ export default [
   },
   {
     files: [
-      'packages/ui/src/hooks/**/*.{ts,tsx}',
-      'packages/ui/src/lib/**/*.{ts,tsx}',
+      'packages/{identity,commerce,distribution,package-search}/src/web/**/*.{ts,tsx}',
+      'packages/distribution/src/hooks/**/*.{ts,tsx}',
     ],
     rules: {
       'no-restricted-imports': [
         'error',
         {
+          paths: ['@quarks.studio/registry'],
           patterns: [
+            '@quarks.studio/registry/CLI',
+            '@quarks.studio/registry/web',
+            '@quarks.studio/ui/*',
             'ink',
             'ink/*',
-            '@quarks.studio/registry/CLI',
-            '@quarks.studio/registry/CLI/**',
-            '../CLI',
-            '../CLI/**',
-            '../../CLI',
-            '../../CLI/**',
-          ],
-        },
-      ],
-    },
-  },
-  {
-    files: ['packages/ui/src/web/**/*.{ts,tsx}'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          paths: [
-            {
-              name: '@quarks.studio/registry',
-              message:
-                'Use serializable props and pure helpers from registry/client.',
-            },
-            {
-              name: '@quarks.studio/registry/client',
-              importNames: ['createRegistryClient'],
-              message: 'Data transport belongs in Astro.',
-            },
-          ],
-          patterns: [
-            '**/hooks/**',
-            '@quarks.studio/use-storage',
-            '@quarks.studio/registry/CLI',
-            '@quarks.studio/registry/CLI/**',
-            '@quarks.studio/types',
-            '@quarks.studio/types/**',
-            '@quarks.studio/targz',
-            '@quarks.studio/targz/**',
+            '@quarks.studio/*/CLI',
             '@quarks.studio/publisher',
-            '@quarks.studio/publisher/**',
+            '@quarks.studio/publisher/*',
             '@quarks.studio/tester',
-            '@quarks.studio/tester/**',
+            '@quarks.studio/tester/*',
             '../CLI',
             '../CLI/**',
             '../../CLI',
@@ -302,7 +268,29 @@ export default [
     },
   },
   {
-    files: ['packages/terminal-ui/src/index.ts', 'packages/web-ui/src/index.ts'],
+    files: ['packages/web-ui/src/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            '@quarks.studio/*',
+            'ink',
+            'ink/*',
+            '../CLI',
+            '../CLI/**',
+            '../../CLI',
+            '../../CLI/**',
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: [
+      'packages/terminal-ui/src/index.ts',
+      'packages/web-ui/src/index.ts',
+    ],
     rules: { 'no-restricted-syntax': 'off' },
   },
 ];

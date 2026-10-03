@@ -1,11 +1,11 @@
-import { RegistryHttpError } from '@quarks.studio/types/http';
-export { ApiError, RegistryHttpError } from '@quarks.studio/types/http';
+import { RegistryHttpError } from '../domain/http';
+export { ApiError, RegistryHttpError } from '../domain/http';
 import type {
   CachedResponse,
   RegistryRequestOptions,
   HttpContext,
   HttpContextOptions,
-} from '@quarks.studio/types/http';
+} from '../domain/http';
 export type {
   CachedResponse,
   CacheReadOptions,
@@ -14,8 +14,7 @@ export type {
   HttpContext,
   OperationContext,
   HttpContextOptions,
-} from '@quarks.studio/types/http';
-import { logger } from '@quarks.studio/logger';
+} from '../domain/http';
 
 /**
  * The shared outbound transport.
@@ -27,11 +26,6 @@ import { logger } from '@quarks.studio/logger';
  * server renderer and the browser.
  */
 
-/**
- * `packages/ui` catches `ApiError`, `apps/ui` catches `RegistryHttpError`, and
- * both must keep working, so the thrown error extends the older one instead of
- * replacing it.
- */
 export function createHttpContext(options: HttpContextOptions): HttpContext {
   const baseUrl = options.baseUrl.replace(/\/$/, '');
   const fetchImpl = options.fetch ?? globalThis.fetch;
@@ -60,12 +54,10 @@ export function createHttpContext(options: HttpContextOptions): HttpContext {
         })
         .catch(() => null);
       if (cached) {
-        logger.silly(`cache hit for ${method} ${url}`);
         return restoreResponse(cached);
       }
     }
 
-    logger.http(`${method} ${url}`);
     const response = await fetchImpl(url, {
       method,
       body,
@@ -75,16 +67,11 @@ export function createHttpContext(options: HttpContextOptions): HttpContext {
     });
 
     if (response.status === 401) {
-      logger.warn(`session expired while calling ${url}`);
       await options.onUnauthorized?.();
     }
     if (!response.ok) {
-      logger.error(
-        `${method} ${url} failed with ${response.status} ${response.statusText}`,
-      );
       throw new RegistryHttpError(response.status, response.statusText);
     }
-    logger.http(`${method} ${url} ${response.status}`);
 
     if (!options.cache) return response;
     if (method === 'GET' && cacheable) {

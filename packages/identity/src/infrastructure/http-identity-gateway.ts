@@ -1,4 +1,4 @@
-import type { OperationContext } from '@quarks.studio/types/http';
+import type { OperationContext } from '@quarks.studio/registry/http';
 import type { AuthSession, CurrentUser } from '../domain/auth-session';
 import type { IdentityGateway } from '../application/identity.port';
 

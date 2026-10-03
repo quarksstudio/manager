@@ -2,9 +2,9 @@
 import { registryBaseUrl as browserRegistryBaseUrl } from '../../../lib/registry-base';
 import { loadConfig } from '@quarks.studio/config';
 import Layout from '../../../layouts/Layout.astro';
-import { PackageDetails } from '@quarks.studio/ui/web';
+import { ConfiguredPackageDetails as PackageDetails } from '@quarks.studio/distribution/web';
 import { highestVersion } from '@quarks.studio/distribution';
-import { PackagesBoundary } from '@quarks.studio/registry/web';
+import { ConfiguredPackagesBoundary as PackagesBoundary } from '@quarks.studio/distribution/web';
 import { packageUrl, registry, statusFor } from '../../../lib/registry';
 const client = (await loadConfig()).config.renderMode === 'client';
 const name = decodeURIComponent(Astro.params.packageName ?? '');

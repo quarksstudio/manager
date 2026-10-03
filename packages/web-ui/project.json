@@ -10,13 +10,19 @@
     "build": {
       "executor": "nx:run-commands",
       "dependsOn": [
-        "build-lib"
+        "build-lib",
+        "build-styles"
       ],
       "options": {
         "command": "node tools/build-functional-web.mjs web-ui"
       },
       "outputs": [
-        "{workspaceRoot}/dist/packages/web-ui"
+        "{workspaceRoot}/dist/packages/web-ui/src/index.mjs"
+      ],
+      "inputs": [
+        "production",
+        "^production",
+        "{workspaceRoot}/tools/build-functional-web.mjs"
       ]
     },
     "build-lib": {
@@ -34,6 +40,27 @@
       "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "packages/web-ui/jest.web.config.cts"
+      }
+    },
+    "build-styles": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build-lib"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/packages/web-ui/src/styles.css"
+      ],
+      "cache": true,
+      "inputs": [
+        "production",
+        "{workspaceRoot}/packages/commerce/src/web/**/*",
+        "{workspaceRoot}/packages/distribution/src/web/**/*",
+        "{workspaceRoot}/packages/package-search/src/web/**/*",
+        "{workspaceRoot}/packages/identity/src/web/**/*",
+        "{workspaceRoot}/tools/build-web-styles.mjs"
+      ],
+      "options": {
+        "command": "node tools/build-web-styles.mjs"
       }
     }
   }

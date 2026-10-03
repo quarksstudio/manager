@@ -1,7 +1,4 @@
-import type {
-  Certification,
-  CertificationStatus,
-} from '@quarks.studio/types/models';
+import type { Certification, CertificationStatus } from './certification';
 
 /**
  * The server holds a tier on `queued | running | pending_audit | approved`

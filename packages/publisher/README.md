@@ -31,7 +31,7 @@ Validation: `pnpm nx test publisher` and `pnpm nx build publisher`.
 Screens and command adapters live in `src/CLI`, one React component per file.
 Import them through `@quarks.studio/publisher/CLI`; the main entrypoint keeps
 its business API and does not load CLI presentation. Shared Ink components and
-terminal helpers come from `@quarks.studio/ui/CLI`.
+terminal helpers come from `@quarks.studio/terminal-ui`.
 
 ## Direct archive upload
 

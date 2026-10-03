@@ -1,9 +1,8 @@
-// The `/storage` subpath, not the barrel: the barrel re-exports the React hook
-// and every headless consumer of the configuration would pull React in.
+// The storage root is headless; React hooks have a separate entry.
 import {
   createStorage,
   type IStorageEngine,
-} from '@quarks.studio/use-storage/storage';
+} from '@quarks.studio/storage';
 
 import { withoutSecrets, type AppConfig } from '../domain/config';
 

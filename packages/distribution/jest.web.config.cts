@@ -3,13 +3,12 @@ module.exports = {
   moduleNameMapper: {
     ...workspaceMappings,
     '^sanitize-html$': require.resolve('sanitize-html', { paths: [__dirname] }),
-    '^@quarks.studio/registry/client$': '<rootDir>/../registry/src/client.ts',
   },
   displayName: 'distribution-web',
   preset: '../../jest.preset.js',
   testEnvironment: 'jsdom',
   testMatch: ['<rootDir>/test/web/**/*.spec.[jt]s?(x)'],
-  setupFiles: ['<rootDir>/../ui/test/jest-setup.ts'],
+  setupFiles: ['<rootDir>/../../tools/test/react-setup.ts'],
   transformIgnorePatterns: [
     '/node_modules/(?!(\\.pnpm|@ant-design/|@rc-component/|rc-|antd/))',
   ],

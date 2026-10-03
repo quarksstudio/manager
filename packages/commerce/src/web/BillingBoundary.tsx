@@ -1,6 +1,6 @@
-import { usePayments } from '../react';
-import { PaymentHistory } from './components/commerce/PaymentHistory';
-export default function BillingBoundary() {
+import { usePayments } from '../hooks';
+import { PaymentHistory } from './components';
+export function BillingBoundary() {
   const payments = usePayments();
   return (
     <PaymentHistory

@@ -8,17 +8,18 @@ import {
   createHttpCertificationRegistry,
   type CeremonyTransport,
 } from '../../src/http';
-import type {
-  CertificationRegistry,
-  WebAuthnCeremony,
-} from '../../src/index';
+import type { CertificationRegistry, WebAuthnCeremony } from '../../src/index';
 
-const startRegistration = jest.fn();
-const startAuthentication = jest.fn();
 jest.mock('@simplewebauthn/browser', () => ({
-  startRegistration,
-  startAuthentication,
+  startRegistration: jest.fn(),
+  startAuthentication: jest.fn(),
 }));
+const { startRegistration, startAuthentication } = jest.requireMock(
+  '@simplewebauthn/browser',
+) as {
+  startRegistration: jest.Mock;
+  startAuthentication: jest.Mock;
+};
 
 /** The port doubles: the use case must not care how the routes are spelled. */
 function stubRegistry() {

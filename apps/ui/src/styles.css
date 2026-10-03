@@ -1,4 +1,8 @@
-@import '@quarks.studio/ui/web/styles.css';
+@import '@quarks.studio/web-ui/styles.css';
 
 /* Scan the shared presentation library so its utility classes are generated. */
-@source '../../../packages/ui/src/web';
+@source '../../../packages/web-ui/src';
+@source '../../../packages/identity/src/web';
+@source '../../../packages/commerce/src/web';
+@source '../../../packages/distribution/src/web';
+@source '../../../packages/package-search/src/web';

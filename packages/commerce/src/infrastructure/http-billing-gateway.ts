@@ -1,4 +1,4 @@
-import type { OperationContext } from '@quarks.studio/types/http';
+import type { OperationContext } from '@quarks.studio/registry/http';
 import type {
   BillingSystem,
   CreateSubscriptionInput,

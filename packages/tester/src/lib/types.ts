@@ -1,20 +1,5 @@
-export const CERTIFICATION_TIERS = [
-  'TIER_1',
-  'TIER_2',
-  'TIER_3',
-  'TIER_4',
-] as const;
-export type CertificationTier = (typeof CERTIFICATION_TIERS)[number];
+import type { CertificationTier } from '@quarks.studio/certification';
 export type AchievedTier = CertificationTier | 'FAILED';
-
-export function parseCertificationTier(value: string): CertificationTier {
-  if (!CERTIFICATION_TIERS.includes(value as CertificationTier)) {
-    throw new Error(
-      `Invalid tier: ${value}. Expected one of: ${CERTIFICATION_TIERS.join(', ')}`,
-    );
-  }
-  return value as CertificationTier;
-}
 
 export interface CoverageReport {
   schemaCoverage: number;

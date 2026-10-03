@@ -1,9 +1,8 @@
 import {
   parseCertificationTier,
   type CertificationTier,
-  type TestRunnerOptions,
-  type VerificationResult,
-} from '../lib/types';
+} from '@quarks.studio/certification';
+import { type TestRunnerOptions, type VerificationResult } from '../lib/types';
 
 export interface TestOptions {
   targetDir?: string;

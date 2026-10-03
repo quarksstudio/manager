@@ -12,40 +12,20 @@
       "require": "./src/index.js",
       "default": "./src/index.js"
     },
-    "./upload": {
-      "types": "./src/infrastructure/upload-package-archive.d.ts",
-      "require": "./src/infrastructure/upload-package-archive.js",
-      "default": "./src/infrastructure/upload-package-archive.js"
-    },
-    "./CLI": {
-      "types": "./src/CLI/index.d.ts",
-      "import": "./src/CLI/index.mjs",
-      "default": "./src/CLI/index.mjs"
-    },
-    "./client": {
-      "types": "./src/client.d.ts",
-      "require": "./src/client.js",
-      "default": "./src/client.js"
-    },
-    "./headless": {
-      "types": "./src/headless.d.ts",
-      "require": "./src/headless.js",
-      "default": "./src/headless.js"
-    },
-    "./react": {
-      "types": "./src/react.d.ts",
-      "require": "./src/react.js",
-      "default": "./src/react.js"
-    },
     "./http": {
       "types": "./src/http.d.ts",
       "require": "./src/http.js",
       "default": "./src/http.js"
     },
-    "./web": {
-      "types": "./src/web/index.d.ts",
-      "import": "./src/web/index.mjs",
-      "default": "./src/web/index.mjs"
+    "./domain": {
+      "types": "./src/domain/index.d.ts",
+      "require": "./src/domain/index.js",
+      "default": "./src/domain/index.js"
+    },
+    "./transport": {
+      "types": "./src/transport/index.d.ts",
+      "require": "./src/transport/index.js",
+      "default": "./src/transport/index.js"
     }
   },
   "files": [
@@ -57,22 +37,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "@quarks.studio/config": "workspace:*",
-    "@quarks.studio/use-storage": "workspace:*",
-    "@quarks.studio/logger": "workspace:*",
-    "@quarks.studio/types": "workspace:*",
-    "tslib": "^2.3.0",
-    "ink": "^7.0.2",
-    "@quarks.studio/identity": "workspace:*",
-    "@quarks.studio/package-search": "workspace:*",
-    "@quarks.studio/commerce": "workspace:*",
-    "@quarks.studio/distribution": "workspace:*",
-    "@quarks.studio/certification": "workspace:*",
-    "@quarks.studio/publisher": "workspace:*",
-    "@quarks.studio/terminal-ui": "workspace:*"
-  },
-  "peerDependencies": {
-    "react": "^19.0.0"
-  }
+  "dependencies": {}
 }

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { renderAction } from '@quarks.studio/terminal-ui';
 import { PublishScreen } from './PublishScreen';
-import type { CertificationTier } from '@quarks.studio/tester';
+import type { CertificationTier } from '@quarks.studio/certification';
 
 export interface PublishOptions {
   tier?: CertificationTier;

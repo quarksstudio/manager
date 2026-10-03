@@ -5,3 +5,5 @@ export * from './infrastructure/loopback-callback-server';
 export * from './infrastructure/manual-code-channel';
 export * from './infrastructure/popup-callback';
 export * from './infrastructure/system-browser-launcher';
+
+export * from './infrastructure/password-sign-in';

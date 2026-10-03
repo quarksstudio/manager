@@ -1,4 +1,4 @@
-export { Get, Set, List } from './config-actions';
-export { ConfigGetScreen } from './ConfigGetScreen';
-export { ConfigListScreen } from './ConfigListScreen';
-export { ConfigSetScreen } from './ConfigSetScreen';
+export * from './config-actions';
+export * from './ConfigGetScreen';
+export * from './ConfigListScreen';
+export * from './ConfigSetScreen';

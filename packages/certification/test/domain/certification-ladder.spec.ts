@@ -1,5 +1,5 @@
 import { heldTier } from '../../src/index';
-import type { Certification } from '@quarks.studio/types/models';
+import type { Certification } from '@quarks.studio/certification';
 
 const cert = (
   tier: Certification['tier'],

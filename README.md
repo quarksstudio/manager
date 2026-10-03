@@ -43,24 +43,29 @@ The `log` config value can be persisted with
 
 All use `private: false` and `publishConfig.access: "public"`:
 
-| Package                      | Internal @quarks.studio dependencies                                |
-| ---------------------------- | ------------------------------------------------------------------- |
-| `@quarks.studio/config`      | logger, ui, use-storage                                             |
-| `@quarks.studio/installer`   | local-store, logger, manifest, permissions, registry, types, targz  |
-| `@quarks.studio/local-store` | types                                                               |
-| `@quarks.studio/logger`      | —                                                                   |
-| `@quarks.studio/manifest`    | —                                                                   |
-| `@quarks.studio/permissions` | manifest                                                            |
-| `@quarks.studio/publisher`   | logger, registry, targz, tester, ui                                 |
-| `@quarks.studio/registry`    | logger, use-storage, types                                          |
-| `@quarks.studio/runtime`     | manifest, permissions, types                                        |
-| `@quarks.studio/targz`       | tester                                                              |
-| `@quarks.studio/tester`      | —                                                                   |
-| `@quarks.studio/types`       | —                                                                   |
-| `@quarks.studio/ui`          | registry, use-storage                                               |
-| `@quarks.studio/use-storage` | —                                                                   |
-| `@quarks.studio/cli`         | config, installer, local-store, logger, publisher, registry, tester |
-| `@quarks.studio/ui-app`      | —                                                                   |
+| Package                         | Internal @quarks.studio dependencies                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `@quarks.studio/cli`            | certification, config, distribution, identity, installer, logger, package-search, publisher, storage, tester |
+| `@quarks.studio/ui-app`         | certification, commerce, distribution, identity, package-search, registry, web-ui                            |
+| `@quarks.studio/certification`  | config, registry                                                                                             |
+| `@quarks.studio/commerce`       | certification, config, logger, registry, storage, web-ui                                                     |
+| `@quarks.studio/config`         | logger, registry, storage, terminal-ui                                                                       |
+| `@quarks.studio/distribution`   | certification, commerce, config, registry, storage, terminal-ui, web-ui                                      |
+| `@quarks.studio/domain-kernel`  | —                                                                                                            |
+| `@quarks.studio/identity`       | config, registry, storage, terminal-ui                                                                       |
+| `@quarks.studio/logger`         | —                                                                                                            |
+| `@quarks.studio/installer`      | domain-kernel, logger, manifest, permissions, storage, targz, terminal-ui                                    |
+| `@quarks.studio/manifest`       | —                                                                                                            |
+| `@quarks.studio/package-search` | config, logger, registry, storage, terminal-ui, web-ui                                                       |
+| `@quarks.studio/permissions`    | manifest                                                                                                     |
+| `@quarks.studio/publisher`      | certification, config, logger, targz, terminal-ui, tester                                                    |
+| `@quarks.studio/registry`       | —                                                                                                            |
+| `@quarks.studio/runtime`        | domain-kernel, manifest, permissions                                                                         |
+| `@quarks.studio/storage`        | domain-kernel, registry, terminal-ui                                                                         |
+| `@quarks.studio/targz`          | tester                                                                                                       |
+| `@quarks.studio/terminal-ui`    | —                                                                                                            |
+| `@quarks.studio/tester`         | certification, config, terminal-ui                                                                           |
+| `@quarks.studio/web-ui`         | —                                                                                                            |
 
 ### Versioning
 
@@ -128,10 +133,8 @@ of generated JS in `src/`, `format:check`, and `lint`/`test`/`build`.
 
 ## CLI presentation
 
-Each owning package exposes commands and screens through `@quarks.studio/<package>/CLI`:
-`installer`, `registry`, `config`, `local-store`, `publisher`, and `tester`.
-`apps/cli` imports these subpaths directly. Shared presentation lives in
-`@quarks.studio/ui/CLI`. Each React component has its own file under `src/CLI`.
+Each owning package exposes commands and screens through `@quarks.studio/<package>/CLI`: `identity`, `distribution`, `package-search`, `installer`, `config`, `storage`, `publisher`, and `tester`. `apps/cli` imports these subpaths directly. Shared components and terminal helpers live in `@quarks.studio/terminal-ui`. Each hook lives in its owner's `src/hooks/useX.ts`, shared by CLI and Web.
+
 Business entrypoints do not re-export CLI code; lint enforces that boundary.
 
 CLI subpaths are ESM entrypoints because Ink uses top-level await. Business
@@ -143,9 +146,9 @@ check compiled exports and command help in an isolated temporary fixture.
 
 ## Web presentation
 
-`@quarks.studio/ui/web` exports reusable React presentation and `@quarks.studio/ui/web/styles.css` exports compiled CSS. Components receive data and action URLs; data hooks remain in the separate `@quarks.studio/ui/hooks` entry. The web entry has no session or transport access and does not load Ink.
+Identity, commerce, distribution and package search own their `/web` entries. Global components and compiled CSS live in `@quarks.studio/web-ui` and `@quarks.studio/web-ui/styles.css`. Domain hooks stay in their owning packages.
 
-`apps/ui` is an independent Vite demo using fixtures at the same package URLs as Server. Server owns the Astro routes, request-scoped `@quarks.studio/registry/client`, session cookies, mutations and downloads. Server installs versioned npm artifacts and never reads this checkout.
+`apps/ui` owns the Astro routes and composes request-scoped adapters from the business packages over `@quarks.studio/registry/http`. Browser payments call the API directly using the current session token. Registry contains only dependency-free HTTP transport; configuration and persistent caches are supplied by the host.
 
 All libraries use `packages/<name>/src` and `packages/<name>/test`; apps retain their own `src` and `test`. Run `pnpm test:package-architecture`, `pnpm test:web-architecture`, and, after building, `pnpm test:web-artifacts` and `pnpm test:cli-artifacts`.
 

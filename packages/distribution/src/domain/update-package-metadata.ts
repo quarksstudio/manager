@@ -5,3 +5,7 @@ export interface UpdatePackageMetadataInput {
   tags: string[];
   authors: string[];
 }
+
+export function normalizeTag(value: string): string {
+  return value.trim().replace(/\s+/g, '-').toLowerCase();
+}
