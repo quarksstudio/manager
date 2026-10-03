@@ -17,7 +17,8 @@ export const businessRules = {
           'Business modules must not import or re-export CLI presentation.',
       },
       {
-        selector: 'ImportExpression[source.value=/CLI|@quarks.studio.ui|@quarks.studio.terminal-ui/]',
+        selector:
+          'ImportExpression[source.value=/CLI|@quarks.studio.ui|@quarks.studio.terminal-ui/]',
         message: 'Business modules must not load CLI presentation.',
       },
       {

@@ -3,24 +3,14 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/certification/src",
   "projectType": "library",
-  "tags": [
-    "type:context",
-    "scope:certification"
-  ],
+  "tags": ["type:context", "scope:certification"],
   "targets": {
     "build": {
       "executor": "nx:noop",
-      "dependsOn": [
-        "build-lib"
-      ],
-      "outputs": [
-        "{workspaceRoot}/dist/packages/certification"
-      ],
+      "dependsOn": ["build-lib"],
+      "outputs": ["{workspaceRoot}/dist/packages/certification"],
       "cache": true,
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "inputs": ["production", "^production"]
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -30,16 +20,12 @@
     },
     "build-lib": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/certification",
         "main": "packages/certification/src/index.ts",
         "tsConfig": "packages/certification/tsconfig.lib.json",
-        "assets": [
-          "packages/certification/*.md"
-        ]
+        "assets": ["packages/certification/*.md"]
       }
     }
   }

@@ -3,10 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/package-search/src",
   "projectType": "library",
-  "tags": [
-    "type:context",
-    "scope:package-search"
-  ],
+  "tags": ["type:context", "scope:package-search"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
@@ -16,39 +13,26 @@
     },
     "build-lib": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/package-search",
         "main": "packages/package-search/src/index.ts",
         "tsConfig": "packages/package-search/tsconfig.lib.json",
-        "assets": [
-          "packages/package-search/*.md"
-        ]
+        "assets": ["packages/package-search/*.md"]
       },
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "build": {
       "executor": "nx:run-commands",
-      "dependsOn": [
-        "build-lib",
-        "build-web"
-      ],
-      "outputs": [
-        "{workspaceRoot}/dist/packages/package-search"
-      ],
+      "dependsOn": ["build-lib", "build-web"],
+      "outputs": ["{workspaceRoot}/dist/packages/package-search"],
       "options": {
         "command": "node tools/build-cli.mjs package-search"
       }
     },
     "build-web": {
       "executor": "nx:run-commands",
-      "dependsOn": [
-        "build-lib"
-      ],
+      "dependsOn": ["build-lib"],
       "outputs": [
         "{workspaceRoot}/dist/packages/package-search/src/web/index.mjs"
       ],

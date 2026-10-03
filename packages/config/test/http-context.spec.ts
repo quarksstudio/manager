@@ -1,11 +1,9 @@
-jest.mock('../../storage/src/infrastructure/create-storage', () => jest.requireMock('@quarks.studio/storage'));
+jest.mock('../../storage/src/infrastructure/create-storage', () =>
+  jest.requireMock('@quarks.studio/storage'),
+);
 import { resetConfig } from '@quarks.studio/config';
 
-import {
-  AUTH_SESSION_KEY,
-  apiFetch,
-  apiRequest,
-} from '../src/http';
+import { AUTH_SESSION_KEY, apiFetch, apiRequest } from '../src/http';
 
 jest.mock('@quarks.studio/storage', () => {
   const values = new Map<string, unknown>();

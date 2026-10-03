@@ -26,7 +26,11 @@ if (!client) {
 <Layout title={name}>
   {
     client ? (
-      <PackagesBoundary apiBaseUrl={browserRegistryBaseUrl} client:only="react" packageName={name} />
+      <PackagesBoundary
+        apiBaseUrl={browserRegistryBaseUrl}
+        client:only="react"
+        packageName={name}
+      />
     ) : (
       <PackageDetails
         client:load

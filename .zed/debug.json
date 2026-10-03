@@ -14,18 +14,11 @@
     "request": "launch",
     "program": "${workspaceFolder}/dist/apps/cli/main.js",
     "attachSimplePort": 9229,
-    "args": [
-      "auth",
-      "login",
-      "google"
-    ],
+    "args": ["auth", "login", "google"],
     "stopOnEntry": true,
     "sourceMaps": true,
     "cwd": "${workspaceFolder}",
-    "skipFiles": [
-      "<node_internals>/**",
-      "**/node_modules/**"
-    ],
+    "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
     "runtimeExecutable": "node"
   }
 ]

@@ -15,7 +15,9 @@ if (!(state && idToken)) {
 }
 
 const { registryUrl } = (await loadConfig()).config;
-const client = createHttpIdentityGateway(createHttpContext({ baseUrl: registryUrl }));
+const client = createHttpIdentityGateway(
+  createHttpContext({ baseUrl: registryUrl }),
+);
 
 let session: AuthSession | null = null;
 let error: string | null = null;

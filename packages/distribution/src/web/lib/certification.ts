@@ -1,1 +1,4 @@
-export { certificationBadge, type CertificationBadge } from '../../domain/certification-badge';
+export {
+  certificationBadge,
+  type CertificationBadge,
+} from '../../domain/certification-badge';

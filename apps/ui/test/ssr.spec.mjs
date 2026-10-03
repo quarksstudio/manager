@@ -29,8 +29,23 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
       return res.end('{}');
     }
     if (req.url.startsWith('/v1/payments/me')) {
-      if (!req.headers.authorization) { res.statusCode = 401; return res.end('{}'); }
-      return res.end(JSON.stringify({ items: [{ id: req.headers.authorization, kind: 'subscription', provider: 'paypal', executedAt: '2026-09-01T00:00:00Z' }], nextCursor: null }));
+      if (!req.headers.authorization) {
+        res.statusCode = 401;
+        return res.end('{}');
+      }
+      return res.end(
+        JSON.stringify({
+          items: [
+            {
+              id: req.headers.authorization,
+              kind: 'subscription',
+              provider: 'paypal',
+              executedAt: '2026-09-01T00:00:00Z',
+            },
+          ],
+          nextCursor: null,
+        }),
+      );
     }
     if (req.method === 'PATCH') {
       if (!req.headers.authorization) {

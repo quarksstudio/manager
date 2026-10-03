@@ -28,7 +28,11 @@ const pricing = client ? null : await loadPricing(Astro.cookies);
 
     {
       client ? (
-        <PricingBoundary apiBaseUrl={browserRegistryBaseUrl} client:only="react" mode={mode} />
+        <PricingBoundary
+          apiBaseUrl={browserRegistryBaseUrl}
+          client:only="react"
+          mode={mode}
+        />
       ) : (
         <>
           <section hidden={mode !== 'products'}>

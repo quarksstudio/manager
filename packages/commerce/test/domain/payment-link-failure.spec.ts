@@ -1,7 +1,4 @@
-import {
-  paymentLinkFailure,
-  type PaymentLinkFailure,
-} from '../../src/index';
+import { paymentLinkFailure, type PaymentLinkFailure } from '../../src/index';
 
 const status = (code: number | undefined): PaymentLinkFailure =>
   paymentLinkFailure(code);

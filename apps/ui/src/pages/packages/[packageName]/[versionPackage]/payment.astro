@@ -46,7 +46,8 @@ const [pricing, ladder] = client
 
     {
       client ? (
-        <PricingBoundary apiBaseUrl={browserRegistryBaseUrl}
+        <PricingBoundary
+          apiBaseUrl={browserRegistryBaseUrl}
           client:only="react"
           mode={mode}
           packageName={name}

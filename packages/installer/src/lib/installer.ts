@@ -3,7 +3,11 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import * as tar from 'tar';
-import { registryConfiguration, apiFetch, apiRequest } from '@quarks.studio/config/http';
+import {
+  registryConfiguration,
+  apiFetch,
+  apiRequest,
+} from '@quarks.studio/config/http';
 import { logger } from '@quarks.studio/logger';
 import { parseManifest } from '@quarks.studio/manifest';
 import {
@@ -221,7 +225,7 @@ async function performInstallSkill(
         );
       }
     }
-    const entrypoint = path.resolve(stagedPackage, manifest.entrypoint ?? "");
+    const entrypoint = path.resolve(stagedPackage, manifest.entrypoint ?? '');
     if (
       !entrypoint.startsWith(`${path.resolve(stagedPackage)}${path.sep}`) ||
       !fs.existsSync(entrypoint)

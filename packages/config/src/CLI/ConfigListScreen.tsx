@@ -3,7 +3,12 @@ import { useApp } from 'ink';
 import { isSecretKey } from '../domain/config';
 import { useConfig } from '../hooks';
 import { EXIT_CODES } from '@quarks.studio/terminal-ui';
-import { KeyValue, Result, Screen, StatusLine } from '@quarks.studio/terminal-ui';
+import {
+  KeyValue,
+  Result,
+  Screen,
+  StatusLine,
+} from '@quarks.studio/terminal-ui';
 
 export function ConfigListScreen() {
   const { config, loading, error } = useConfig();

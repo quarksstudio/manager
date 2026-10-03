@@ -139,8 +139,12 @@ test('CLI presentation cannot import any @quarks.studio/* library', async () => 
 
 test('package entry points stay free of registry imports', async () => {
   assert.ok(
-    (await violations("export * from './web';", 'packages/terminal-ui/src/index.ts'))
-      .length === 0,
+    (
+      await violations(
+        "export * from './web';",
+        'packages/terminal-ui/src/index.ts',
+      )
+    ).length === 0,
   );
   assert.ok(
     (

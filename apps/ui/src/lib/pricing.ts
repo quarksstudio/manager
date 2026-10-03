@@ -1,5 +1,13 @@
 import type { AstroCookies } from 'astro';
-import { browsePlans, browseTierLadder, partitionPlanSystems, type CatalogProduct, type PaymentSystem, type PlanSystems, type TierOffer } from '@quarks.studio/commerce';
+import {
+  browsePlans,
+  browseTierLadder,
+  partitionPlanSystems,
+  type CatalogProduct,
+  type PaymentSystem,
+  type PlanSystems,
+  type TierOffer,
+} from '@quarks.studio/commerce';
 import { heldTier } from '@quarks.studio/certification';
 
 import { registry, statusFor } from './registry';

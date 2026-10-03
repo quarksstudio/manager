@@ -3,25 +3,14 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/commerce/src",
   "projectType": "library",
-  "tags": [
-    "type:context",
-    "scope:commerce"
-  ],
+  "tags": ["type:context", "scope:commerce"],
   "targets": {
     "build": {
       "executor": "nx:noop",
-      "dependsOn": [
-        "build-lib",
-        "build-web"
-      ],
-      "outputs": [
-        "{workspaceRoot}/dist/packages/commerce"
-      ],
+      "dependsOn": ["build-lib", "build-web"],
+      "outputs": ["{workspaceRoot}/dist/packages/commerce"],
       "cache": true,
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "inputs": ["production", "^production"]
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -31,29 +20,19 @@
     },
     "build-lib": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/commerce",
         "main": "packages/commerce/src/index.ts",
         "tsConfig": "packages/commerce/tsconfig.lib.json",
-        "assets": [
-          "packages/commerce/*.md"
-        ]
+        "assets": ["packages/commerce/*.md"]
       },
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "build-web": {
       "executor": "nx:run-commands",
-      "dependsOn": [
-        "build-lib"
-      ],
-      "outputs": [
-        "{workspaceRoot}/dist/packages/commerce/src/web/index.mjs"
-      ],
+      "dependsOn": ["build-lib"],
+      "outputs": ["{workspaceRoot}/dist/packages/commerce/src/web/index.mjs"],
       "cache": true,
       "inputs": [
         "production",

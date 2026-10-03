@@ -1,8 +1,4 @@
-import {
-  hasTierOverlap,
-  isPurchasable,
-  sortByPrice,
-} from '../../src/index';
+import { hasTierOverlap, isPurchasable, sortByPrice } from '../../src/index';
 import { tierName, type CatalogProduct } from '../../src/index';
 
 const product = (over: Partial<CatalogProduct> = {}): CatalogProduct => ({

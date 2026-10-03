@@ -1,6 +1,9 @@
 import { act, renderHook } from '@testing-library/react';
 import { usePackageDownload } from '@quarks.studio/distribution/hooks';
-import { DistributionProvider, type DistributionServices } from '@quarks.studio/distribution/presentation';
+import {
+  DistributionProvider,
+  type DistributionServices,
+} from '@quarks.studio/distribution/presentation';
 
 const downloadBundle = jest.fn();
 const services: DistributionServices = {

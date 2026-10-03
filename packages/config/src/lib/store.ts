@@ -1,8 +1,5 @@
 // The storage root is headless; React hooks have a separate entry.
-import {
-  createStorage,
-  type IStorageEngine,
-} from '@quarks.studio/storage';
+import { createStorage, type IStorageEngine } from '@quarks.studio/storage';
 
 import { withoutSecrets, type AppConfig } from '../domain/config';
 

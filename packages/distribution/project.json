@@ -3,10 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/distribution/src",
   "projectType": "library",
-  "tags": [
-    "type:context",
-    "scope:distribution"
-  ],
+  "tags": ["type:context", "scope:distribution"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
@@ -16,39 +13,26 @@
     },
     "build-lib": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/distribution",
         "main": "packages/distribution/src/index.ts",
         "tsConfig": "packages/distribution/tsconfig.lib.json",
-        "assets": [
-          "packages/distribution/*.md"
-        ]
+        "assets": ["packages/distribution/*.md"]
       },
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "build": {
       "executor": "nx:run-commands",
-      "dependsOn": [
-        "build-lib",
-        "build-web"
-      ],
-      "outputs": [
-        "{workspaceRoot}/dist/packages/distribution"
-      ],
+      "dependsOn": ["build-lib", "build-web"],
+      "outputs": ["{workspaceRoot}/dist/packages/distribution"],
       "options": {
         "command": "node tools/build-cli.mjs distribution"
       }
     },
     "build-web": {
       "executor": "nx:run-commands",
-      "dependsOn": [
-        "build-lib"
-      ],
+      "dependsOn": ["build-lib"],
       "outputs": [
         "{workspaceRoot}/dist/packages/distribution/src/web/index.mjs"
       ],

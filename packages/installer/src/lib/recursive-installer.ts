@@ -3,8 +3,15 @@ import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-import { apiFetch, apiRequest, registryConfiguration } from '@quarks.studio/config/http';
-import { cacheSkill, readCachedSkill } from '@quarks.studio/storage/installations';
+import {
+  apiFetch,
+  apiRequest,
+  registryConfiguration,
+} from '@quarks.studio/config/http';
+import {
+  cacheSkill,
+  readCachedSkill,
+} from '@quarks.studio/storage/installations';
 import {
   parseYaml,
   stringifyYaml,

@@ -16,9 +16,13 @@ export function Login(
 ): void {
   render(React.createElement(LoginScreen, props), services);
 }
-export function Logout(services: IdentityServices = createIdentityServices()): void {
+export function Logout(
+  services: IdentityServices = createIdentityServices(),
+): void {
   render(React.createElement(LogoutScreen), services);
 }
-export function Me(services: IdentityServices = createIdentityServices()): void {
+export function Me(
+  services: IdentityServices = createIdentityServices(),
+): void {
   render(React.createElement(MeScreen), services);
 }

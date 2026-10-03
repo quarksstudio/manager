@@ -98,7 +98,8 @@ if (!client) {
 <Layout title={`${name} · ${version}`}>
   {
     client ? (
-      <PackagesBoundary apiBaseUrl={browserRegistryBaseUrl}
+      <PackagesBoundary
+        apiBaseUrl={browserRegistryBaseUrl}
         client:only="react"
         packageName={name}
         version={version}

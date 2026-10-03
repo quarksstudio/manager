@@ -1,5 +1,8 @@
 import React from 'react';
-import { DistributionProvider, type DistributionServices } from '@quarks.studio/distribution/presentation';
+import {
+  DistributionProvider,
+  type DistributionServices,
+} from '@quarks.studio/distribution/presentation';
 import {
   act,
   waitFor,

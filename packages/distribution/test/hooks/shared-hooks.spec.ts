@@ -1,6 +1,11 @@
 /** @jest-environment jsdom */
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { useFetchPackage, usePackageReadme, usePackageCertifications, useUpdatePackageMetadata } from '../../src/hooks';
+import {
+  useFetchPackage,
+  usePackageReadme,
+  usePackageCertifications,
+  useUpdatePackageMetadata,
+} from '../../src/hooks';
 const api = { get: jest.fn(), getReadme: jest.fn(), update: jest.fn() };
 const services = {
   ...api,
