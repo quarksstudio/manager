@@ -39,7 +39,7 @@ const tiers = client ? undefined : landingTiers(items);
         />
       ) : (
         <>
-          <LandingHero exploreUrl="/search" blogUrl={blogUrl} />
+          <LandingHero exploreUrl="/" blogUrl={blogUrl} />
           <LandingTierMatrix tiers={tiers} />
           {error ? (
             <p class="pb-12 text-center text-sm text-slate-400">{error}</p>
