@@ -10,7 +10,6 @@ const fetchJson = jest.fn();
 
 jest.mock('@quarks.studio/config/http', () => ({
   ...jest.requireActual('@quarks.studio/config/http'),
-  registryConfiguration: { registryUrl: 'https://registry.test/v1' },
   createGlobalContext: jest.fn(),
 }));
 jest.mock('@quarks.studio/storage', () => ({
@@ -25,7 +24,10 @@ const context = createGlobalContext as jest.MockedFunction<
 describe('loginWithProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    context.mockResolvedValue({ fetchJson } as never);
+    context.mockResolvedValue({
+      baseUrl: 'https://registry.test/v1',
+      fetchJson,
+    } as never);
     fetchJson.mockResolvedValue({
       accessToken: 'id-token',
       refreshToken: 'refresh-token',
@@ -51,7 +53,6 @@ describe('loginWithProvider', () => {
 
     // A login has no session to present, so the exchange must be unauthenticated.
     expect(context).toHaveBeenCalledWith({
-      baseUrl: 'https://registry.test/v1',
       skipAuth: true,
     });
     expect(fetchJson).toHaveBeenCalledWith('auth/exchange', {

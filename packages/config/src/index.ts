@@ -35,6 +35,7 @@ export {
   clearSession,
   loadPersisted,
   loadSession,
+  notifySessionChange,
   persistConfig,
   resetStore,
   saveSession,

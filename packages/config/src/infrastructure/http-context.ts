@@ -1,4 +1,4 @@
-import { APP_NAME, AUTH_SESSION_KEY, clearSession, loadConfig } from '../index';
+import { AUTH_SESSION_KEY, clearSession, loadConfig } from '../index';
 
 import { createStorageCache } from '@quarks.studio/storage/http-cache';
 import {
@@ -18,8 +18,8 @@ export interface ApiFetchOptions
 const cache = createStorageCache();
 
 /**
- * Configured transport: the host supplies its endpoint; bearer tokens and
- * persistent cache come from the stored configuration and session.
+ * Configured transport: resolve the endpoint and session before creating the
+ * transport. Hosts may override the endpoint explicitly.
  */
 export async function createGlobalContext(
   options: {
@@ -29,10 +29,10 @@ export async function createGlobalContext(
     token?: string;
   } = {},
 ): Promise<HttpContext> {
+  const { config } = await loadConfig();
   const headers = new Headers(options.headers);
-  const token =
-    options.token ??
-    (options.skipAuth ? '' : (await loadConfig()).config.token);
+  const token = options.skipAuth ? '' : (options.token ?? config.token);
+  if (options.skipAuth) headers.delete('Authorization');
 
   if (!options.skipAuth && token && !headers.has('Authorization')) {
     headers.set('Authorization', `Bearer ${token}`);
@@ -44,12 +44,11 @@ export async function createGlobalContext(
   });
 
   return createHttpContext({
-    baseUrl: options.baseUrl ?? '',
+    baseUrl: options.baseUrl ?? config.registryUrl,
     headers: base,
     cache,
     onUnauthorized: async () => {
       await clearSession();
-      notifySessionChange();
     },
   });
 }
@@ -76,13 +75,4 @@ export async function apiFetch<T = unknown>(
     headers: request.headers,
   });
   return context.fetchJson<T>(endpoint, request);
-}
-
-function notifySessionChange(): void {
-  if (typeof window === 'undefined') return;
-  // The stored key is namespaced by the storage engine, so the event has to
-  // carry the same prefix or a key-filtered listener never matches it.
-  window.dispatchEvent(
-    new StorageEvent('storage', { key: `${APP_NAME}:${AUTH_SESSION_KEY}` }),
-  );
 }

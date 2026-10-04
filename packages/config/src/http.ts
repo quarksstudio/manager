@@ -1,22 +1,22 @@
-export * from './infrastructure/http-context';
-export const registryConfiguration = {
-  get registryUrl(): string {
-    return getConfig().registryUrl;
-  },
-};
+import type { OperationContext } from '@quarks.studio/registry/http';
 import { getConfig } from './index';
+import { createGlobalContext } from './infrastructure/http-context';
+export * from './infrastructure/http-context';
+
+/** Lazy transport for synchronous service factories; requests resolve configuration. */
 export function createConfiguredContext(baseUrl?: string): OperationContext {
   return {
-    baseUrl: baseUrl ?? registryConfiguration.registryUrl,
+    // This synchronous metadata is never used to select a request endpoint.
+    get baseUrl() {
+      return baseUrl ?? getConfig().registryUrl;
+    },
     request: (path, options) =>
-      createGlobalContext({
-        baseUrl: baseUrl ?? registryConfiguration.registryUrl,
-      }).then((context) => context.request(path, options)),
+      createGlobalContext({ baseUrl }).then((context) =>
+        context.request(path, options),
+      ),
     fetchJson: (path, options) =>
-      createGlobalContext({
-        baseUrl: baseUrl ?? registryConfiguration.registryUrl,
-      }).then((context) => context.fetchJson(path, options)),
+      createGlobalContext({ baseUrl }).then((context) =>
+        context.fetchJson(path, options),
+      ),
   };
 }
-import type { OperationContext } from '@quarks.studio/registry/http';
-import { createGlobalContext } from './infrastructure/http-context';

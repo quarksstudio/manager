@@ -2,7 +2,7 @@ import type {
   LandingPackage,
   LandingTier,
   LandingTierColumns,
-} from '../components/landing/types';
+} from '../components/types';
 
 const TIER_ORDER: LandingTier[] = ['TIER_1', 'TIER_2', 'TIER_3', 'TIER_4'];
 

@@ -1,4 +1,3 @@
-import { loadConfig } from '@quarks.studio/config';
 import { createStorage } from '@quarks.studio/storage';
 
 import { createGlobalContext } from '@quarks.studio/config/http';
@@ -37,8 +36,6 @@ describe('searchPackages', () => {
     jest.clearAllMocks();
     context.mockResolvedValue({ fetchJson } as never);
     process.env['QUARK_REGISTRY_URL'] = 'https://registry.test/v1';
-    // `registryConfiguration` reads the configuration, so resolve it first.
-    await loadConfig();
   });
 
   it('filters the local catalog across fields and tags', async () => {

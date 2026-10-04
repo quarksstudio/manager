@@ -20,7 +20,8 @@
       "inputs": [
         "production",
         "^production",
-        "{workspaceRoot}/tools/build-web-antd-css.mjs"
+        "{workspaceRoot}/tools/build-web-antd-css.mjs",
+        "{workspaceRoot}/tools/build-web-antd-css.entry.tsx"
       ],
       "options": {
         "command": "node tools/build-web-antd-css.mjs"

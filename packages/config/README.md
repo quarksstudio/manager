@@ -13,7 +13,8 @@ Values are merged in this order, each layer overriding the one before it:
    `~/.cache/quarks/storage/`.
 3. `QUARK_`-prefixed environment variables: the variable name is the key in
    camelCase, so `QUARK_EDITOR` sets `editor` and `QUARK_REGISTRY_URL` sets
-   `registryUrl`. and `QUARK_LOG_LEVEL`.
+   `registryUrl`; `QUARK_LOG_LEVEL` sets `log`. The environment selector is
+   `QUARKS_ENV`, which sets `env` and defaults to `production`.
 4. The access token from the stored session.
 
 `loadConfig()` is memoized, and reads are shared between concurrent callers. It
@@ -52,3 +53,17 @@ package stays importable from a process with no renderer.
 pnpm nx build config
 pnpm nx test config
 ```
+
+## Configured HTTP transport
+
+Import `createGlobalContext` from `@quarks.studio/config/http` and await it before
+using its `request` or `fetchJson` methods. It resolves `loadConfig()` before
+choosing the registry URL, including for `skipAuth: true` requests.
+An explicit `baseUrl` wins over environment, persisted configuration and defaults.
+
+`createConfiguredContext(baseUrl?)` is the synchronous facade for service factories.
+Its request methods resolve the configuration each time, so existing invalidation
+also applies to contexts created before a configuration or session change.
+The underlying registry transport stays independent of configuration and receives
+its URL explicitly. Astro-injected defaults are merged with process variables;
+server runtime values take precedence.

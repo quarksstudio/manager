@@ -5,6 +5,7 @@ import {
 } from '@quarks.studio/registry/http';
 import {
   createHttpIdentityGateway,
+  createHttpPublicUsers,
   createPasswordSignIn,
 } from '@quarks.studio/identity/http';
 import { createHttpPackageRegistry } from '@quarks.studio/distribution/http';
@@ -12,6 +13,8 @@ import {
   createHttpBillingGateway,
   createHttpCatalog,
 } from '@quarks.studio/commerce/http';
+import { createHttpPackageSearch } from '@quarks.studio/package-search/http';
+
 export interface AppApiOptions {
   baseUrl: string;
   token?: string;
@@ -34,6 +37,8 @@ export function createAppApi(options: AppApiOptions) {
 
   return {
     Auth: createHttpIdentityGateway(context),
+    Users: createHttpPublicUsers(context),
+    Search: createHttpPackageSearch(context),
     Packages: createHttpPackageRegistry(context),
     Gateway: createHttpBillingGateway(context),
     Catalog: createHttpCatalog(context),

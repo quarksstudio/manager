@@ -1,13 +1,10 @@
 import { createHash } from 'crypto';
+import { loadConfig } from '@quarks.studio/config';
 import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-import {
-  apiFetch,
-  apiRequest,
-  registryConfiguration,
-} from '@quarks.studio/config/http';
+import { apiFetch, apiRequest } from '@quarks.studio/config/http';
 import {
   cacheSkill,
   readCachedSkill,
@@ -158,7 +155,7 @@ export async function install(
       });
       lock.packages[node.locator] = {
         version: node.version,
-        resolved: packageUrl(node.name, node.version, '/bundle'),
+        resolved: await packageUrl(node.name, node.version, '/bundle'),
         integrity: sri(node.metadata.hash),
         isCertified: node.metadata.isCertified ?? false,
         mappedFiles,
@@ -224,7 +221,7 @@ export async function install(
     const downloaded = !buffer;
     if (!buffer) {
       const response = await apiRequest(
-        packageUrl(name, metadata.version, '/bundle'),
+        await packageUrl(name, metadata.version, '/bundle'),
         { force: options.force },
       );
       buffer = Buffer.from(await response.arrayBuffer());
@@ -249,7 +246,7 @@ export async function install(
           {
             name,
             version: metadata.version,
-            registry: registryConfiguration.registryUrl,
+            registry: (await loadConfig()).config.registryUrl,
             hash,
           },
           options.cacheDir,
@@ -287,7 +284,7 @@ async function chooseVersion(
   range: string,
   force = false,
 ): Promise<RegistryVersion | undefined> {
-  const detail = await apiFetch<RegistryPackage>(packageUrl(name, ''), {
+  const detail = await apiFetch<RegistryPackage>(await packageUrl(name, ''), {
     force,
   });
   const versions = (detail.versions ?? []).map((item) =>
@@ -300,16 +297,20 @@ async function chooseVersion(
   return version ? exactMetadata(name, version, force) : undefined;
 }
 
-function exactMetadata(
+async function exactMetadata(
   name: string,
   version: string,
   force = false,
 ): Promise<RegistryVersion> {
-  return apiFetch(packageUrl(name, version), { force });
+  return apiFetch(await packageUrl(name, version), { force });
 }
 
-function packageUrl(name: string, version: string, suffix = ''): string {
-  const base = registryConfiguration.registryUrl.replace(/\/$/, '');
+async function packageUrl(
+  name: string,
+  version: string,
+  suffix = '',
+): Promise<string> {
+  const base = (await loadConfig()).config.registryUrl.replace(/\/$/, '');
   const encoded = encodeURIComponent(name);
   return version
     ? `${base}/package/${encoded}/${encodeURIComponent(version)}${suffix}`
@@ -363,7 +364,7 @@ async function readLockfile(target: string): Promise<SkillLockfile> {
           }
           entries[name] = {
             version,
-            resolved: packageUrl(name, version, '/bundle'),
+            resolved: await packageUrl(name, version, '/bundle'),
             integrity: '',
             isCertified: false,
             mappedFiles: [],
@@ -420,7 +421,7 @@ async function readLockfile(target: string): Promise<SkillLockfile> {
         migrated.dependencies[name] = locator;
         migrated.packages[locator] = {
           version: entry.version,
-          resolved: packageUrl(name, entry.version, '/bundle'),
+          resolved: await packageUrl(name, entry.version, '/bundle'),
           integrity:
             entry.hash && /^[a-f0-9]{64}$/i.test(entry.hash)
               ? sri(entry.hash)

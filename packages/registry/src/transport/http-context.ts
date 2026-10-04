@@ -109,7 +109,15 @@ export function createHttpContext(options: HttpContextOptions): HttpContext {
 
 function encodeBody(body: unknown, headers: Headers): BodyInit | undefined {
   if (body === undefined || body === null) return undefined;
-  if (typeof body === 'string' || body instanceof FormData) return body;
+  if (body instanceof FormData) return body;
+  if (typeof body === 'string') {
+    if (!headers.get('Content-Type')?.trim()) {
+      throw new TypeError(
+        'String request bodies require an explicit Content-Type; pass an object to send JSON.',
+      );
+    }
+    return body;
+  }
   headers.set('Content-Type', 'application/json');
   return JSON.stringify(body);
 }

@@ -33,6 +33,9 @@ export function createHttpPackageSearch(
       cursor?: string,
     ): Promise<RemoteSearchPage> {
       const query = new URLSearchParams();
+      if (filters.author !== undefined) query.set('author', filters.author);
+      if (options.limit !== undefined)
+        query.set('limit', String(options.limit));
       append(query, 'query', filters.query);
       append(query, 'name', filters.name);
       append(query, 'description', filters.description);

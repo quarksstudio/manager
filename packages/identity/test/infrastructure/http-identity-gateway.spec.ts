@@ -1,5 +1,6 @@
 import { createHttpIdentityGateway } from '../../src/http';
 import type { OperationContext } from '@quarks.studio/registry/http';
+import { createHttpContext } from '@quarks.studio/registry/http';
 
 const fetchJson = jest.fn();
 const gateway = createHttpIdentityGateway({
@@ -8,6 +9,30 @@ const gateway = createHttpIdentityGateway({
 
 describe('the HTTP identity gateway', () => {
   beforeEach(() => jest.clearAllMocks());
+
+  it.each([undefined, 'refresh'])(
+    'sends exchange JSON through the real transport (refresh: %s)',
+    async (refreshToken) => {
+      const transport = jest.fn().mockResolvedValue(new Response('{}'));
+      const client = createHttpIdentityGateway(
+        createHttpContext({
+          baseUrl: 'http://registry.test/v1',
+          fetch: transport,
+        }),
+      );
+      await client.exchange('id-token', refreshToken);
+      const [url, options] = transport.mock.calls[0];
+      expect(url).toBe('http://registry.test/v1/auth/exchange');
+      expect(new Headers(options.headers).get('Content-Type')).toBe(
+        'application/json',
+      );
+      expect(JSON.parse(options.body)).toEqual(
+        refreshToken
+          ? { token: 'id-token', refreshToken }
+          : { token: 'id-token' },
+      );
+    },
+  );
 
   it('exchanges a provider token for the server session', async () => {
     fetchJson.mockResolvedValue({});

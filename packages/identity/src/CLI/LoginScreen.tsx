@@ -41,7 +41,7 @@ export function LoginScreen({
   const [code, setCode] = useState('');
   const env = currentEnv();
   const providers: readonly AuthProvider[] =
-    (env['QUARKS_ENV'] ?? env['QUARK_ENV']) === 'local'
+    env['QUARKS_ENV'] === 'local'
       ? AUTH_PROVIDERS
       : AUTH_PROVIDERS.filter((e) => e !== 'emulator');
 

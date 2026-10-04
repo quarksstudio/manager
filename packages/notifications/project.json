@@ -1,0 +1,32 @@
+{
+  "name": "notifications",
+  "sourceRoot": "packages/notifications/src",
+  "projectType": "library",
+  "tags": ["type:context", "scope:notifications"],
+  "targets": {
+    "build-lib": {
+      "executor": "@nx/js:tsc",
+      "dependsOn": ["^build"],
+      "options": {
+        "outputPath": "dist/packages/notifications",
+        "main": "packages/notifications/src/index.ts",
+        "tsConfig": "packages/notifications/tsconfig.lib.json",
+        "assets": ["packages/notifications/*.md"]
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-lib"],
+      "outputs": ["{workspaceRoot}/dist/packages/notifications"],
+      "options": {
+        "command": "node tools/build-functional-web.mjs notifications"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "packages/notifications/jest.config.cts"
+      }
+    }
+  }
+}

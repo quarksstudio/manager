@@ -219,7 +219,7 @@ describe('archive upload transport', () => {
   it.each(['local', 'production'])(
     'maps only the configured emulator origin in %s',
     async (environment) => {
-      process.env['QUARK_ENV'] = environment;
+      process.env['QUARKS_ENV'] = environment;
       process.env['QUARK_LOCAL_STORAGE_PUBLIC_URL'] = 'http://localhost:4443';
       process.env['QUARK_LOCAL_STORAGE_ENDPOINT'] = 'http://storage:4443';
       const url =

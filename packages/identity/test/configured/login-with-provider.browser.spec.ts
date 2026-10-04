@@ -10,8 +10,10 @@ import type { AuthSession } from '@quarks.studio/identity';
 const close = jest.fn();
 
 jest.mock('@quarks.studio/config/http', () => ({
-  registryConfiguration: { registryUrl: 'https://registry.test/v1' },
-  createGlobalContext: jest.fn(async () => ({ fetchJson: jest.fn() })),
+  createGlobalContext: jest.fn(async () => ({
+    baseUrl: 'https://registry.test/v1',
+    fetchJson: jest.fn(),
+  })),
 }));
 jest.mock('@quarks.studio/config', () => ({ saveSession: jest.fn() }));
 

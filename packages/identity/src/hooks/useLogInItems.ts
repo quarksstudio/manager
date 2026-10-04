@@ -25,7 +25,11 @@ export function useLogInItems(
   const select = useCallback(
     (provider: AuthProvider) => {
       if (isLoading) return;
-      Promise.resolve(fn(provider)).catch(() => undefined);
+      try {
+        void Promise.resolve(fn(provider)).catch(() => undefined);
+      } catch {
+        // Consumers report their authentication errors.
+      }
     },
     [isLoading, fn],
   );
@@ -42,7 +46,10 @@ export function useLogInItems(
         (name) => environment === 'local' || name !== 'emulator',
       ).map((name) => ({
         key: name,
-        label: 'Continuar con ${name}',
+        label:
+          name === 'emulator'
+            ? 'Ingresar con emulador'
+            : `Continuar con ${name === 'twitter' ? 'X' : name === 'github' ? 'GitHub' : name.charAt(0).toUpperCase() + name.slice(1)}`,
         icon: ICONS[name],
         disabled: isLoading,
         onClick: () => select(name),

@@ -1,16 +1,23 @@
 // Electron shell for the ClientRender output of apps/ui.
 // Embeds the Astro SSR entry (node standalone) and opens the app in a window
 // with QUARK_RENDER_MODE=client: the React islands fetch from the registry API.
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, Notification } = require('electron');
+const { existsSync } = require('node:fs');
+const { registerNotifications } = require('./notifications.cjs');
 const { spawn } = require('node:child_process');
 const path = require('node:path');
 
 const port = Number(process.env.PORT || 4210);
 const host = '127.0.0.1';
-const entry = path.resolve(__dirname, '../../dist/apps/ui/server/entry.mjs');
+const stagedEntry = path.resolve(__dirname, '../dist/apps/ui/server/entry.mjs');
+const entry = existsSync(stagedEntry)
+  ? stagedEntry
+  : path.resolve(__dirname, '../../../dist/apps/ui/server/entry.mjs');
 const origin = `http://${host}:${port}`;
 
 let server;
+let mainWindow;
+let disposeNotifications;
 
 function waitForServer(timeoutMs = 20000) {
   const started = Date.now();
@@ -35,15 +42,36 @@ function createWindow() {
     width: 1280,
     height: 800,
     title: 'Quark // Skills',
-    webPreferences: { nodeIntegration: false, contextIsolation: true },
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true,
+      preload: path.join(__dirname, 'preload.cjs'),
+    },
   });
+  mainWindow = win;
   void win.loadURL(origin);
   win.on('closed', () => {
+    mainWindow = undefined;
     if (process.platform !== 'darwin') app.quit();
   });
 }
 
 async function start() {
+  if (process.platform === 'win32')
+    app.setAppUserModelId('studio.quarks.client');
+  disposeNotifications = registerNotifications({
+    ipcMain,
+    Notification,
+    origin,
+    getWindow: () => mainWindow,
+    focusWindow: () => {
+      if (!mainWindow) createWindow();
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.show();
+      mainWindow.focus();
+    },
+  });
   server = spawn('node', [entry], {
     env: {
       ...process.env,
@@ -77,6 +105,7 @@ app.on('activate', () => {
 });
 app.on('before-quit', () => {
   app.isQuitting = true;
+  disposeNotifications?.();
   if (server) server.kill('SIGTERM');
 });
 app.on('window-all-closed', () => {

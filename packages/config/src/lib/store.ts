@@ -10,6 +10,8 @@ export const CONFIG_KEY = 'config';
 export const APP_NAME = 'quarks';
 
 export interface SessionUser {
+  id?: string;
+  username?: string;
   uid: string;
   email: string | null;
   displayName: string | null;
@@ -68,11 +70,20 @@ export function saveSession(session: Session, ttlMs?: number): Promise<void> {
     ttlMs === undefined
       ? appStore().setItem(AUTH_SESSION_KEY, session)
       : appStore().setItem(AUTH_SESSION_KEY, session, ttlMs),
-  );
+  ).then(notifySessionChange);
 }
 
 export function clearSession(): Promise<void> {
-  return commit(appStore().removeItem(AUTH_SESSION_KEY));
+  return commit(appStore().removeItem(AUTH_SESSION_KEY)).then(
+    notifySessionChange,
+  );
+}
+
+export function notifySessionChange(): void {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(
+    new StorageEvent('storage', { key: `${APP_NAME}:${AUTH_SESSION_KEY}` }),
+  );
 }
 
 /** Values the user stored through `quark config set`; secrets are absent. */

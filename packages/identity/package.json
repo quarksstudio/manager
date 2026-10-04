@@ -75,7 +75,10 @@
     "ink": "^7.0.2",
     "antd": "^6.6.5",
     "@ant-design/icons": "^6.3.4",
-    "@quarks.studio/registry": "workspace:*"
+    "@quarks.studio/registry": "workspace:*",
+    "@quarks.studio/notifications": "workspace:*",
+    "@quarks.studio/package-search": "workspace:*",
+    "@quarks.studio/web-ui": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0"

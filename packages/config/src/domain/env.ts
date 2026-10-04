@@ -14,6 +14,7 @@ export const ENV_PREFIX = 'QUARK_';
  * `QUARK_REGISTRY_URL` needs no entry: it maps to `registryUrl` by the rule.
  */
 const ALIASES: Record<string, ConfigKey> = {
+  QUARKS_ENV: 'env',
   QUARK_LOG_LEVEL: 'log',
   QUARK_REGISTRY_API_URL: 'registryUrl',
 };
@@ -25,7 +26,7 @@ export type EnvSource = Record<string, string | undefined>;
  *
  * The literal `import.meta.env` cannot be used here: this package is compiled
  * to CommonJS for the CLI, where `import.meta` is a syntax error. Every
- * consumer instead pre-resolves the `QUARK_`-prefixed variables at build time
+ * consumer instead pre-resolves `QUARKS_ENV` and the `QUARK_`-prefixed variables
  * and defines this global (see `apps/ui/astro.config.mjs`), which survives both
  * the CommonJS emit and the browser bundle.
  */
@@ -40,9 +41,10 @@ export function camelize(name: string): string {
 }
 
 export function currentEnv(): EnvSource {
-  if (typeof process !== 'undefined' && process.env)
-    return process.env as EnvSource;
-  return typeof __QUARK_ENV__ === 'undefined' ? {} : __QUARK_ENV__;
+  const injected = typeof __QUARK_ENV__ === 'undefined' ? {} : __QUARK_ENV__;
+  return typeof process !== 'undefined' && process.env
+    ? { ...injected, ...process.env }
+    : injected;
 }
 
 function coerce(key: ConfigKey, raw: string): ConfigValue | undefined {
@@ -66,6 +68,7 @@ function coerce(key: ConfigKey, raw: string): ConfigValue | undefined {
 }
 
 function resolveKey(name: string): string | undefined {
+  if (name === 'QUARK_ENV') return undefined;
   const alias = ALIASES[name];
   if (alias) return alias;
   if (!name.startsWith(ENV_PREFIX)) return undefined;
@@ -73,7 +76,7 @@ function resolveKey(name: string): string | undefined {
 }
 
 /**
- * Overlay every `QUARK_`-prefixed variable on the configuration so callers read
+ * Overlay `QUARKS_ENV` and `QUARK_`-prefixed settings so callers read
  * one source instead of reaching for `process.env` themselves.
  */
 export function envOverrides(source: EnvSource = currentEnv()): ConfigChanges {

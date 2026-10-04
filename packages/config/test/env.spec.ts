@@ -2,7 +2,6 @@ import { DEFAULT_CONFIG, SECRET_KEYS } from '../src/domain/config';
 import { camelize, envOverrides } from '../src/domain/env';
 
 declare global {
-  // eslint-disable-next-line no-var
   var __QUARK_ENV__: Record<string, string> | undefined;
 }
 
@@ -20,10 +19,24 @@ describe('environment overlay', () => {
   it('derives configuration keys by stripping the QUARK_ prefix', () => {
     expect(camelize('REGISTRY')).toBe('registry');
     expect(camelize('LOCAL_STORAGE_PUBLIC_URL')).toBe('localStoragePublicUrl');
-    expect(envOverrides({ QUARK_EDITOR: 'vim', QUARK_ENV: 'local' })).toEqual({
+    expect(envOverrides({ QUARK_EDITOR: 'vim', QUARKS_ENV: 'local' })).toEqual({
       editor: 'vim',
       env: 'local',
     });
+  });
+
+  it('ignores the removed environment name even when both names are set', () => {
+    expect(envOverrides({ QUARK_ENV: 'local' })).toEqual({});
+    expect(
+      envOverrides({ QUARK_ENV: 'local', QUARKS_ENV: 'production' }),
+    ).toEqual({ env: 'production' });
+    expect(
+      envOverrides({ QUARKS_ENV: 'local', QUARK_ENV: 'production' }),
+    ).toEqual({ env: 'local' });
+  });
+
+  it('uses production when no environment override exists', () => {
+    expect({ ...DEFAULT_CONFIG, ...envOverrides({}) }.env).toBe('production');
   });
 
   it('derives the registry endpoint from QUARK_REGISTRY_URL', () => {
@@ -77,6 +90,24 @@ describe('environment overlay', () => {
     for (const key of SECRET_KEYS) expect(DEFAULT_CONFIG).toHaveProperty(key);
   });
 
+  it('merges injected defaults with runtime process variables for SSR', () => {
+    globalThis.__QUARK_ENV__ = {
+      QUARK_REGISTRY_URL: 'http://built.test/v1',
+      QUARKS_ENV: 'local',
+    };
+    delete process.env['QUARK_REGISTRY_URL'];
+    delete process.env['QUARKS_ENV'];
+    try {
+      const { currentEnv } =
+        require('../src/domain/env') as typeof import('../src/domain/env');
+      expect(currentEnv()['QUARK_REGISTRY_URL']).toBe('http://built.test/v1');
+      process.env['QUARK_REGISTRY_URL'] = 'http://runtime.test/v1';
+      expect(currentEnv()['QUARK_REGISTRY_URL']).toBe('http://runtime.test/v1');
+    } finally {
+      delete globalThis.__QUARK_ENV__;
+    }
+  });
+
   describe('bundler-injected environment', () => {
     const original = globalThis.process;
 
@@ -108,11 +139,13 @@ describe('environment overlay', () => {
       const { currentEnv, envOverrides } = inBrowser({
         QUARK_EDITOR: 'vim',
         QUARK_REGISTRY_URL: 'http://registry.test/v1',
+        QUARKS_ENV: 'local',
       });
       expect(currentEnv()).toMatchObject({ QUARK_EDITOR: 'vim' });
       expect(envOverrides()).toEqual({
         editor: 'vim',
         registryUrl: 'http://registry.test/v1',
+        env: 'local',
       });
     });
 

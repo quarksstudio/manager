@@ -11,6 +11,12 @@ jest.mock('../../src/hooks', () => ({
     user: { photoURL: 'https://image.test/avatar.png' },
   }),
   useAuthLogout: () => ({ logout: mockLogout }),
+  useIdentitySession: () => ({
+    isAuthenticated: mockAuthenticated,
+    session: { user: { photoURL: 'https://image.test/avatar.png' } },
+    loading: false,
+    reload: jest.fn(),
+  }),
 }));
 beforeEach(() => {
   mockLogin.mockReset();
@@ -24,7 +30,7 @@ it('maps the provider choices, including X, to identity providers', () => {
   for (const [key, provider] of [
     ['google', 'google'],
     ['github', 'github'],
-    ['x', 'twitter'],
+    ['twitter', 'twitter'],
     ['facebook', 'facebook'],
   ]) {
     const item = result.current?.find(
@@ -38,7 +44,9 @@ it('maps the provider choices, including X, to identity providers', () => {
 });
 it('provides the payment link and invokes logout', () => {
   const logout = jest.fn();
-  const { result } = renderHook(() => useLogOutItems(logout));
+  const { result } = renderHook(() =>
+    useLogOutItems(logout, { uid: 'firebase-uid', username: 'me' }),
+  );
   const billing = result.current?.find((item) => item?.key === 'billing') as {
     label: React.ReactNode;
   };
@@ -119,4 +127,15 @@ it('consumes asynchronous and synchronous callback failures', async () => {
   });
   expect(() => item.onClick()).not.toThrow();
   expect(login).toHaveBeenCalledTimes(2);
+});
+
+it('does not build a profile link from a legacy UID before username resolution', () => {
+  const { result } = renderHook(() =>
+    useLogOutItems(jest.fn(), { uid: 'firebase-uid' }),
+  );
+  const profile = result.current?.find((item) => item?.key === 'profile') as {
+    label: React.ReactNode;
+  };
+  render(<>{profile.label}</>);
+  expect(screen.getByText('Mi Perfil').getAttribute('href')).toBeNull();
 });

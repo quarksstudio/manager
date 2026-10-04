@@ -21,6 +21,7 @@ const names = [
   'runtime',
   'registry',
   'identity',
+  'notifications',
   'distribution',
   'commerce',
   'certification',
@@ -76,6 +77,7 @@ try {
       [
         'registry',
         'identity',
+        'notifications',
         'distribution',
         'commerce',
         'certification',
@@ -142,10 +144,9 @@ try {
     Module._load = function(id, ...args) { if (/^(react|ink)(\\/|$)/.test(id)) throw new Error('Publisher loaded UI'); return load.call(this, id, ...args); };
     const req = Module.createRequire(process.cwd() + '/entry.cjs');
     const { publishPackage } = req('@quarks.studio/publisher');
-    const { registryConfiguration } = req('@quarks.studio/config/http');
-    const { loadConfig } = req('@quarks.studio/config');
-    await loadConfig();
-    if (registryConfiguration.registryUrl !== 'https://registry.test/api') throw new Error('Registry endpoint did not come from the environment');
+    const { createGlobalContext } = req('@quarks.studio/config/http');
+    const context = await createGlobalContext({ skipAuth: true });
+    if (context.baseUrl !== 'https://registry.test/api') throw new Error('Registry endpoint did not come from the environment');
     if (typeof publishPackage !== 'function') throw new Error('Missing publisher');
   `,
     { QUARK_REGISTRY_URL: 'https://registry.test/api' },
@@ -177,9 +178,10 @@ try {
     Module._load = function(id, ...args) { if (/^ink(\\/|$)/.test(id)) throw new Error('Functional Web loaded Ink'); return load.call(this, id, ...args); };
     for (const [owner, names] of Object.entries({
       identity: ['UserAvatarMenu'],
+      notifications: ['NotificationHost'],
       commerce: ['BillingBoundary', 'PricingBoundary', 'PaymentHistory'],
       distribution: ['PackagesBoundary', 'PackageDetails'],
-      'package-search': ['LandingBoundary', 'landingTiers'],
+      'package-search': ['ConfiguredLandingBoundary', 'landingTiers'],
     })) {
       const api = await import('@quarks.studio/' + owner + '/web');
       for (const name of names) if (typeof api[name] !== 'function') throw new Error(owner + ':web missing ' + name);
@@ -206,6 +208,8 @@ try {
         if (error.code !== 'ERR_PACKAGE_PATH_NOT_EXPORTED') throw error;
       }
     }
+    const notifications = await import('@quarks.studio/notifications/hooks');
+    if (typeof notifications.useNotifications !== 'function') throw new Error('Missing notifications hook');
     const hooks = await import('@quarks.studio/distribution/hooks');
     for (const name of ['usePackageDetailsView', 'usePackageDownload', 'usePackageMetadataEditor', 'useReadmeCached'])
       if (typeof hooks[name] !== 'function') throw new Error('distribution:hooks missing ' + name);

@@ -1,0 +1,18 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { ConfiguredUserProfile as UserProfile } from '@quarks.studio/identity/web';
+import { registryBaseUrl } from '../../../lib/registry-base';
+
+const username = decodeURIComponent(Astro.params.username ?? '');
+---
+
+<Layout
+  title={`${username} // Quark`}
+  description={`Packages published by ${username} on Quark.`}
+>
+  <UserProfile
+    username={username}
+    apiBaseUrl={registryBaseUrl}
+    client:only="react"
+  />
+</Layout>

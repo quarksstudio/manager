@@ -7,24 +7,36 @@ import {
   CreditCardOutlined,
 } from '@ant-design/icons';
 
-export function useLogOutItems(fn: () => void) {
+export function useLogOutItems(
+  fn: () => void,
+  user?: Record<string, unknown> | undefined,
+) {
+  const username =
+    typeof user?.['username'] === 'string' ? user['username'] : undefined;
+  const base = username ? `/~/${encodeURIComponent(username)}` : undefined;
   const loggedInItems: MenuProps['items'] = useMemo(
     () => [
       {
         key: 'profile',
-        label: 'Mi Perfil',
+        label: createElement('a', { href: base }, 'Mi Perfil'),
         icon: createElement(UserOutlined),
-        onClick: () => console.log('Ir a perfil'),
       },
       {
         key: 'settings',
-        label: 'Configuración',
+        label: createElement(
+          'a',
+          { href: base ? `${base}/settings` : undefined },
+          'Configuración',
+        ),
         icon: createElement(SettingOutlined),
-        onClick: () => console.log('Ir a configuración'),
       },
       {
         key: 'billing',
-        label: createElement('a', { href: '/~/me/billing' }, 'Mis pagos'),
+        label: createElement(
+          'a',
+          { href: base ? `${base}/billing` : undefined },
+          'Mis pagos',
+        ),
         icon: createElement(CreditCardOutlined),
       },
       {
@@ -38,7 +50,7 @@ export function useLogOutItems(fn: () => void) {
         onClick: () => fn(),
       },
     ],
-    [fn],
+    [fn, base],
   );
 
   return loggedInItems;

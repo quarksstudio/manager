@@ -249,6 +249,9 @@ importers:
       '@quarks.studio/identity':
         specifier: workspace:*
         version: link:../../packages/identity
+      '@quarks.studio/notifications':
+        specifier: workspace:*
+        version: link:../../packages/notifications
       '@quarks.studio/package-search':
         specifier: workspace:*
         version: link:../../packages/package-search
@@ -408,6 +411,12 @@ importers:
       '@quarks.studio/config':
         specifier: workspace:*
         version: link:../config
+      '@quarks.studio/notifications':
+        specifier: workspace:*
+        version: link:../notifications
+      '@quarks.studio/package-search':
+        specifier: workspace:*
+        version: link:../package-search
       '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../registry
@@ -417,6 +426,9 @@ importers:
       '@quarks.studio/terminal-ui':
         specifier: workspace:*
         version: link:../terminal-ui
+      '@quarks.studio/web-ui':
+        specifier: workspace:*
+        version: link:../web-ui
       antd:
         specifier: ^6.6.5
         version: 6.6.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -480,6 +492,18 @@ importers:
       zod:
         specifier: ^3.25.76
         version: 3.25.76
+
+  packages/notifications:
+    dependencies:
+      '@quarks.studio/web-ui':
+        specifier: workspace:*
+        version: link:../web-ui
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
 
   packages/package-search:
     dependencies:

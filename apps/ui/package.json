@@ -16,7 +16,8 @@
     "@quarks.studio/distribution": "workspace:*",
     "@quarks.studio/certification": "workspace:*",
     "@quarks.studio/package-search": "workspace:*",
-    "@quarks.studio/web-ui": "workspace:*"
+    "@quarks.studio/web-ui": "workspace:*",
+    "@quarks.studio/notifications": "workspace:*"
   },
   "devDependencies": {
     "@astrojs/react": "^4.4.2",

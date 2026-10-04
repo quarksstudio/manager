@@ -1,8 +1,7 @@
-import { currentEnv } from '@quarks.studio/config';
-import {
-  createGlobalContext,
-  registryConfiguration,
-} from '@quarks.studio/config/http';
+import { currentEnv, loadSession } from '@quarks.studio/config';
+import type { IdentitySession } from '../domain/auth-session';
+
+import { createGlobalContext } from '@quarks.studio/config/http';
 
 import { createLoginWithEmulator, createLoginWithProvider } from '../index';
 import {
@@ -20,6 +19,21 @@ import type {
   LoginOptions,
   StepListener,
 } from '../index';
+
+export function getSession(): Promise<IdentitySession | null> {
+  return loadSession();
+}
+
+export async function getAccessToken(): Promise<string | null> {
+  const session = await getSession();
+  return typeof session?.accessToken === 'string' && session.accessToken.trim()
+    ? session.accessToken
+    : null;
+}
+
+export async function isAuthenticated(): Promise<boolean> {
+  return (await getAccessToken()) !== null;
+}
 
 /**
  * The manual-code channel is module state on purpose: the code is typed into
@@ -41,20 +55,19 @@ const environment: LoginEnvironment = {
 
 async function unauthenticatedGateway() {
   // A login has no session to present yet, so the exchange must not borrow one.
-  const context = await createGlobalContext({
-    baseUrl: registryConfiguration.registryUrl,
-    skipAuth: true,
-  });
-  return createHttpIdentityGateway(context);
+  return createHttpIdentityGateway(
+    await createGlobalContext({ skipAuth: true }),
+  );
 }
 
 async function loginWithProvider(
   options: LoginOptions,
   onStep?: StepListener,
 ): Promise<AuthSession> {
+  const context = await createGlobalContext({ skipAuth: true });
   const run = createLoginWithProvider({
-    baseUrl: registryConfiguration.registryUrl,
-    gateway: await unauthenticatedGateway(),
+    baseUrl: context.baseUrl,
+    gateway: createHttpIdentityGateway(context),
     sessions: createConfigSessionRepository(),
     launcher: createSystemBrowserLauncher(),
     popup: createPopupCallback(),
@@ -75,7 +88,7 @@ async function loginWithEmulator(
   password: string,
 ): Promise<AuthSession> {
   const env = currentEnv();
-  if ((env['QUARKS_ENV'] ?? env['QUARK_ENV']) !== 'local') {
+  if (env['QUARKS_ENV'] !== 'local') {
     throw new Error(
       'Emulator login is only available in the local environment',
     );
@@ -90,7 +103,7 @@ async function loginWithEmulator(
 
 async function loginWithLocalEmulator(): Promise<AuthSession> {
   const env = currentEnv();
-  if ((env['QUARKS_ENV'] ?? env['QUARK_ENV']) !== 'local') {
+  if (env['QUARKS_ENV'] !== 'local') {
     throw new Error(
       'Emulator login is only available in the local environment',
     );

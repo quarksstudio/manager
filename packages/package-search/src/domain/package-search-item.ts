@@ -7,6 +7,8 @@ export interface PackageSearchItem {
 }
 
 export interface SearchFilters {
+  /** Exact remote author ID; not a local text filter. */
+  author?: string;
   name?: string;
   description?: string;
   tags?: string[];
@@ -14,6 +16,7 @@ export interface SearchFilters {
 }
 
 export interface SearchOptions {
+  limit?: number;
   matchMode?: 'any' | 'all';
   exact?: boolean;
   limitLocal?: number;

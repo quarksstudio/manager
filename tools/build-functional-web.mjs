@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 const name = process.argv[2];
 if (
   ![
+    'notifications',
     'identity',
     'commerce',
     'distribution',

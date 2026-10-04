@@ -1,0 +1,17 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { ConfiguredUserProfileSettings } from '@quarks.studio/identity/web';
+import { registryBaseUrl } from '../../../lib/registry-base';
+const username = decodeURIComponent(Astro.params.username ?? '');
+---
+
+<Layout
+  title={`Profile settings // ${username} // Quark`}
+  description="Edit your Quark profile."
+>
+  <ConfiguredUserProfileSettings
+    username={username}
+    apiBaseUrl={registryBaseUrl}
+    client:only="react"
+  />
+</Layout>

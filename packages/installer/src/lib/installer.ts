@@ -1,13 +1,10 @@
 import { createHash } from 'crypto';
+import { loadConfig } from '@quarks.studio/config';
 import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import * as tar from 'tar';
-import {
-  registryConfiguration,
-  apiFetch,
-  apiRequest,
-} from '@quarks.studio/config/http';
+import { apiFetch, apiRequest } from '@quarks.studio/config/http';
 import { logger } from '@quarks.studio/logger';
 import { parseManifest } from '@quarks.studio/manifest';
 import {
@@ -64,8 +61,12 @@ const MAX_FILES = 10_000;
 const MAX_PATH_LENGTH = 1_024;
 const MAX_UNPACKED_BYTES = 250 * 1024 * 1024;
 
-function packageUrl(name: string, version: string, suffix = ''): string {
-  const base = registryConfiguration.registryUrl.replace(/\/$/, '');
+async function packageUrl(
+  name: string,
+  version: string,
+  suffix = '',
+): Promise<string> {
+  const base = (await loadConfig()).config.registryUrl.replace(/\/$/, '');
   return `${base}/package/${encodeURIComponent(name)}/${encodeURIComponent(version)}${suffix}`;
 }
 
@@ -99,9 +100,12 @@ async function performInstallSkill(
 
   let metadata = resolvedMetadata;
   if (!metadata) {
-    metadata = await apiFetch<RegistryVersion>(packageUrl(name, version), {
-      useCache: false,
-    });
+    metadata = await apiFetch<RegistryVersion>(
+      await packageUrl(name, version),
+      {
+        useCache: false,
+      },
+    );
   }
   if (!/^[a-f0-9]{64}$/i.test(metadata.hash))
     throw new Error('Registry returned an invalid bundle hash');
@@ -142,7 +146,7 @@ async function performInstallSkill(
     if (!bundle) {
       logger.info(`downloading bundle for ${name}@${version}`);
       const bundleResponse = await apiRequest(
-        packageUrl(name, version, '/bundle'),
+        await packageUrl(name, version, '/bundle'),
         { useCache: false, force: options.force },
       );
       bundle = Buffer.from(await bundleResponse.arrayBuffer());
@@ -209,7 +213,7 @@ async function performInstallSkill(
           {
             name,
             version,
-            registry: registryConfiguration.registryUrl,
+            registry: (await loadConfig()).config.registryUrl,
             hash: actualHash,
           },
           options.cacheDir,
@@ -238,7 +242,7 @@ async function performInstallSkill(
     try {
       registerInstall(name, version, isGlobal, cwd, {
         hash: actualHash,
-        source: registryConfiguration.registryUrl,
+        source: (await loadConfig()).config.registryUrl,
         dependencies: manifest.dependencies,
       });
     } catch (error) {
@@ -263,7 +267,7 @@ class NodeInstallWorkflow implements InstallWorkflow {
 
   async authorize(command: InstallSkillCommand): Promise<void> {
     this.metadata = await apiFetch<RegistryVersion>(
-      packageUrl(command.name, command.version),
+      await packageUrl(command.name, command.version),
       { useCache: false },
     );
     const manifest = parseManifest(this.metadata.manifest);

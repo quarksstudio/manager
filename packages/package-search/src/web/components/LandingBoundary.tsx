@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { usePackageSearchWebServices } from './services';
-import { LandingHero } from './components/landing/LandingHero';
-import { LandingTierMatrix } from './components/landing/LandingTierMatrix';
+import { usePackageSearchWebServices } from '../services';
+import { LandingHero } from './LandingHero';
+import { LandingTierMatrix } from './LandingTierMatrix';
 import type {
   LandingTier,
   LandingTierColumns,
-} from './components/landing/types';
-import { landingTiers } from './lib/landing';
+} from './types';
+import { landingTiers } from '../lib/landing';
 
 export interface LandingBoundaryProps {
   blogUrl: string;

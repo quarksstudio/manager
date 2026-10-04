@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { heldTier } from '@quarks.studio/certification';
-import { registryConfiguration } from '@quarks.studio/config/http';
 import { CommerceProvider } from '../presentation';
 import { CommerceWebProvider } from '../presentation';
 import {
@@ -66,9 +65,7 @@ export function ConfiguredPricingBoundary({
   );
 }
 export function ConfiguredPlanGrid(props: PlanGridProps) {
-  const services = useCommerceServices(
-    props.apiBaseUrl ?? registryConfiguration.registryUrl,
-  );
+  const services = useCommerceServices(props.apiBaseUrl);
   return (
     <CommerceProvider services={services}>
       <PlanGridView {...props} />
@@ -76,9 +73,7 @@ export function ConfiguredPlanGrid(props: PlanGridProps) {
   );
 }
 export function ConfiguredTierMatrix(props: TierMatrixProps) {
-  const services = useCommerceServices(
-    props.apiBaseUrl ?? registryConfiguration.registryUrl,
-  );
+  const services = useCommerceServices(props.apiBaseUrl);
   return (
     <CommerceProvider services={services}>
       <TierMatrixView {...props} />
@@ -88,9 +83,7 @@ export function ConfiguredTierMatrix(props: TierMatrixProps) {
 export function ConfiguredPaymentSystemButtons(
   props: PaymentSystemButtonsProps,
 ) {
-  const services = useCommerceServices(
-    props.apiBaseUrl ?? registryConfiguration.registryUrl,
-  );
+  const services = useCommerceServices(props.apiBaseUrl);
   return (
     <CommerceProvider services={services}>
       <PaymentSystemButtonsView {...props} />

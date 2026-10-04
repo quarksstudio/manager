@@ -6,7 +6,7 @@ export function ConfiguredUserAvatarMenu() {
   const services = useIdentityServices();
   return (
     <IdentityProvider services={services}>
-      <UserAvatarMenu environment={currentEnv()['QUARK_ENV']} />
+      <UserAvatarMenu environment={currentEnv()['QUARKS_ENV']} />
     </IdentityProvider>
   );
 }

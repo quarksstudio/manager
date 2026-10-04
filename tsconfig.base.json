@@ -233,7 +233,23 @@
       "@quarks.studio/tester/infrastructure": [
         "./packages/tester/src/infrastructure/index.ts"
       ],
-      "@quarks.studio/tester/lib": ["./packages/tester/src/lib/index.ts"]
+      "@quarks.studio/tester/lib": ["./packages/tester/src/lib/index.ts"],
+      "@quarks.studio/notifications": ["./packages/notifications/src/index.ts"],
+      "@quarks.studio/notifications/domain": [
+        "./packages/notifications/src/domain/index.ts"
+      ],
+      "@quarks.studio/notifications/application": [
+        "./packages/notifications/src/application/index.ts"
+      ],
+      "@quarks.studio/notifications/hooks": [
+        "./packages/notifications/src/hooks/index.ts"
+      ],
+      "@quarks.studio/notifications/infrastructure": [
+        "./packages/notifications/src/infrastructure/index.ts"
+      ],
+      "@quarks.studio/notifications/web": [
+        "./packages/notifications/src/web/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

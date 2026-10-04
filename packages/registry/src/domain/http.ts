@@ -24,7 +24,11 @@ export interface RegistryCache {
 
 export interface RegistryRequestOptions {
   method?: string;
-  /** Plain objects are serialized as JSON; `FormData` and strings pass through. */
+  /**
+   * Pass objects for JSON: the transport serializes them and sets application/json.
+   * Strings pass through but require an explicit Content-Type.
+   * FormData passes through; let fetch supply its multipart boundary.
+   */
   body?: unknown;
   headers?: HeadersInit;
   /** `RequestInit.signal`, nullable to stay assignable to it. */

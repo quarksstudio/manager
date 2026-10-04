@@ -1,30 +1,21 @@
-import { loadConfig } from '@quarks.studio/config';
+import { createGlobalContext } from '@quarks.studio/config/http';
 import type { CommerceServices } from '../presentation/services';
-import { createHttpContext } from '@quarks.studio/registry/http';
 import { createHttpBillingGateway } from '../http';
 
 /** Read the browser session for each request so login/logout takes effect immediately. */
 export function createBrowserCommerceServices(
-  apiBaseUrl: string,
+  apiBaseUrl?: string,
 ): CommerceServices {
+  const register = createGlobalContext({
+    baseUrl: apiBaseUrl,
+  }).then(createHttpBillingGateway);
+
   return {
-    createPaymentLink: async (system, target, baseUrl) => {
-      const { config } = await loadConfig();
-      return createHttpBillingGateway(
-        createHttpContext({
-          baseUrl: baseUrl ?? apiBaseUrl,
-          token: config.token,
-        }),
-      ).createPaymentLink(system, target);
+    createPaymentLink: async (system, target,) => {
+      return (await register).createPaymentLink(system, target);
     },
     listPayments: async (options) => {
-      const { config } = await loadConfig();
-      return createHttpBillingGateway(
-        createHttpContext({
-          baseUrl: apiBaseUrl,
-          token: config.token,
-        }),
-      ).listPayments(options);
+      return (await register).listPayments(options);
     },
   };
 }

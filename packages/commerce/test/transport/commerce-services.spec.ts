@@ -3,7 +3,10 @@ import { loadConfig } from '@quarks.studio/config';
 import { RegistryHttpError } from '@quarks.studio/registry/http';
 import { createBrowserCommerceServices } from '../../src/infrastructure/browser-services';
 
-jest.mock('@quarks.studio/config', () => ({ loadConfig: jest.fn() }));
+jest.mock('@quarks.studio/config', () => ({
+  loadConfig: jest.fn(),
+  clearSession: jest.fn().mockResolvedValue(undefined),
+}));
 const originalFetch = globalThis.fetch;
 const mockFetch = jest.fn();
 const mockConfig = jest.mocked(loadConfig);
@@ -65,3 +68,11 @@ it.each([400, 401])(
     ).rejects.toBeInstanceOf(RegistryHttpError);
   },
 );
+
+it('resolves an omitted endpoint from configuration on the first payment request', async () => {
+  mockFetch.mockResolvedValue(
+    new Response(JSON.stringify({ items: [], nextCursor: null })),
+  );
+  await createBrowserCommerceServices().listPayments();
+  expect(mockFetch.mock.calls[0][0]).toBe('https://other.test/v1/payments/me');
+});

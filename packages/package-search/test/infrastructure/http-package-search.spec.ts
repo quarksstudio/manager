@@ -114,3 +114,12 @@ describe('the HTTP package search', () => {
     expect(requestedQuery().get('cursor')).toBe('cursor-1');
   });
 });
+
+it('sends the exact author, page size and cursor', async () => {
+  fetchJson.mockClear();
+  fetchJson.mockResolvedValue(page());
+  await remote.search({ author: 'User/id +?' }, { limit: 24 }, 'next+cursor');
+  expect(requestedQuery().get('author')).toBe('User/id +?');
+  expect(requestedQuery().get('limit')).toBe('24');
+  expect(requestedQuery().get('cursor')).toBe('next+cursor');
+});

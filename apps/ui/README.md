@@ -29,7 +29,7 @@ pnpm --filter @quarks.studio/ui-app dev
 pnpm --filter @quarks.studio/ui-app build
 
 # Serve the built web app (ServerRender)
-REGISTRY_API_URL=http://localhost:8081/v1 \
+QUARK_REGISTRY_URL=http://localhost:8081/v1 \
 WEB_ORIGIN=http://localhost:4200 \
 node dist/apps/ui/server/entry.mjs
 
@@ -43,16 +43,30 @@ pnpm --filter @quarks.studio/ui-app desktop:pack
 Environment used at runtime:
 
 Every setting is read through `loadConfig()` from `@quarks.studio/config`, so the
-`QUARK_`-prefixed name of the key is the variable name:
+`QUARK_`-prefixed name of the key is the variable name, except `QUARKS_ENV`,
+which selects the environment:
 
-- `QUARK_REGISTRY_URL` — registry base URL (default `http://localhost:8081/v1`).
+- `QUARK_REGISTRY_URL` — registry base URL (default `https://api.quarks.studio/v1`).
 - `QUARK_RENDER_MODE` — `ssr` (web) or `client` (Electron); set by the desktop shell.
 - `QUARK_TOKEN` — bearer credential, otherwise read from the stored session.
-- `QUARK_ENV=local`, `QUARK_AUTH_EMULATOR_HOST` — enable automatic emulator login in the user menu.
+- `QUARKS_ENV=local`, `QUARK_AUTH_EMULATOR_HOST` — enable automatic emulator login in the user menu.
 - `QUARK_AUTH_EMULATOR_EMAIL`, `QUARK_AUTH_EMULATOR_PASSWORD` — optional local account overrides; defaults match the server bootstrap (`developer@quark.local` / `quark-local-password`).
 
-`WEB_ORIGIN` stays raw because Astro reads it while evaluating `astro.config.mjs`,
-before any module of the app is loaded.
+Astro loads `apps/ui/.env` and the development/production dotenv variants using
+Vite. Variables already set in the process take precedence over the files.
+`QUARK_REGISTRY_URL` is shared by the browser configuration and island props;
+`PUBLIC_QUARK_REGISTRY_URL` is not needed. Restart development or rebuild after
+changing browser values. SSR runtime variables override injected build values.
+
+```env
+QUARKS_ENV=local
+QUARK_REGISTRY_URL=http://localhost:8081/v1
+QUARK_AUTH_EMULATOR_HOST=localhost:9099
+QUARK_RENDER_MODE=ssr
+```
+
+`WEB_ORIGIN` is read by Astro during configuration, before app modules load.
+`QUARK_TOKEN` is server-only and is excluded from the browser bundle.
 
 ## Layout and styles
 
@@ -67,3 +81,11 @@ before any module of the app is loaded.
 node --test apps/ui/test/astro-build.spec.mjs   # SSR build + RENDER_MODE=client shells
 node --test apps/ui/test/ssr.spec.mjs           # full server flow against a fake registry API
 ```
+
+## User profiles
+
+`/~/{username}` renders a client-only React profile from the identity package in
+both web and desktop modes. Profile and package queries go directly to the
+configured registry API; there are no Astro user API proxies. The API must allow
+the web/desktop origin through CORS and the Authorization header. Username edits
+use `POST /v1/auth/me`; package ownership continues to use the stable Firebase UID.

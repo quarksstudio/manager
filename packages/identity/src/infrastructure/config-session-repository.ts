@@ -25,11 +25,4 @@ export { APP_NAME, AUTH_SESSION_KEY, clearSession, saveSession };
  * A stored session the registry no longer accepts is worthless to every tab
  * that read it, so the change is broadcast on the standard storage event.
  */
-export function notifySessionChange(): void {
-  if (typeof window === 'undefined') return;
-  // The stored key is namespaced by the storage engine, so the event has to
-  // carry the same prefix or a key-filtered listener never matches it.
-  window.dispatchEvent(
-    new StorageEvent('storage', { key: `${APP_NAME}:${AUTH_SESSION_KEY}` }),
-  );
-}
+export { notifySessionChange } from '@quarks.studio/config';

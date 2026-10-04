@@ -1,9 +1,15 @@
 jest.mock('../../storage/src/infrastructure/create-storage', () =>
   jest.requireMock('@quarks.studio/storage'),
 );
-import { resetConfig } from '@quarks.studio/config';
+import { resetConfig } from '../src/index';
 
-import { AUTH_SESSION_KEY, apiFetch, apiRequest } from '../src/http';
+import {
+  AUTH_SESSION_KEY,
+  apiFetch,
+  apiRequest,
+  createGlobalContext,
+  createConfiguredContext,
+} from '../src/http';
 
 jest.mock('@quarks.studio/storage', () => {
   const values = new Map<string, unknown>();
@@ -52,7 +58,78 @@ describe('apiFetch', () => {
     storage.removeItem.mockResolvedValue(undefined);
   });
 
-  afterEach(() => jest.restoreAllMocks());
+  const originalEnv = { ...process.env };
+  afterEach(() => {
+    jest.restoreAllMocks();
+    process.env = { ...originalEnv };
+  });
+
+  it('uses the configured URL for the very first unauthenticated exchange', async () => {
+    process.env['QUARK_REGISTRY_URL'] = 'http://registry.test/v1';
+    storage.getItem.mockImplementation(async (key) =>
+      key === AUTH_SESSION_KEY ? { accessToken: 'stored-secret' } : null,
+    );
+    const fetchMock = jest
+      .spyOn(global, 'fetch')
+      .mockResolvedValue(new Response('{}'));
+    const context = await createGlobalContext({
+      skipAuth: true,
+      headers: { Authorization: 'Bearer explicit-secret' },
+      token: 'token-secret',
+    });
+    await context.fetchJson('auth/exchange', {
+      method: 'POST',
+      body: { token: 'emulator-token' },
+    });
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      'http://registry.test/v1/auth/exchange',
+    );
+    expect(
+      new Headers(fetchMock.mock.calls[0][1]?.headers).has('Authorization'),
+    ).toBe(false);
+  });
+
+  it('preserves an explicit endpoint over an environment endpoint', async () => {
+    process.env['QUARK_REGISTRY_URL'] = 'http://ambient.test/v1';
+    const fetchMock = jest
+      .spyOn(global, 'fetch')
+      .mockResolvedValue(new Response('{}'));
+    const context = createConfiguredContext('http://explicit.test/v1');
+    await context.fetchJson('package/demo');
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      'http://explicit.test/v1/package/demo',
+    );
+  });
+
+  it('waits for stored configuration before the first lazy request and observes invalidation', async () => {
+    delete process.env['QUARK_REGISTRY_URL'];
+    delete process.env['QUARK_REGISTRY_API_URL'];
+    let release!: (value: unknown) => void;
+    const stored = new Promise((resolve) => {
+      release = resolve;
+    });
+    storage.getItem.mockImplementation((key) =>
+      key === 'config' ? stored : Promise.resolve(null),
+    );
+    const fetchMock = jest
+      .spyOn(global, 'fetch')
+      .mockImplementation(async () => new Response('{}'));
+    const context = createConfiguredContext();
+    const request = context.request('package/demo');
+    await Promise.resolve();
+    expect(fetchMock).not.toHaveBeenCalled();
+    release({ registryUrl: 'http://stored.test/v1' });
+    await request;
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      'http://stored.test/v1/package/demo',
+    );
+    process.env['QUARK_REGISTRY_URL'] = 'http://changed.test/v1';
+    resetConfig();
+    await context.fetchJson('package/another');
+    expect(fetchMock.mock.calls[1][0]).toBe(
+      'http://changed.test/v1/package/another',
+    );
+  });
 
   it('injects the stored access token into outgoing requests', async () => {
     storage.getItem.mockResolvedValue({ accessToken: 'mock_token' });

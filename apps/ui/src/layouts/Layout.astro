@@ -5,13 +5,14 @@ import {
   type SiteFooterLink,
 } from '@quarks.studio/web-ui';
 import { ConfiguredUserAvatarMenu as UserAvatarMenu } from '@quarks.studio/identity/web';
+import { NotificationHost } from '@quarks.studio/notifications/web';
 import '../styles.css';
 
 const blogUrl = 'https://blog.quarks.studio';
 const defaultFooterLinks: SiteFooterLink[] = [
   { label: 'Documentation', href: 'https://docs.quarks.studio' },
-  { label: 'Registry', href: '/search' },
-  { label: 'Legal', href: '/terms' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'Legal', href: 'https://docs.quarks.studio/terms' },
   { label: 'Blog', href: blogUrl },
 ];
 interface Props {
@@ -45,6 +46,7 @@ const {
     <title>{title}</title>
   </head>
   <body class="flex min-h-screen flex-col bg-slate-950 text-slate-100">
+    <NotificationHost client:only="react" />
     <SiteNavbar
       logo={navbarLogo}
       searchAction={searchAction}

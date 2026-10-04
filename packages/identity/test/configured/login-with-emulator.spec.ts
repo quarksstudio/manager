@@ -12,7 +12,6 @@ jest.mock('@quarks.studio/storage', () => ({
 }));
 jest.mock('@quarks.studio/config/http', () => ({
   ...jest.requireActual('@quarks.studio/config/http'),
-  registryConfiguration: { registryUrl: '/v1' },
   createGlobalContext: jest.fn(),
 }));
 
@@ -43,7 +42,7 @@ afterAll(() => {
 beforeEach(() => {
   jest.clearAllMocks();
   for (const key of envKeys) delete process.env[key];
-  process.env['QUARK_ENV'] = 'local';
+  process.env['QUARKS_ENV'] = 'local';
   context.mockResolvedValue({ fetchJson } as never);
   global.fetch = jest.fn().mockResolvedValue({
     ok: true,
@@ -66,7 +65,7 @@ it('exchanges the emulator token before storing the server session', async () =>
   );
 
   expect(result).toBe(session);
-  expect(context).toHaveBeenCalledWith({ baseUrl: '/v1', skipAuth: true });
+  expect(context).toHaveBeenCalledWith({ skipAuth: true });
   expect(fetchJson).toHaveBeenCalledWith('auth/exchange', {
     method: 'POST',
     body: { token: 'emulator-token', refreshToken: 'refresh' },
@@ -134,8 +133,8 @@ it('uses configured local credentials', async () => {
 it.each([undefined, 'production', 'development'])(
   'rejects direct and automatic emulator login outside local (%s)',
   async (env) => {
-    if (env === undefined) delete process.env['QUARK_ENV'];
-    else process.env['QUARK_ENV'] = env;
+    if (env === undefined) delete process.env['QUARKS_ENV'];
+    else process.env['QUARKS_ENV'] = env;
     await expect(loginWithLocalEmulator()).rejects.toThrow(
       'only available in the local environment',
     );
@@ -189,4 +188,22 @@ it('honors QUARKS_ENV when both environment variables are set', async () => {
     'only available in the local environment',
   );
   expect(global.fetch).not.toHaveBeenCalled();
+});
+
+it('does not enable emulator login with the removed QUARK_ENV name', async () => {
+  delete process.env['QUARKS_ENV'];
+  process.env['QUARK_ENV'] = 'local';
+  process.env['QUARK_AUTH_EMULATOR_HOST'] = 'localhost:9099';
+  await expect(loginWithLocalEmulator()).rejects.toThrow(
+    'only available in the local environment',
+  );
+  await expect(
+    loginWithEmulator(
+      'http://localhost:9099',
+      'developer@quark.local',
+      'password',
+    ),
+  ).rejects.toThrow('only available in the local environment');
+  expect(global.fetch).not.toHaveBeenCalled();
+  expect(context).not.toHaveBeenCalled();
 });

@@ -14,7 +14,7 @@ Wrap the menu in `IdentityProvider` or use the `ConfiguredUserAvatarMenu` from `
 
 ## Local emulator login
 
-The configured menu shows **Ingresar con emulador** only when `QUARK_ENV=local`.
+The configured menu shows **Ingresar con emulador** only when `QUARKS_ENV=local`.
 Set `QUARK_AUTH_EMULATOR_HOST` to `localhost:9099` or a full HTTP URL. The button
 automatically signs in as `developer@quark.local` with `quark-local-password`,
 the account created by the server's local bootstrap. It does not create accounts.
@@ -35,7 +35,50 @@ The unified hook accepts `login(provider, options?)`, where the provider is an
 and disables all authentication choices while loading.
 
 The CLI provider selector includes `emulator` in the local environment. Set
-`QUARKS_ENV=local` (or the existing `QUARK_ENV=local`) and
+`QUARKS_ENV=local` and
 `QUARK_AUTH_EMULATOR_HOST=localhost:9099`, then run `quark auth login`
-or `quark auth login emulator`. If both environment variables are set,
-`QUARKS_ENV` takes precedence for CLI selection and emulator authentication.
+or `quark auth login emulator`. The same `QUARKS_ENV` variable controls Web, CLI
+and emulator authentication.
+
+## Read the stored session
+
+Session queries read the shared storage and honor its TTL; they do not validate
+or refresh tokens with the server.
+
+```ts
+import { getSession, getAccessToken, isAuthenticated } from '@quarks.studio/identity';
+
+const session = await getSession(); // IdentitySession | null
+const token = await getAccessToken(); // string | null
+const signedIn = await isAuthenticated(); // boolean
+```
+
+These functions are also available from `/configured`. Storage failures reject
+their promises. `IdentitySession` permits older entries without a user or refresh
+token; `AuthSession` remains the result of login.
+
+```tsx
+import { useIdentitySession } from '@quarks.studio/identity/web';
+
+function SessionStatus() {
+  const { isAuthenticated, loading, error } = useIdentitySession();
+  if (loading) return <span>Loading session…</span>;
+  if (error) return <span>Unable to read session</span>;
+  return <span>{isAuthenticated ? 'Signed in' : 'Signed out'}</span>;
+}
+```
+
+The hook is also exported from `/hooks` and needs no `IdentityProvider`. It
+returns `session`, `accessToken`, `isAuthenticated`, `loading`, `error`, and
+`reload()`. It reloads after session writes, storage events, and window focus.
+Expiry is checked on reads, without polling; authenticated means a stored,
+nonempty access token is present, not that the server has verified it.
+
+## Public profiles and usernames
+
+`ConfiguredUserProfile` loads profiles through identity hooks and services.
+The profile URL uses the unique username; package queries and ownership checks
+use the immutable user ID. New sessions carry `user.id` and `user.username`;
+legacy browser sessions resolve `auth/me` before building username-based links.
+Only the owner sees the username editor, which writes to `POST /v1/auth/me`,
+updates the stored identity and navigates to the new profile URL.

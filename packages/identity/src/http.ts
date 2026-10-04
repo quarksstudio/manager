@@ -7,3 +7,11 @@ export * from './infrastructure/popup-callback';
 export * from './infrastructure/system-browser-launcher';
 
 export * from './infrastructure/password-sign-in';
+
+export * from './infrastructure/http-public-user';
+export {
+  userProfileServices,
+  userPackagePageSize,
+} from './infrastructure/user-profile-services';
+
+export { userSettingsServices } from './infrastructure/user-settings-services';

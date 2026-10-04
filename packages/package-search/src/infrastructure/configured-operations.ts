@@ -2,7 +2,6 @@ import { createSearchPackages } from '../index';
 import { createHttpPackageSearch } from '../http';
 import { createStoragePackageCatalog } from '../http';
 import { createGlobalContext } from '@quarks.studio/config/http';
-import { registryConfiguration } from '@quarks.studio/config/http';
 import type { PackageCatalogRepository } from '../index';
 import type { RemoteSearchPage, SearchFilters, SearchOptions } from '../index';
 
@@ -13,9 +12,7 @@ import type { RemoteSearchPage, SearchFilters, SearchOptions } from '../index';
 const catalog: PackageCatalogRepository = createStoragePackageCatalog();
 
 async function ambientSearch() {
-  const context = await createGlobalContext({
-    baseUrl: registryConfiguration.registryUrl,
-  });
+  const context = await createGlobalContext();
   return createSearchPackages({
     catalog,
     remote: createHttpPackageSearch(context),

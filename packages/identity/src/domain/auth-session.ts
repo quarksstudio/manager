@@ -20,10 +20,19 @@ export interface AuthSession {
   refreshToken: string;
   user: {
     uid: string;
+    id?: string;
+    username?: string;
     email: string | null;
     displayName: string | null;
     photoURL: string | null;
   };
+}
+
+/** Session persisted in storage; older entries may omit user or refresh token. */
+export interface IdentitySession {
+  accessToken: string;
+  refreshToken?: string;
+  user?: AuthSession['user'];
 }
 
 export type AuthStep =
@@ -38,6 +47,7 @@ export type AuthStep =
 export type StepListener = (step: AuthStep, details?: string) => void;
 
 export interface CurrentUser {
+  username?: string;
   id?: string;
   uid?: string;
   email?: string | null;

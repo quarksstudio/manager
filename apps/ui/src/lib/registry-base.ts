@@ -7,4 +7,4 @@
  */
 export const registryBaseUrl =
   (import.meta.env.QUARK_API as string | undefined) ??
-  'http://localhost:8081/v1';
+  'https://api.quarks.studio/v1';

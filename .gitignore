@@ -42,12 +42,11 @@ Thumbs.db
 .nx/workspace-data
 .claude/worktrees
 .claude/settings.local.json
-
+.env
 # Astro dev artifacts
 .astro
 
 # Electron staging output
 .desktop-app
-
 
 vite.config.*.timestamp*
