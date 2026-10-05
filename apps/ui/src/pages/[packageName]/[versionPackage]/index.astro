@@ -5,10 +5,10 @@ import {
   ConfiguredPackagesBoundary as PackagesBoundary,
 } from '@quarks.studio/distribution/web';
 
-import { registryBaseUrl as browserRegistryBaseUrl } from '../../../../lib/registry-base';
-import { packageUrl, registry, statusFor } from '../../../../lib/registry';
-import { loadPricing } from '../../../../lib/pricing';
-import Layout from '../../../../layouts/Layout.astro';
+import { registryBaseUrl as browserRegistryBaseUrl } from '../../../lib/registry-base';
+import { packageUrl, registry, statusFor } from '../../../lib/registry';
+import { loadPricing } from '../../../lib/pricing';
+import Layout from '../../../layouts/Layout.astro';
 
 const client = (await loadConfig()).config.renderMode === 'client';
 const name = decodeURIComponent(Astro.params.packageName ?? '');

@@ -36,6 +36,7 @@ export interface UseSearchPackagesReturn {
   remoteResults: PackageSearchItem[];
   combinedResults: PackageSearchItem[];
   isSearchingRemote: boolean;
+  searchError: string | null;
   hasMoreRemoteResults: boolean;
   totalCount: number;
   reset: () => void;

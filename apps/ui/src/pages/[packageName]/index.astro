@@ -6,9 +6,9 @@ import {
 } from '@quarks.studio/distribution/web';
 import { highestVersion } from '@quarks.studio/distribution';
 
-import Layout from '../../../layouts/Layout.astro';
-import { registryBaseUrl as browserRegistryBaseUrl } from '../../../lib/registry-base';
-import { packageUrl, registry, statusFor } from '../../../lib/registry';
+import Layout from '../../layouts/Layout.astro';
+import { registryBaseUrl as browserRegistryBaseUrl } from '../../lib/registry-base';
+import { packageUrl, registry, statusFor } from '../../lib/registry';
 
 const client = (await loadConfig()).config.renderMode === 'client';
 const name = decodeURIComponent(Astro.params.packageName ?? '');
@@ -16,7 +16,7 @@ let detail;
 let error;
 if (!client) {
   try {
-    detail = await (await registry(Astro.cookies)).Packages.get(name);
+    detail = await registry(Astro.cookies).then((e) => e.Packages.get(name));
     const latest = highestVersion(detail.versions)?.version;
     if (latest) return Astro.redirect(packageUrl(name, latest), 302);
   } catch (failure) {

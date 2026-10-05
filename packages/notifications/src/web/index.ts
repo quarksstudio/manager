@@ -1,1 +1,1 @@
-export * from './NotificationHost';
+export * from './containers';

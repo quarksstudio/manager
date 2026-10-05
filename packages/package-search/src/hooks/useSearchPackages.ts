@@ -19,6 +19,7 @@ export function useSearchPackages(
   const [localResults, setLocalResults] = useState<PackageSearchItem[]>([]);
   const [remoteResults, setRemoteResults] = useState<PackageSearchItem[]>([]);
   const [isSearchingRemote, setIsSearchingRemote] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [remoteTotal, setRemoteTotal] = useState<number | null>(null);
   const [showRemote, setShowRemote] = useState(false);
@@ -31,6 +32,7 @@ export function useSearchPackages(
       const currentRequest = ++requestId.current;
       filtersRef.current = filters;
       optionsRef.current = options;
+      setSearchError(null);
       setRemoteResults([]);
       setNextCursor(null);
       setRemoteTotal(null);
@@ -46,8 +48,9 @@ export function useSearchPackages(
         setNextCursor(remote.nextCursor);
         setRemoteTotal(remote.totalCount);
         if (hybrid.localResults.length === 0) setShowRemote(true);
-      } catch {
-        // Local results remain usable when the background request fails.
+      } catch (error) {
+        if (currentRequest === requestId.current)
+          setSearchError(searchErrorMessage(error));
       } finally {
         if (currentRequest === requestId.current) setIsSearchingRemote(false);
       }
@@ -63,6 +66,7 @@ export function useSearchPackages(
     if (!nextCursor || isSearchingRemote) return;
     const currentRequest = requestId.current;
     setIsSearchingRemote(true);
+    setSearchError(null);
     try {
       const page = await fetchRemotePackages(
         filtersRef.current,
@@ -74,8 +78,9 @@ export function useSearchPackages(
       setNextCursor(page.nextCursor);
       setRemoteTotal(page.totalCount);
       setShowRemote(true);
-    } catch {
-      // Keep already available local and remote results.
+    } catch (error) {
+      if (currentRequest === requestId.current)
+        setSearchError(searchErrorMessage(error));
     } finally {
       if (currentRequest === requestId.current) setIsSearchingRemote(false);
     }
@@ -89,6 +94,7 @@ export function useSearchPackages(
 
   const reset = useCallback(() => {
     requestId.current += 1;
+    setSearchError(null);
     setLocalResults([]);
     setRemoteResults([]);
     setIsSearchingRemote(false);
@@ -114,8 +120,19 @@ export function useSearchPackages(
     remoteResults,
     combinedResults,
     isSearchingRemote,
+    searchError,
     hasMoreRemoteResults: (!showRemote && hiddenRemote) || nextCursor !== null,
     totalCount: remoteTotal ?? localResults.length,
     reset,
   };
+}
+
+function searchErrorMessage(error: unknown): string {
+  const status =
+    typeof error === 'object' && error !== null && 'status' in error
+      ? error.status
+      : undefined;
+  return status === 400
+    ? 'This search is not supported by the registry. Use a case-sensitive name prefix, exact tags, and avoid combining tags with author or private access.'
+    : 'Could not load registry results. Please try again.';
 }

@@ -25,8 +25,23 @@ interface ServerSearchPage {
 /** The registry's `package` collection, queried with the search parameters. */
 export function createHttpPackageSearch(
   context: OperationContext,
-): PackageSearchRemote {
+): PackageSearchRemote & {
+  searchParams(params: URLSearchParams): Promise<RemoteSearchPage>;
+} {
+  async function searchParams(
+    params: URLSearchParams,
+  ): Promise<RemoteSearchPage> {
+    const page = await context.fetchJson<ServerSearchPage>(
+      `package?${params.toString()}`,
+    );
+    return {
+      items: page.items.map(toSearchItem).filter(isSearchItem),
+      totalCount: page.totalCount,
+      nextCursor: page.nextCursor,
+    };
+  }
   return {
+    searchParams,
     async search(
       filters: SearchFilters,
       options: SearchOptions,
@@ -43,14 +58,7 @@ export function createHttpPackageSearch(
       query.set('matchMode', options.matchMode ?? 'any');
       query.set('exact', String(options.exact ?? false));
       if (cursor) query.set('cursor', cursor);
-      const page = await context.fetchJson<ServerSearchPage>(
-        `package?${query.toString()}`,
-      );
-      return {
-        items: page.items.map(toSearchItem).filter(isSearchItem),
-        totalCount: page.totalCount,
-        nextCursor: page.nextCursor,
-      };
+      return searchParams(query);
     },
   };
 }

@@ -87,7 +87,7 @@ test('web presentation cannot reach the registry CLI surface', async () => {
       (
         await violations(
           `import { x } from '${specifier}';`,
-          'packages/distribution/src/web/components/package-details/PackageDetails.tsx',
+          'packages/distribution/src/web/components/PackageDetails.tsx',
         )
       ).length > 0,
       `expected ${specifier} to be restricted`,
@@ -112,7 +112,7 @@ test('web presentation cannot import CLI components or other quark packages', as
 
 test('CLI presentation cannot import web components', async () => {
   for (const code of [
-    "import { PackageDetails } from '../web/components/package-details/PackageDetails';",
+    "import { PackageDetails } from '../web/components/PackageDetails';",
     "import { renderMarkdown } from '../web/lib/markdown';",
   ]) {
     assert.ok(
@@ -183,3 +183,6 @@ test('shared hooks cannot import ink or CLI components', async () => {
     );
   }
 });
+
+// Include the production-wide React component structure check.
+import './react-components.spec.mjs';

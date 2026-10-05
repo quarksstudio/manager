@@ -1,6 +1,8 @@
 ---
+import { packageSearchParams } from '@quarks.studio/package-search';
 import { loadConfig } from '@quarks.studio/config';
 import {
+  ConfiguredPackageSearchResults,
   LandingHero,
   LandingTierMatrix,
   ConfiguredLandingBoundary as LandingBoundary,
@@ -11,41 +13,52 @@ import Layout from '../layouts/Layout.astro';
 import { landingTiers } from '../lib/landing';
 import { registry, statusFor } from '../lib/registry';
 
+const search = packageSearchParams(Astro.url.searchParams);
 const client = (await loadConfig()).config.renderMode === 'client';
 const blogUrl = 'https://blog.quarks.studio';
 
 let items: Array<{ id: string }> = [];
 let error = '';
 
-if (!client) {
+if (!client && !search.active) {
   try {
-    items = (await (await registry(Astro.cookies)).Packages.search()).items;
+    items = await registry(Astro.cookies)
+      .then((e) => e.Packages.search())
+      .then(({ items }) => items);
   } catch (failure) {
     Astro.response.status = statusFor(failure, Astro.cookies);
     error = 'Could not load packages.';
   }
 }
-const tiers = client ? undefined : landingTiers(items);
+const tiers = client || search.active ? undefined : landingTiers(items);
 ---
 
-<Layout title="Quark // Skills">
-  <main>
+<Layout title={search.active ? 'Search packages // Quark' : 'Quark // Skills'}>
+  <div>
     {
-      client ? (
-        <LandingBoundary
+      search.active ? (
+        <ConfiguredPackageSearchResults
+          searchParams={search.params.toString()}
           apiBaseUrl={registryBaseUrl}
           client:only="react"
-          blogUrl={blogUrl}
         />
+      ) : client ? (
+        <main>
+          <LandingBoundary
+            apiBaseUrl={registryBaseUrl}
+            client:only="react"
+            blogUrl={blogUrl}
+          />
+        </main>
       ) : (
-        <>
-          <LandingHero exploreUrl="/" blogUrl={blogUrl} />
+        <main>
+          <LandingHero exploreUrl="/?query=" blogUrl={blogUrl} />
           <LandingTierMatrix tiers={tiers} />
-          {error ? (
+          {error && (
             <p class="pb-12 text-center text-sm text-slate-400">{error}</p>
-          ) : null}
-        </>
+          )}
+        </main>
       )
     }
-  </main>
+  </div>
 </Layout>

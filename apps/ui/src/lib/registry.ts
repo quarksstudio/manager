@@ -27,5 +27,5 @@ export function statusFor(error: unknown, cookies: AstroCookies): number {
 }
 
 export function packageUrl(name: string, version?: string) {
-  return `/packages/${encodeURIComponent(name)}${version ? `/${encodeURIComponent(version)}` : ''}`;
+  return `/${encodeURIComponent(name)}${version ? `/${encodeURIComponent(version)}` : ''}`;
 }

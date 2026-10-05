@@ -10,7 +10,7 @@ export function useUserProfile(
   const [profile, setProfile] = useState<PublicUserProfile | null>(null);
   const [page, setPage] = useState<RemoteSearchPage | null>(null);
   const [error, setError] = useState<
-    'profile' | 'packages' | 'not-found' | null
+    'profile' | 'packages' | 'unsupported-filters' | 'not-found' | null
   >(null);
   const [loading, setLoading] = useState(true);
   const busy = useRef(false);
@@ -54,7 +54,13 @@ export function useUserProfile(
           ? failure.status
           : undefined;
       setError(
-        !found ? (status === 404 ? 'not-found' : 'profile') : 'packages',
+        !found
+          ? status === 404
+            ? 'not-found'
+            : 'profile'
+          : status === 400
+            ? 'unsupported-filters'
+            : 'packages',
       );
     } finally {
       if (request === revision.current) {

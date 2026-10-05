@@ -5,7 +5,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import { UserProfileSettings } from '../../src/web/UserProfileSettings';
+import { UserProfileSettings } from '../../src/web/containers/UserProfileSettings';
 const profile = {
   id: 'uid',
   username: 'alice',

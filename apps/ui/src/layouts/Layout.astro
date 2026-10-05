@@ -11,7 +11,7 @@ import '../styles.css';
 const blogUrl = 'https://blog.quarks.studio';
 const defaultFooterLinks: SiteFooterLink[] = [
   { label: 'Documentation', href: 'https://docs.quarks.studio' },
-  { label: 'Pricing', href: '/pricing' },
+  { label: 'Pricing', href: '/~/pricing' },
   { label: 'Legal', href: 'https://docs.quarks.studio/terms' },
   { label: 'Blog', href: blogUrl },
 ];
@@ -21,6 +21,7 @@ interface Props {
   navbarLogo?: string;
   searchAction?: string;
   searchPlaceholder?: string;
+  searchValue?: string;
   loginUrl?: string;
   footerLinks?: SiteFooterLink[];
 }
@@ -28,8 +29,12 @@ const {
   title,
   description = 'Formal Certification and Secure Distribution for AI Skills',
   navbarLogo = 'QUARK // SKILLS',
-  searchAction = '/search',
+  searchAction = '/',
   searchPlaceholder = 'Search packages and skills...',
+  searchValue = Astro.url.searchParams.get('query') ??
+    Astro.url.searchParams.get('search') ??
+    Astro.url.searchParams.get('q') ??
+    '',
   loginUrl = '/login',
   footerLinks = defaultFooterLinks,
 } = Astro.props;
@@ -51,6 +56,7 @@ const {
       logo={navbarLogo}
       searchAction={searchAction}
       searchPlaceholder={searchPlaceholder}
+      searchValue={searchValue}
       loginUrl={loginUrl}
     >
       <UserAvatarMenu client:only="react" />

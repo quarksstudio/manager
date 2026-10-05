@@ -7,13 +7,15 @@ export interface SiteNavbarProps extends PropsWithChildren {
   logo: string;
   searchAction?: string;
   searchPlaceholder?: string;
+  searchValue?: string;
   loginUrl?: string;
 }
 
 export function SiteNavbar({
   logo,
-  searchAction,
+  searchAction = '/',
   searchPlaceholder,
+  searchValue = '',
   children,
 }: SiteNavbarProps) {
   return (
@@ -36,8 +38,9 @@ export function SiteNavbar({
             method="get"
           >
             <Input.Search
-              name="q"
+              name="query"
               type="search"
+              value={searchValue}
               aria-label={searchPlaceholder}
               placeholder={searchPlaceholder}
               className="flex-1 flex"

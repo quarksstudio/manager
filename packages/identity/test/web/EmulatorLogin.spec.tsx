@@ -11,7 +11,7 @@ import {
 } from '../../src/presentation';
 import { getBrowserNotificationRuntime } from '@quarks.studio/notifications/infrastructure';
 import { NotificationHost } from '@quarks.studio/notifications/web';
-import { UserAvatarMenu } from '../../src/web/UserButton';
+import { UserAvatarMenu } from '../../src/web/containers/UserAvatarMenu';
 import { saveSession, clearSession, resetStore } from '@quarks.studio/config';
 import { createGlobalContext } from '@quarks.studio/config/http';
 

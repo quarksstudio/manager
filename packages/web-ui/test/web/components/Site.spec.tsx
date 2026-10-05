@@ -21,3 +21,18 @@ it('renders footer links supplied by the host', () => {
     'https://docs.test',
   );
 });
+
+it('submits a new search to the homepage with the query input prefilled', () => {
+  render(
+    <SiteNavbar logo="Quark" searchPlaceholder="Search" searchValue="Demo" />,
+  );
+  const form = screen.getByRole('search');
+  expect(form.getAttribute('action')).toBe('/');
+  expect(form.getAttribute('method')).toBe('get');
+  const input = screen.getByRole('searchbox') as HTMLInputElement;
+  expect(input.name).toBe('query');
+  expect(input.value).toBe('Demo');
+  expect(
+    screen.getByRole('button', { name: 'Search' }).getAttribute('type'),
+  ).toBe('submit');
+});

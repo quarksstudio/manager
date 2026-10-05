@@ -5,8 +5,8 @@ import { createCache, extractStyle, StyleProvider } from '@ant-design/cssinjs';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import * as Shared from '../packages/web-ui/src/index';
-import * as Commerce from '../packages/commerce/src/web/components';
-import * as Distribution from '../packages/distribution/src/web/views';
+import * as Commerce from '../packages/commerce/src/web/index';
+import * as Distribution from '../packages/distribution/src/web/index';
 import * as Search from '../packages/package-search/src/web/index';
 import { CommerceProvider } from '../packages/commerce/src/presentation';
 const UI = { ...Shared, ...Commerce, ...Distribution, ...Search };

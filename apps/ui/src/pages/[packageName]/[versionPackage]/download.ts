@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { registry, statusFor } from '../../../../lib/registry';
+import { registry, statusFor } from '../../../lib/registry';
 
 export const GET: APIRoute = async ({ params, cookies }) => {
   try {

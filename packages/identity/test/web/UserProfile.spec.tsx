@@ -5,7 +5,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import { UserProfile } from '../../src/web/UserProfile';
+import { UserProfile } from '../../src/web/containers/UserProfile';
 
 jest.mock('@quarks.studio/package-search/web', () =>
   jest.requireActual(
@@ -227,4 +227,14 @@ it('links the owner to settings instead of rendering an inline editor', async ()
     screen.getByRole('link', { name: 'Edit profile' }).getAttribute('href'),
   ).toBe('/~/alice/settings');
   expect(screen.queryByLabelText('Username')).toBeNull();
+});
+
+it('explains unsupported author and private-access combinations', async () => {
+  getPackages.mockRejectedValue({ status: 400 });
+  show();
+  await screen.findByRole('alert');
+  expect(screen.getByRole('alert').textContent).toContain(
+    'not supported with private access',
+  );
+  expect(screen.queryByRole('button', { name: 'Retry' })).toBeNull();
 });

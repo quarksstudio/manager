@@ -1,5 +1,5 @@
 import { LandingTierSection } from './LandingTierSection';
-import { TIER_ORDER } from './tiers';
+import { TIER_ORDER } from '../lib/tiers';
 import type { LandingTier, LandingTierColumns } from './types';
 
 export interface LandingTierMatrixProps {

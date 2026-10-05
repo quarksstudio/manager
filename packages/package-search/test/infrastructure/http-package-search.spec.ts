@@ -123,3 +123,19 @@ it('sends the exact author, page size and cursor', async () => {
   expect(requestedQuery().get('limit')).toBe('24');
   expect(requestedQuery().get('cursor')).toBe('next+cursor');
 });
+
+it('forwards URL parameters intact and maps the response with the existing adapter', async () => {
+  fetchJson.mockClear();
+  fetchJson.mockResolvedValue(page());
+  const params = new URLSearchParams(
+    'query=+Demo+&tags=AI&tags=chat&cursor=%2Bnext',
+  );
+  await expect(remote.searchParams(params)).resolves.toMatchObject({
+    totalCount: 1,
+    items: [{ name: 'chat', version: '1.2.0' }],
+  });
+  expect(fetchJson).toHaveBeenCalledWith(
+    'package?query=+Demo+&tags=AI&tags=chat&cursor=%2Bnext',
+  );
+  expect(params.getAll('tags')).toEqual(['AI', 'chat']);
+});

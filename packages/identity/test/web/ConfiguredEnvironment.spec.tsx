@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { ConfiguredUserAvatarMenu } from '../../src/web/configured';
+import { ConfiguredUserAvatarMenu } from '../../src/web/configured/ConfiguredUserAvatarMenu';
 
 const keys = ['QUARKS_ENV', 'QUARK_ENV'] as const;
 const original = keys.map((key) => process.env[key]);

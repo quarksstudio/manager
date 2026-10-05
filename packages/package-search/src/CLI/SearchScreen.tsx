@@ -15,7 +15,11 @@ interface SearchScreenProps {
 }
 
 export function SearchScreen({ query, json }: SearchScreenProps) {
-  const { combinedResults: items, isSearchingRemote } = useSearchPackages({
+  const {
+    combinedResults: items,
+    isSearchingRemote,
+    searchError,
+  } = useSearchPackages({
     query,
   });
   const { exit } = useApp();
@@ -28,6 +32,14 @@ export function SearchScreen({ query, json }: SearchScreenProps) {
     return (
       <Screen title="Search">
         <StatusLine status="running" message={`Searching for "${query}"...`} />
+      </Screen>
+    );
+  }
+
+  if (searchError && !isSearchingRemote) {
+    return (
+      <Screen title="Search">
+        <StatusLine status="error" message={searchError} />
       </Screen>
     );
   }

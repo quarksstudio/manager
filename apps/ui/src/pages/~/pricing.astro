@@ -6,12 +6,12 @@ import {
   PricingModeNav,
 } from '@quarks.studio/commerce/web';
 
-import Layout from '../layouts/Layout.astro';
-import { loadPricing } from '../lib/pricing';
+import Layout from '../../layouts/Layout.astro';
+import { loadPricing } from '../../lib/pricing';
 import {
   registryBaseUrl,
   registryBaseUrl as browserRegistryBaseUrl,
-} from '../lib/registry-base';
+} from '../../lib/registry-base';
 
 const client = (await loadConfig()).config.renderMode === 'client';
 const mode =

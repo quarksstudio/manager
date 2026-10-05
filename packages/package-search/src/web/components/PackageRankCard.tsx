@@ -7,7 +7,7 @@ import {
 import { Button, Card, Flex, Tag, Typography } from 'antd';
 
 import { formatCount, formatDate } from '@quarks.studio/web-ui';
-import { truncateHash } from './tiers';
+import { truncateHash } from '../lib/tiers';
 import type { LandingPackage } from './types';
 
 export type PackageRankVariant = 'views' | 'downloads' | 'certified';

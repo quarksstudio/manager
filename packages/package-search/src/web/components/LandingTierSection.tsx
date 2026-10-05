@@ -7,7 +7,7 @@ import { Divider, Tag, Typography } from 'antd';
 
 import { QuarkTheme } from '@quarks.studio/web-ui';
 import { PackageRankColumn } from './PackageRankColumn';
-import { TIER_META } from './tiers';
+import { TIER_META } from '../lib/tiers';
 import type { LandingTier, LandingTierColumns } from './types';
 
 export interface LandingTierSectionProps {
