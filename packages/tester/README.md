@@ -97,3 +97,8 @@ terminal helpers come from `@quarks.studio/terminal-ui`.
 Certification tiers and their parser come from `@quarks.studio/certification`.
 This package owns local verification results and does not re-export certification
 contracts.
+
+`auditTarArchive` implements the canonical archive checks shared with targz,
+including bounded input/decompression and duplicate detection after normalizing
+paths. Trusted callers may tighten its resource limits but cannot relax them.
+See [M05/M11](../../docs/solucion-hallazgos-restantes.md).

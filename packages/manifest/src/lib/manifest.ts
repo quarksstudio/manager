@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import * as path from 'path';
+import { realpathSync, statSync } from 'fs';
 
 export const RuntimeSchema = z.record(z.string());
 
@@ -48,10 +49,30 @@ export function resolveEntrypoint(
 ): string {
   const root = path.resolve(skillPath);
   const entrypoint = path.resolve(root, manifest.entrypoint);
-  if (!entrypoint.startsWith(`${root}${path.sep}`)) {
+  const inside = (directory: string, candidate: string): boolean => {
+    const relative = path.relative(directory, candidate);
+    return (
+      Boolean(relative) &&
+      relative !== '..' &&
+      !relative.startsWith(`..${path.sep}`) &&
+      !path.isAbsolute(relative)
+    );
+  };
+  if (!inside(root, entrypoint)) {
     throw new Error('Manifest entrypoint must stay inside the skill directory');
   }
-  return entrypoint;
+  const physicalRoot = realpathSync(root);
+  const physicalEntrypoint = realpathSync(entrypoint);
+  if (!inside(physicalRoot, physicalEntrypoint)) {
+    throw new Error(
+      'Manifest entrypoint must stay inside the physical skill directory',
+    );
+  }
+  if (!statSync(physicalEntrypoint).isFile()) {
+    throw new Error('Manifest entrypoint must be a regular file');
+  }
+  // Return the physical path so runtime does not reopen the manifest's symlink.
+  return physicalEntrypoint;
 }
 
 export function validateManifest(

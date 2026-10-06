@@ -1,6 +1,16 @@
+import {
+  InstallDirectory,
+  assertRegularFileOrAbsent,
+} from './install-directory';
+import {
+  compare,
+  satisfies as semverSatisfies,
+  valid,
+  validRange,
+} from 'semver';
 import { createHash } from 'crypto';
 import { loadConfig } from '@quarks.studio/config';
-import { promises as fs } from 'fs';
+import { promises as fs, constants as fsConstants } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
@@ -13,6 +23,8 @@ import {
   parseYaml,
   stringifyYaml,
   unpack,
+  readArchiveResponse,
+  ARCHIVE_LIMITS,
   type SkillsManifest,
 } from '@quarks.studio/targz';
 
@@ -75,6 +87,7 @@ export async function install(
   packageSelector?: string | string[],
   options: RecursiveInstallOptions = {},
 ): Promise<InstallResult> {
+  InstallDirectory.assertSupported();
   const target = path.resolve(options.targetInstallDir ?? process.cwd());
   await fs.mkdir(target, { recursive: true });
   const previous = await readLockfile(target);
@@ -224,8 +237,10 @@ export async function install(
         await packageUrl(name, metadata.version, '/bundle'),
         { force: options.force },
       );
-      buffer = Buffer.from(await response.arrayBuffer());
+      buffer = await readArchiveResponse(response);
     }
+    if (buffer.length > ARCHIVE_LIMITS.compressedBytes)
+      throw new Error('Archive exceeds compressed byte limit');
     const hash = createHash('sha256').update(buffer).digest('hex');
     if (hash !== metadata.hash.toLowerCase())
       throw new Error(`SHA-256 mismatch for ${name}@${metadata.version}`);
@@ -460,58 +475,110 @@ async function commit(
   operations: Array<{ source: string; destination: string }>,
   lock: SkillLockfile,
 ): Promise<void> {
-  const transaction = await fs.mkdtemp(
-    path.join(target, '.quark-transaction-'),
-  );
-  const staged = path.join(transaction, 'files');
-  const backups = path.join(transaction, 'backups');
-  const applied: string[] = [];
+  const project = await InstallDirectory.open(target);
   try {
-    for (const operation of operations) {
-      const relative = path.relative(target, operation.destination);
-      const stagedFile = safePath(staged, relative);
-      await fs.mkdir(path.dirname(stagedFile), { recursive: true });
-      await fs.copyFile(operation.source, stagedFile);
-    }
-    for (const operation of operations) {
-      const relative = path.relative(target, operation.destination);
-      const backup = safePath(backups, relative);
-      await fs.mkdir(path.dirname(operation.destination), { recursive: true });
-      try {
-        await fs.mkdir(path.dirname(backup), { recursive: true });
-        await fs.rename(operation.destination, backup);
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-      }
-      await fs.rename(safePath(staged, relative), operation.destination);
-      applied.push(relative);
-    }
-    const lockTemp = path.join(transaction, LOCKFILE);
-    await fs.writeFile(lockTemp, stringifyYaml(lock), { flag: 'wx' });
-    const lockPath = path.join(target, LOCKFILE);
-    const lockBackup = path.join(transaction, 'previous-lock.yml');
-    try {
-      await fs.rename(lockPath, lockBackup);
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-    }
-    await fs.rename(lockTemp, lockPath);
-  } catch (error) {
-    for (const relative of applied.reverse()) {
-      await fs.rm(safePath(target, relative), { force: true });
-      const backup = safePath(backups, relative);
-      try {
-        await fs.mkdir(path.dirname(safePath(target, relative)), {
-          recursive: true,
+    // Reject all existing linked destinations before creating or moving project files.
+    for (const operation of operations)
+      await project.assertFile(path.relative(target, operation.destination));
+    await project.assertFile(LOCKFILE);
+    const { name: transactionName, directory: transaction } =
+      await project.temporary();
+    const applied: Array<{
+      relative: string;
+      backup: string;
+      backedUp: boolean;
+      replaced: boolean;
+    }> = [];
+    let retainBackup = false;
+    const replace = async (
+      relative: string,
+      stagedRelative: string,
+      backupRelative: string,
+    ) => {
+      await project.withEntry(relative, true, async (destination) => {
+        await assertRegularFileOrAbsent(destination);
+        await transaction.withEntry(backupRelative, true, async (backup) => {
+          const state = {
+            relative,
+            backup: backupRelative,
+            backedUp: false,
+            replaced: false,
+          };
+          applied.push(state);
+          try {
+            await fs.rename(destination, backup);
+            state.backedUp = true;
+          } catch (error) {
+            if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+          }
+          await transaction.withEntry(stagedRelative, false, async (staged) => {
+            await fs.rename(staged, destination);
+            state.replaced = true;
+          });
         });
-        await fs.rename(backup, safePath(target, relative));
-      } catch {
-        /* best effort rollback */
+      });
+      await project.assertFile(relative);
+    };
+    try {
+      for (const operation of operations) {
+        const relative = path.relative(target, operation.destination);
+        await transaction.withEntry(
+          `files/${relative}`,
+          true,
+          async (staged) => {
+            await fs.copyFile(
+              operation.source,
+              staged,
+              fsConstants.COPYFILE_EXCL,
+            );
+          },
+        );
       }
+      for (const operation of operations) {
+        const relative = path.relative(target, operation.destination);
+        await replace(relative, `files/${relative}`, `backups/${relative}`);
+      }
+      await transaction.withEntry('new-lock.yml', true, async (lockTemp) => {
+        await fs.writeFile(lockTemp, stringifyYaml(lock), { flag: 'wx' });
+      });
+      await replace(LOCKFILE, 'new-lock.yml', 'previous-lock.yml');
+    } catch (error) {
+      const failures: unknown[] = [];
+      for (const state of applied.reverse()) {
+        if (!state.backedUp && !state.replaced) continue;
+        try {
+          await project.withEntry(state.relative, true, async (destination) => {
+            await assertRegularFileOrAbsent(destination);
+            if (state.backedUp) {
+              await transaction.withEntry(state.backup, false, (backup) =>
+                fs.rename(backup, destination),
+              );
+            } else if (state.replaced)
+              await fs.rm(destination, { force: true });
+          });
+        } catch (failure) {
+          failures.push(failure);
+        }
+      }
+      if (failures.length) {
+        retainBackup = true;
+        throw Object.assign(
+          new Error(
+            `${error instanceof Error ? error.message : String(error)}; Install rollback incomplete; backups retained in ${path.join(target, transactionName)}`,
+          ),
+          { errors: [error, ...failures] },
+        );
+      }
+      throw error;
+    } finally {
+      await transaction.close();
+      if (!retainBackup)
+        await project.withEntry(transactionName, false, (entry) =>
+          fs.rm(entry, { recursive: true, force: true }),
+        );
     }
-    throw error;
   } finally {
-    await fs.rm(transaction, { recursive: true, force: true });
+    await project.close();
   }
 }
 
@@ -573,65 +640,14 @@ function sri(hash: string): string {
 }
 
 function compareVersions(a: string, b: string): number {
-  const av = numericVersion(a);
-  const bv = numericVersion(b);
-  return av[0] - bv[0] || av[1] - bv[1] || av[2] - bv[2] || a.localeCompare(b);
+  return compare(a, b) || a.localeCompare(b);
 }
 
 function satisfies(version: string, range: string): boolean {
-  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(version))
-    return false;
-  const value = numericVersion(version);
-  return range.split('||').some((alternative) =>
-    alternative
-      .trim()
-      .split(/\s+/)
-      .every((part) => {
-        if (!part || part === '*' || part.toLowerCase() === 'latest')
-          return true;
-        if (part.startsWith('^')) {
-          const min = numericVersion(part.slice(1));
-          const max = min[0] ? [min[0] + 1, 0, 0] : [0, min[1] + 1, 0];
-          return compareTuple(value, min) >= 0 && compareTuple(value, max) < 0;
-        }
-        if (part.startsWith('~')) {
-          const min = numericVersion(part.slice(1));
-          return (
-            compareTuple(value, min) >= 0 &&
-            compareTuple(value, [min[0], min[1] + 1, 0]) < 0
-          );
-        }
-        const match = part.match(/^(>=|<=|>|<|=)?(.+)$/);
-        if (!match) return false;
-        if (/[xX*]/.test(match[2])) {
-          const pieces = match[2].split('.');
-          return pieces.every(
-            (piece, index) =>
-              /[xX*]/.test(piece) || Number(piece) === value[index],
-          );
-        }
-        const comparison = compareTuple(value, numericVersion(match[2]));
-        return match[1] === '>='
-          ? comparison >= 0
-          : match[1] === '<='
-            ? comparison <= 0
-            : match[1] === '>'
-              ? comparison > 0
-              : match[1] === '<'
-                ? comparison < 0
-                : comparison === 0;
-      }),
-  );
-}
-
-function numericVersion(version: string): [number, number, number] {
-  const match = version
-    .trim()
-    .replace(/^v/, '')
-    .match(/^(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
-  if (!match) return [-1, -1, -1];
-  return [Number(match[1]), Number(match[2] ?? 0), Number(match[3] ?? 0)];
-}
-function compareTuple(a: number[], b: number[]): number {
-  return a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
+  const normalized = range.trim().toLowerCase() === 'latest' ? '*' : range;
+  if (!validRange(normalized))
+    throw new Error(`Invalid version range: ${range}`);
+  const exact = normalized.trim().replace(/^[=v\s]+/, '');
+  if (valid(exact) && exact.includes('+')) return version === exact;
+  return Boolean(valid(version)) && semverSatisfies(version, normalized);
 }

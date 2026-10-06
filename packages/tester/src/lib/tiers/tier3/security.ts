@@ -62,17 +62,25 @@ function command(
     });
     let stdout = '';
     let stderr = '';
+    let bytes = 0;
+    let stopped = false;
     const timer = setTimeout(() => {
+      stopped = true;
       child.kill('SIGKILL');
       reject(new Error(`${executable} timed out`));
     }, timeoutMs);
     const append = (kind: 'stdout' | 'stderr', data: Buffer): void => {
-      if (kind === 'stdout') stdout += data.toString();
-      else stderr += data.toString();
-      if (stdout.length + stderr.length > 1024 * 1024) {
+      if (stopped) return;
+      bytes += data.byteLength;
+      if (bytes > 1024 * 1024) {
+        stopped = true;
+        clearTimeout(timer);
         child.kill('SIGKILL');
         reject(new Error(`${executable} output exceeded 1 MiB`));
+        return;
       }
+      if (kind === 'stdout') stdout += data.toString();
+      else stderr += data.toString();
     };
     child.stdout.on('data', (data: Buffer) => append('stdout', data));
     child.stderr.on('data', (data: Buffer) => append('stderr', data));

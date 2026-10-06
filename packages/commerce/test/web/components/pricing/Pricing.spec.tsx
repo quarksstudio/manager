@@ -60,7 +60,7 @@ const offer = (
 
 const eligible = [{ id: 'paypal', name: 'PayPal', countries: null }];
 const pending = [
-  { id: 'wompi', name: 'Wompi', reason: 'Needs a stored card first.' },
+  { id: 'mercadopago', name: 'Mercado Pago', reason: 'Needs a stored card first.' },
 ];
 
 beforeEach(() => {
@@ -100,8 +100,8 @@ it('asks the gateway for the link when a plan is clicked', () => {
     system: 'paypal',
   });
   // A gateway that needs a stored card is a hint, never a button.
-  expect(screen.queryByRole('button', { name: 'Wompi' })).toBeNull();
-  expect(screen.getByText('Wompi')).toBeTruthy();
+  expect(screen.queryByRole('button', { name: 'Mercado Pago' })).toBeNull();
+  expect(screen.getByText('Mercado Pago')).toBeTruthy();
 });
 
 it('shows a catalog without a package as prices only', () => {

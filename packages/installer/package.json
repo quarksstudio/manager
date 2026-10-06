@@ -53,16 +53,17 @@
     "access": "public"
   },
   "dependencies": {
+    "@quarks.studio/domain-kernel": "workspace:*",
+    "@quarks.studio/logger": "workspace:*",
     "@quarks.studio/manifest": "workspace:*",
     "@quarks.studio/permissions": "workspace:*",
-    "@quarks.studio/logger": "workspace:*",
+    "@quarks.studio/storage": "workspace:*",
     "@quarks.studio/targz": "workspace:*",
-    "react": "^19.0.0",
-    "tar": "^7.4.3",
-    "tslib": "^2.3.0",
     "@quarks.studio/terminal-ui": "workspace:*",
     "ink": "^7.0.2",
-    "@quarks.studio/storage": "workspace:*",
-    "@quarks.studio/domain-kernel": "workspace:*"
+    "react": "^19.0.0",
+    "semver": "7.8.5",
+    "tar": "^7.4.3",
+    "tslib": "^2.3.0"
   }
 }

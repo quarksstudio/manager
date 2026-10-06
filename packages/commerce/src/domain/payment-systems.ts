@@ -20,7 +20,7 @@ export interface PaymentSystems {
  * knowing why. Enabling a system is one line and nothing else changes.
  *
  * Today PayPal answers `POST /v1/subscriptions` with an `approvalUrl` and never
- * asks for a payment source. Wompi, MercadoPago and dLocal Go answer
+ * asks for a payment source. MercadoPago and dLocal Go answer
  * `400 PAYMENT_SOURCE_REQUIRED` without a `paymentSourceId`/`cardToken`, which
  * needs a card-capture flow this client does not have.
  */

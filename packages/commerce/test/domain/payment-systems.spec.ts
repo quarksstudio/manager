@@ -7,12 +7,11 @@ describe('planSignupNote', () => {
   });
 
   /**
-   * Wompi, MercadoPago and dLocal answer the subscription create with
+   * MercadoPago and dLocal answer the subscription create with
    * `400 PAYMENT_SOURCE_REQUIRED` until a card is stored, so they are not
    * self-serve yet.
    */
   it('has no note for a gateway that needs a stored card', () => {
-    expect(planSignupNote('wompi')).toBeUndefined();
     expect(planSignupNote('mercadopago')).toBeUndefined();
     expect(planSignupNote('dlocal')).toBeUndefined();
   });
@@ -26,11 +25,11 @@ describe('partitionPlanSystems', () => {
   it('separates the eligible gateways from the hints', () => {
     const { eligible, pending } = partitionPlanSystems([
       { id: 'paypal', name: 'PayPal', countries: null },
-      { id: 'wompi', name: 'Wompi', countries: ['CO'] },
+      { id: 'mercadopago', name: 'Mercado Pago', countries: ['CO'] },
     ]);
 
     expect(eligible.map((system) => system.id)).toEqual(['paypal']);
-    expect(pending.map((system) => system.id)).toEqual(['wompi']);
+    expect(pending.map((system) => system.id)).toEqual(['mercadopago']);
     expect(pending[0].reason.length).toBeGreaterThan(0);
   });
 });
@@ -62,12 +61,12 @@ describe('paymentLinkPath', () => {
   });
 
   it('encodes each segment but keeps the pin separator literal', () => {
-    const path = paymentLinkPath('wompi', {
+    const path = paymentLinkPath('mercadopago', {
       kind: 'certification',
       packageId: '@scope/demo',
       versionId: '1.0.0+build',
       productId: 'N2',
     });
-    expect(path).toBe('gateway/wompi/N2/%40scope%2Fdemo@1.0.0%2Bbuild');
+    expect(path).toBe('gateway/mercadopago/N2/%40scope%2Fdemo@1.0.0%2Bbuild');
   });
 });

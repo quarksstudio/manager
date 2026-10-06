@@ -5,6 +5,7 @@ export { CliSecurityRunner } from './lib/tiers/tier3/security';
 export { requestServerCertification } from './lib/server-client';
 export { canonicalDirectoryHash, structuralAudit } from './lib/tiers/tier1';
 export {
+  ARCHIVE_LIMITS,
   auditTarArchive,
   inspectPackageArchive,
 } from './lib/tiers/tier1/archive';
@@ -39,3 +40,5 @@ export {
   type TestResult,
   type LocalTestDependencies,
 } from './application/run-local-tests';
+
+export { readManifest } from './lib/contracts';

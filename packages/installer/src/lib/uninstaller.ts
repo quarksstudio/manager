@@ -7,6 +7,11 @@ import {
   type SkillsManifest,
 } from '@quarks.studio/targz';
 
+import {
+  InstallDirectory,
+  assertRegularFileOrAbsent,
+} from './install-directory';
+
 import type { SkillLockfile } from './recursive-installer';
 
 export type UninstallStep =
@@ -35,99 +40,139 @@ export async function uninstall(
   }
   const target = path.resolve(targetInstallDir);
   onStep?.('locating', 10);
-  const lockPath = path.join(target, 'skill.lock.yml');
-  const lock = await readLock(lockPath, packageName);
-  const locator = locatePackage(lock, packageName);
-  if (!locator) throw new PackageNotFound(packageName);
-
-  const metadataRoot = safeResolve(
-    target,
-    path.join('.skills_metadata', safeLocator(locator)),
-  );
-  const manifestPath = path.join(metadataRoot, 'skills.yml');
-  onStep?.('reading-manifest', 25);
-  let manifest: SkillsManifest;
-  try {
-    manifest = parseYaml<SkillsManifest>(
-      await fs.readFile(manifestPath, 'utf8'),
-    );
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      throw new PackageNotFound(packageName);
-    }
+  const project = await InstallDirectory.open(target).catch((error) => {
+    if (error.code === 'ENOENT') throw new PackageNotFound(packageName);
     throw error;
-  }
-  const entry = lock.packages[locator];
-  if (!entry || manifest.name !== splitSelector(packageName).name) {
-    throw new PackageNotFound(packageName);
-  }
-
-  const installRoot = locator.includes('>')
-    ? safeResolve(target, path.join('.skills_nested', safeLocator(locator)))
-    : target;
-  const manifestTargets = collectTargets(manifest).sort();
-  const lockedTargets = [...entry.mappedFiles].sort();
-  if (JSON.stringify(manifestTargets) !== JSON.stringify(lockedTargets)) {
-    throw new Error(`Installed manifest differs from lockfile: ${packageName}`);
-  }
-  const mappedFiles = manifestTargets.map((relative) =>
-    safeResolve(installRoot, relative),
-  );
-  const transaction = await fs.mkdtemp(path.join(target, '.quark-uninstall-'));
-  const moved: Array<{ source: string; backup: string }> = [];
-  const previousLock = await fs.readFile(lockPath, 'utf8');
+  });
   try {
-    onStep?.('removing-files', 45);
-    for (const source of [...mappedFiles, manifestPath]) {
-      const relative = path.relative(target, source);
-      const backup = safeResolve(transaction, relative);
-      try {
-        await fs.mkdir(path.dirname(backup), { recursive: true });
-        await fs.rename(source, backup);
-        moved.push({ source, backup });
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+    const read = async (relative: string) =>
+      project.readFile(relative).catch((error) => {
+        if (error.code === 'ENOENT') throw new PackageNotFound(packageName);
+        throw error;
+      });
+    const previousLock = await read('skill.lock.yml');
+    const lock = parseYaml<SkillLockfile>(previousLock);
+    if (lock.lockfileVersion !== 1 || !lock.dependencies || !lock.packages)
+      throw new Error('Invalid skill lockfile');
+    const locator = locatePackage(lock, packageName);
+    if (!locator) throw new PackageNotFound(packageName);
+    const manifestPath = path.join(
+      '.skills_metadata',
+      safeLocator(locator),
+      'skills.yml',
+    );
+    onStep?.('reading-manifest', 25);
+    const manifest = parseYaml<SkillsManifest>(await read(manifestPath));
+    const entry = lock.packages[locator];
+    if (!entry || manifest.name !== splitSelector(packageName).name)
+      throw new PackageNotFound(packageName);
+    const installRoot = locator.includes('>')
+      ? safeResolve(target, path.join('.skills_nested', safeLocator(locator)))
+      : target;
+    const manifestTargets = collectTargets(manifest).sort();
+    if (
+      JSON.stringify(manifestTargets) !==
+      JSON.stringify([...entry.mappedFiles].sort())
+    )
+      throw new Error(
+        `Installed manifest differs from lockfile: ${packageName}`,
+      );
+    const files = [
+      ...manifestTargets.map((relative) =>
+        path.relative(target, safeResolve(installRoot, relative)),
+      ),
+      manifestPath,
+    ];
+    for (const relative of [...files, 'skill.lock.yml'])
+      await project.assertFile(relative);
+    const transaction = await project.temporary();
+    const moved: string[] = [];
+    let retainBackup = false;
+    const writeLock = async (content: string, temporary: string) => {
+      await transaction.directory.withEntry(temporary, true, async (staged) => {
+        await fs.writeFile(staged, content, { flag: 'wx' });
+        await project.withEntry(
+          'skill.lock.yml',
+          false,
+          async (destination) => {
+            await fs.rename(staged, destination);
+          },
+        );
+      });
+    };
+    try {
+      onStep?.('removing-files', 45);
+      for (const relative of files) {
+        await project.withEntry(
+          relative,
+          false,
+          async (source) => {
+            await assertRegularFileOrAbsent(source);
+            await transaction.directory.withEntry(
+              path.join('backup', relative),
+              true,
+              async (backup) => {
+                try {
+                  await fs.rename(source, backup);
+                  moved.push(relative);
+                } catch (error) {
+                  if ((error as NodeJS.ErrnoException).code !== 'ENOENT')
+                    throw error;
+                }
+              },
+            );
+          },
+          true,
+        );
+        await project.assertFile(relative);
       }
+      delete lock.packages[locator];
+      for (const [name, dependencyLocator] of Object.entries(lock.dependencies))
+        if (dependencyLocator === locator) delete lock.dependencies[name];
+      onStep?.('cleaning', 80);
+      await writeLock(stringifyYaml(lock), 'new-lock');
+      await removeEmptyParents(files.map(path.dirname), project);
+      onStep?.('completed', 100);
+    } catch (error) {
+      const failures: unknown[] = [];
+      try {
+        await writeLock(previousLock, 'restore-lock');
+      } catch (failure) {
+        failures.push(failure);
+      }
+      for (const relative of moved.reverse()) {
+        try {
+          await project.withEntry(relative, true, async (source) => {
+            await assertRegularFileOrAbsent(source);
+            await transaction.directory.withEntry(
+              path.join('backup', relative),
+              false,
+              (backup) => fs.rename(backup, source),
+            );
+          });
+        } catch (failure) {
+          failures.push(failure);
+        }
+      }
+      if (failures.length) {
+        retainBackup = true;
+        throw Object.assign(
+          new Error(
+            `Uninstall rollback incomplete; backups retained in ${path.join(target, transaction.name)}`,
+          ),
+          { errors: [error, ...failures] },
+        );
+      }
+      throw error;
+    } finally {
+      await transaction.directory.close();
+      if (!retainBackup)
+        await project.withEntry(transaction.name, false, (entry) =>
+          fs.rm(entry, { recursive: true, force: true }),
+        );
     }
-
-    delete lock.packages[locator];
-    for (const [name, dependencyLocator] of Object.entries(lock.dependencies)) {
-      if (dependencyLocator === locator) delete lock.dependencies[name];
-    }
-    onStep?.('cleaning', 80);
-    await writeLock(lockPath, lock);
-    await removeEmptyParents(
-      [...mappedFiles, manifestPath].map(path.dirname),
-      target,
-    );
-    onStep?.('completed', 100);
-  } catch (error) {
-    await fs.writeFile(lockPath, previousLock);
-    for (const { source, backup } of moved.reverse()) {
-      await fs.mkdir(path.dirname(source), { recursive: true });
-      await fs.rename(backup, source).catch(() => undefined);
-    }
-    throw error;
   } finally {
-    await fs.rm(transaction, { recursive: true, force: true });
-  }
-}
-
-async function readLock(
-  lockPath: string,
-  packageName: string,
-): Promise<SkillLockfile> {
-  try {
-    const lock = parseYaml<SkillLockfile>(await fs.readFile(lockPath, 'utf8'));
-    if (lock.lockfileVersion !== 1 || !lock.dependencies || !lock.packages) {
-      throw new Error(`Invalid skill lockfile: ${lockPath}`);
-    }
-    return lock;
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      throw new PackageNotFound(packageName);
-    }
-    throw error;
+    await project.close();
   }
 }
 
@@ -181,32 +226,30 @@ function safeResolve(root: string, relative: string): string {
   return resolved;
 }
 
-async function writeLock(lockPath: string, lock: SkillLockfile): Promise<void> {
-  const temporary = `${lockPath}.${process.pid}-${Date.now()}.tmp`;
-  await fs.writeFile(temporary, stringifyYaml(lock), { flag: 'wx' });
-  await fs.rename(temporary, lockPath);
-}
-
 async function removeEmptyParents(
   directories: string[],
-  root: string,
+  project: InstallDirectory,
 ): Promise<void> {
-  const boundary = path.resolve(root);
   const candidates = new Set<string>();
   for (const directory of directories) {
-    let current = path.resolve(directory);
-    while (
-      current !== boundary &&
-      current.startsWith(`${boundary}${path.sep}`)
-    ) {
+    let current = directory;
+    while (current !== '.') {
       candidates.add(current);
       current = path.dirname(current);
     }
   }
   for (const directory of [...candidates].sort((a, b) => b.length - a.length)) {
-    await fs.rmdir(directory).catch((error: NodeJS.ErrnoException) => {
-      if (error.code !== 'ENOENT' && error.code !== 'ENOTEMPTY') throw error;
-    });
+    await project.withEntry(
+      directory,
+      false,
+      async (entry) => {
+        await fs.rmdir(entry).catch((error: NodeJS.ErrnoException) => {
+          if (error.code !== 'ENOENT' && error.code !== 'ENOTEMPTY')
+            throw error;
+        });
+      },
+      true,
+    );
   }
 }
 

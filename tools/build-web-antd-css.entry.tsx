@@ -99,7 +99,7 @@ const readme = {
 
 const systems = [
   { id: 'paypal', name: 'PayPal', countries: null },
-  { id: 'wompi', name: 'Wompi', countries: ['CO'] },
+  { id: 'mercadopago', name: 'Mercado Pago', countries: ['CO'] },
 ];
 
 const plans = [

@@ -31,7 +31,8 @@
   "files": [
     "**/*.js",
     "**/*.d.ts",
-    "README.md"
+    "README.md",
+    "native/host.c"
   ],
   "publishConfig": {
     "access": "public"

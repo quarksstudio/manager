@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "test:audit": "jest --config tools/audit/audit.config.cjs --runInBand",
     "format": "nx format:write --all",
     "format:check": "nx format:check --all",
     "test:cli-architecture": "node tools/test/cli-architecture.spec.mjs",

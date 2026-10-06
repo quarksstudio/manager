@@ -4,6 +4,7 @@
 const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 const { existsSync } = require('node:fs');
 const { registerNotifications } = require('./notifications.cjs');
+const { registerNavigation } = require('./navigation.cjs');
 const { spawn } = require('node:child_process');
 const path = require('node:path');
 
@@ -49,6 +50,11 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.cjs'),
     },
   });
+  registerNavigation(
+    win,
+    origin,
+    process.env.QUARK_REGISTRY_URL || 'http://localhost:8081/v1',
+  );
   mainWindow = win;
   void win.loadURL(origin);
   win.on('closed', () => {

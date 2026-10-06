@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -22,21 +22,23 @@ export async function readCachedSkill(
   cacheDir = defaultCacheDir(),
 ): Promise<Buffer | undefined> {
   assertHash(hash);
-  const file = artifactPath(cacheDir, hash);
-  let buffer: Buffer;
-  try {
-    buffer = await fs.readFile(file);
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
-    throw error;
-  }
-  if (digest(buffer) !== hash.toLowerCase()) {
-    await fs.rm(file, { force: true });
-    await removeIndexEntry(cacheDir, hash);
-    return undefined;
-  }
-  await touchIndexEntry(cacheDir, hash);
-  return buffer;
+  return withCacheLock(cacheDir, async () => {
+    const file = artifactPath(cacheDir, hash);
+    let buffer: Buffer;
+    try {
+      buffer = await fs.readFile(file);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
+      throw error;
+    }
+    if (digest(buffer) !== hash.toLowerCase()) {
+      await fs.rm(file, { force: true });
+      await removeIndexEntry(cacheDir, hash);
+      return undefined;
+    }
+    await touchIndexEntry(cacheDir, hash);
+    return buffer;
+  });
 }
 
 export async function cacheSkill(
@@ -44,34 +46,39 @@ export async function cacheSkill(
   metadata: Pick<CachedSkillArtifact, 'name' | 'version' | 'registry' | 'hash'>,
   cacheDir = defaultCacheDir(),
 ): Promise<CachedSkillArtifact> {
-  assertHash(metadata.hash);
-  const hash = metadata.hash.toLowerCase();
-  if (digest(bundle) !== hash)
-    throw new Error('Cannot cache skill: SHA-256 mismatch');
-  const root = getSkillCachePath(cacheDir);
-  const artifacts = path.join(root, 'sha256');
-  await fs.mkdir(artifacts, { recursive: true });
-  const destination = artifactPath(root, hash);
-  const temporary = `${destination}.${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}.tmp`;
-  try {
-    await fs.writeFile(temporary, bundle, { flag: 'wx', mode: 0o600 });
-    await fs.rename(temporary, destination);
-  } finally {
-    await fs.rm(temporary, { force: true });
-  }
-  const now = new Date().toISOString();
-  const previous = (await readIndex(root)).artifacts[hash];
-  const entry: CachedSkillArtifact = {
-    ...metadata,
-    hash,
-    sizeBytes: bundle.byteLength,
-    cachedAt: previous?.cachedAt ?? now,
-    lastUsedAt: now,
-  };
-  await updateIndex(root, (index) => {
-    index.artifacts[hash] = entry;
+  return withCacheLock(cacheDir, async () => {
+    assertHash(metadata.hash);
+    const hash = metadata.hash.toLowerCase();
+    if (digest(bundle) !== hash)
+      throw new Error('Cannot cache skill: SHA-256 mismatch');
+    const root = getSkillCachePath(cacheDir);
+    const artifacts = path.join(root, 'sha256');
+    await fs.mkdir(artifacts, { recursive: true });
+    const destination = artifactPath(root, hash);
+    const temporary = `${destination}.${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}.tmp`;
+    try {
+      await fs.writeFile(temporary, bundle, { flag: 'wx', mode: 0o600 });
+      await fs.rename(temporary, destination);
+    } finally {
+      await fs.rm(temporary, { force: true });
+    }
+    const now = new Date().toISOString();
+    const previous = (await readIndex(root)).artifacts[hash];
+    const entry: CachedSkillArtifact = {
+      ...metadata,
+      hash,
+      sizeBytes: bundle.byteLength,
+      cachedAt: previous?.cachedAt ?? now,
+      lastUsedAt: now,
+    };
+    await updateIndex(root, (index) => {
+      index.artifacts[hash] = {
+        ...entry,
+        cachedAt: index.artifacts[hash]?.cachedAt ?? entry.cachedAt,
+      };
+    });
+    return entry;
   });
-  return entry;
 }
 
 export async function listSkillCache(
@@ -102,7 +109,13 @@ export async function verifySkillCache(
 export async function cleanSkillCache(
   cacheDir = defaultCacheDir(),
 ): Promise<void> {
-  await fs.rm(getSkillCachePath(cacheDir), { recursive: true, force: true });
+  await withCacheLock(cacheDir, async () => {
+    await fs.rm(path.join(getSkillCachePath(cacheDir), 'sha256'), {
+      recursive: true,
+      force: true,
+    });
+    await fs.rm(indexPath(cacheDir), { force: true });
+  });
 }
 
 function defaultCacheDir(): string {
@@ -142,18 +155,94 @@ async function updateIndex(
   change: (index: CacheIndex) => void,
 ): Promise<void> {
   const root = getSkillCachePath(cacheDir);
-  await fs.mkdir(root, { recursive: true });
   const index = await readIndex(root);
   change(index);
-  const temporary = path.join(
-    root,
-    `index.${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}.tmp`,
+  const temporary = path.join(root, `index.${randomUUID()}.tmp`);
+  try {
+    await fs.writeFile(temporary, `${JSON.stringify(index, null, 2)}\n`, {
+      flag: 'wx',
+      mode: 0o600,
+    });
+    await fs.rename(temporary, indexPath(root));
+  } finally {
+    await fs.rm(temporary, { force: true });
+  }
+}
+
+/** Serialize artifact and index mutations across processes. Never evict a live writer. */
+async function withCacheLock<T>(
+  cacheDir: string,
+  operation: () => Promise<T>,
+): Promise<T> {
+  const root = getSkillCachePath(cacheDir);
+  await fs.mkdir(root, { recursive: true });
+  const lock = path.join(root, '.index.lock');
+  const owner = randomUUID();
+  const pending = path.join(root, `.lock-owner.${owner}`);
+  await fs.writeFile(
+    pending,
+    JSON.stringify({ owner, pid: process.pid, hostname: os.hostname() }),
+    { flag: 'wx', mode: 0o600 },
   );
-  await fs.writeFile(temporary, `${JSON.stringify(index, null, 2)}\n`, {
-    flag: 'wx',
-    mode: 0o600,
-  });
-  await fs.rename(temporary, indexPath(root));
+  const deadline = Date.now() + 10_000;
+  try {
+    for (;;) {
+      try {
+        // A hard link publishes complete owner data atomically.
+        await fs.link(pending, lock);
+        break;
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+        await reclaimDeadOwner(root, lock);
+        if (Date.now() >= deadline)
+          throw new Error('Skill cache is locked by another writer');
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+    }
+    try {
+      return await operation();
+    } finally {
+      const saved = JSON.parse(await fs.readFile(lock, 'utf8')) as {
+        owner: string;
+      };
+      if (saved.owner === owner) await fs.unlink(lock);
+    }
+  } finally {
+    await fs.rm(pending, { force: true });
+  }
+}
+
+async function reclaimDeadOwner(root: string, lock: string): Promise<void> {
+  const recovery = path.join(root, '.index.lock.recovery');
+  try {
+    await fs.mkdir(recovery);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'EEXIST') return;
+    throw error;
+  }
+  try {
+    let saved: { pid: number; hostname: string };
+    try {
+      saved = JSON.parse(await fs.readFile(lock, 'utf8'));
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
+      throw error;
+    }
+    if (
+      saved.hostname !== os.hostname() ||
+      !Number.isSafeInteger(saved.pid) ||
+      saved.pid <= 0
+    )
+      return;
+    try {
+      process.kill(saved.pid, 0);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ESRCH')
+        await fs.rm(lock, { force: true });
+    }
+  } finally {
+    await fs.rmdir(recovery);
+  }
 }
 
 async function touchIndexEntry(cacheDir: string, hash: string): Promise<void> {

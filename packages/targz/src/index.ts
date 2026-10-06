@@ -1,4 +1,10 @@
-export { check, pack, unpack } from './targz';
+export {
+  ARCHIVE_LIMITS,
+  readArchiveResponse,
+  check,
+  pack,
+  unpack,
+} from './targz';
 export {
   validateSchema,
   parseYaml,

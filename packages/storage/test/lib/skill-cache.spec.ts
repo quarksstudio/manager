@@ -54,6 +54,49 @@ describe('skill cache', () => {
     await expect(listSkillCache(root)).resolves.toEqual([]);
   });
 
+  it('preserves distinct entries written concurrently', async () => {
+    await Promise.all(
+      Array.from({ length: 24 }, (_, i) => {
+        const bundle = Buffer.from(`bundle-${i}`);
+        return cacheSkill(
+          bundle,
+          {
+            name: `skill-${i}`,
+            version: '1.0.0',
+            registry: 'https://registry.test',
+            hash: createHash('sha256').update(bundle).digest('hex'),
+          },
+          root,
+        );
+      }),
+    );
+    expect(await listSkillCache(root)).toHaveLength(24);
+    expect((await verifySkillCache(root)).invalid).toEqual([]);
+  });
+
+  it('recovers a lock whose local owner no longer exists', async () => {
+    await fs.writeFile(
+      path.join(root, '.index.lock'),
+      JSON.stringify({
+        owner: 'dead',
+        pid: 2147483647,
+        hostname: os.hostname(),
+      }),
+    );
+    const bundle = Buffer.from('recovered');
+    await cacheSkill(
+      bundle,
+      {
+        name: 'recovered',
+        version: '1.0.0',
+        registry: 'https://registry.test',
+        hash: createHash('sha256').update(bundle).digest('hex'),
+      },
+      root,
+    );
+    expect(await listSkillCache(root)).toHaveLength(1);
+  });
+
   it('supports concurrent writes and manual verification and cleanup', async () => {
     const bundle = Buffer.from('same bundle');
     const hash = createHash('sha256').update(bundle).digest('hex');

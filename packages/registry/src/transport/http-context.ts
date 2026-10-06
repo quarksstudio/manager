@@ -28,6 +28,15 @@ export type {
 
 export function createHttpContext(options: HttpContextOptions): HttpContext {
   const baseUrl = options.baseUrl.replace(/\/$/, '');
+  const registryUrl = new URL(`${baseUrl}/`);
+  if (
+    !['http:', 'https:'].includes(registryUrl.protocol) ||
+    registryUrl.username ||
+    registryUrl.password
+  )
+    throw new TypeError(
+      'Registry URL must use HTTP(S) without embedded credentials',
+    );
   const fetchImpl = options.fetch ?? globalThis.fetch;
   const headers: Record<string, string> = { ...options.headers };
   if (options.token) headers['Authorization'] = `Bearer ${options.token}`;
@@ -37,7 +46,18 @@ export function createHttpContext(options: HttpContextOptions): HttpContext {
     requestOptions: RegistryRequestOptions = {},
   ): Promise<Response> {
     const method = (requestOptions.method ?? 'GET').toUpperCase();
-    const url = path.startsWith('http') ? path : `${baseUrl}/${path}`;
+    if (path.includes('\\'))
+      throw new TypeError('Registry request URLs must not contain backslashes');
+    const destination = new URL(path, registryUrl);
+    if (
+      destination.origin !== registryUrl.origin ||
+      destination.username ||
+      destination.password
+    )
+      throw new TypeError(
+        'Registry requests must stay on the configured origin without embedded credentials',
+      );
+    const url = destination.href;
     const requestHeaders = new Headers(headers);
     new Headers(requestOptions.headers).forEach((value, key) =>
       requestHeaders.set(key, value),
@@ -61,6 +81,7 @@ export function createHttpContext(options: HttpContextOptions): HttpContext {
     const response = await fetchImpl(url, {
       method,
       body,
+      redirect: 'error',
       headers: requestHeaders,
       signal: requestOptions.signal ?? undefined,
       cache: requestOptions.cache ?? (cacheable ? undefined : 'no-store'),

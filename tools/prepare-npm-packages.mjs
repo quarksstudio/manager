@@ -55,6 +55,13 @@ for (const name of order) {
   );
   if (await exists(sourceReadme))
     await cp(sourceReadme, path.join(output, 'README.md'));
+  if (name === '@quarks.studio/runtime') {
+    await mkdir(path.join(output, 'native'), { recursive: true });
+    await cp(
+      path.join(workspace, 'packages/runtime/native/host.c'),
+      path.join(output, 'native/host.c'),
+    );
+  }
   const manifest = publishManifest(entry.manifest, packages, entry.group);
   await mkdir(output, { recursive: true });
   await writeFile(

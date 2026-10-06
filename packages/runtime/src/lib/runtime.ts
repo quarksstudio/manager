@@ -1,12 +1,18 @@
+import { createExecutionSnapshot } from './snapshot';
 import * as child_process from 'child_process';
 import * as fs from 'fs';
 import { resolveEntrypoint, type Manifest } from '@quarks.studio/manifest';
 import {
   validatePermissions,
   type UserPolicy,
+  type PermissionRequest,
 } from '@quarks.studio/permissions';
 import { SkillExecution, type RuntimeKind } from '../domain';
-import { ExecuteSkillHandler, type ProcessRunner } from '../application';
+import {
+  ExecuteSkillHandler,
+  type ProcessRunner,
+  type PermissionEnforcingHost,
+} from '../application';
 
 export interface ExecuteResult {
   process: child_process.ChildProcess;
@@ -20,6 +26,7 @@ export function executeSkill(
   args: string[] = [],
   allowedEnv: Record<string, string> = {},
   policy: UserPolicy = {},
+  host?: PermissionEnforcingHost,
 ): ExecuteResult {
   const permissionResult = validatePermissions(manifest, policy);
   if (!permissionResult.granted) {
@@ -32,9 +39,35 @@ export function executeSkill(
     throw new Error('Entrypoint not defined in manifest');
   }
 
-  const fullPath = resolveEntrypoint(manifest, skillPath);
+  let fullPath = resolveEntrypoint(manifest, skillPath);
   if (!fs.existsSync(fullPath)) {
     throw new Error(`Skill entrypoint file not found: ${fullPath}`);
+  }
+
+  const permissions: Readonly<PermissionRequest> = Object.freeze({
+    filesystem: manifest.permissions?.filesystem === true,
+    network: Object.freeze([...(manifest.permissions?.network ?? [])]),
+    tools: Object.freeze([...(manifest.permissions?.tools ?? [])]),
+  });
+  const unrestricted =
+    permissions.filesystem &&
+    permissions.network.includes('*') &&
+    permissions.tools.includes('*') &&
+    policy.allowFilesystem === true &&
+    policy.allowedDomains?.includes('*') &&
+    policy.allowedTools?.includes('*');
+  if (host && typeof host.run !== 'function')
+    throw new Error('Invalid permission-enforcing host');
+  if (!unrestricted && !host) {
+    throw new Error(
+      'Restricted execution requires a permission-enforcing host; the local process adapter cannot enforce filesystem, network or tool restrictions',
+    );
+  }
+
+  const snapshot = createExecutionSnapshot(skillPath, fullPath);
+  if (snapshot) {
+    skillPath = snapshot.root;
+    fullPath = snapshot.entrypoint;
   }
 
   let cmd = '';
@@ -69,7 +102,14 @@ export function executeSkill(
 
   const runtime: RuntimeKind =
     cmd === 'node' ? 'node' : cmd === 'python3' ? 'python' : 'native';
-  const execution = new SkillExecution(runtime, fullPath, args, skillPath, env);
+  const execution = new SkillExecution(
+    runtime,
+    fullPath,
+    Object.freeze([...args]),
+    skillPath,
+    Object.freeze(env),
+    permissions,
+  );
   const runner: ProcessRunner = {
     run: () => {
       const child = child_process.spawn(cmd, cmdArgs, {
@@ -81,5 +121,22 @@ export function executeSkill(
       return { process: child, cmd, args: cmdArgs };
     },
   };
-  return new ExecuteSkillHandler(runner).execute(execution);
+  try {
+    const result = new ExecuteSkillHandler(host ?? runner).execute(execution);
+    if (snapshot) {
+      let disposed = false;
+      const cleanup = () => {
+        if (!disposed) {
+          disposed = true;
+          snapshot.dispose();
+        }
+      };
+      result.process.once('close', cleanup);
+      result.process.once('error', cleanup);
+    }
+    return result;
+  } catch (error) {
+    snapshot?.dispose();
+    throw error;
+  }
 }

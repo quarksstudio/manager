@@ -12,7 +12,14 @@
         "outputPath": "dist/packages/runtime",
         "main": "packages/runtime/src/index.ts",
         "tsConfig": "packages/runtime/tsconfig.lib.json",
-        "assets": ["packages/runtime/*.md"]
+        "assets": [
+          "packages/runtime/*.md",
+          {
+            "input": "packages/runtime/native",
+            "glob": "host.c",
+            "output": "native"
+          }
+        ]
       }
     }
   }

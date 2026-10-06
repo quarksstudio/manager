@@ -6,8 +6,13 @@ import * as path from 'path';
 import * as tar from 'tar';
 
 import { readAndValidateManifest } from './manifest';
-import { parse } from 'yaml';
-import { structuralAudit, type PackageManifest } from '@quarks.studio/tester';
+import {
+  structuralAudit,
+  readManifest,
+  auditTarArchive,
+  ARCHIVE_LIMITS,
+} from '@quarks.studio/tester';
+export { ARCHIVE_LIMITS } from '@quarks.studio/tester';
 
 const MANIFESTS = ['skill.yml', 'agent.yml', 'skills.yml'] as const;
 
@@ -83,7 +88,14 @@ export async function unpack(
   expectedHash: string,
   targetDir: string,
 ): Promise<void> {
+  if (
+    !Buffer.isBuffer(source) &&
+    (await fs.stat(source)).size > ARCHIVE_LIMITS.compressedBytes
+  )
+    throw new Error('Archive exceeds compressed byte limit');
   const buffer = Buffer.isBuffer(source) ? source : await fs.readFile(source);
+  if (buffer.length > ARCHIVE_LIMITS.compressedBytes)
+    throw new Error('Archive exceeds compressed byte limit');
   const digest = createHash('sha256').update(buffer).digest();
   const actualHash = digest.toString('hex');
   const expected = expectedHash.startsWith('sha256-')
@@ -113,6 +125,8 @@ async function extractAudited(
   buffer: Buffer,
   workspace: string,
 ): Promise<string> {
+  if (buffer.length > ARCHIVE_LIMITS.compressedBytes)
+    throw new Error('Archive exceeds compressed byte limit');
   const archive = path.join(workspace, 'archive.tar.gz');
   const extracted = path.join(workspace, 'content');
   await fs.writeFile(archive, buffer, { flag: 'wx' });
@@ -133,45 +147,7 @@ async function extractAudited(
 }
 
 async function auditArchive(archive: string): Promise<void> {
-  const seen = new Set<string>();
-  let auditError: Error | undefined;
-  try {
-    await tar.t({
-      file: archive,
-      strict: true,
-      onentry: (entry) => {
-        if (auditError) return;
-        const normalized = entry.path.replace(/\\/g, '/');
-        if (
-          !normalized ||
-          normalized.includes('\0') ||
-          normalized.startsWith('/') ||
-          /^[a-zA-Z]:\//.test(normalized) ||
-          path.posix.normalize(normalized).split('/').includes('..')
-        ) {
-          auditError = new Error(`Unsafe archive path: ${entry.path}`);
-          return;
-        }
-        if (entry.type === 'SymbolicLink' || entry.type === 'Link') {
-          auditError = new Error(
-            `Archive links are not allowed: ${entry.path}`,
-          );
-          return;
-        }
-        if (seen.has(normalized)) {
-          auditError = new Error(`Duplicate archive path: ${entry.path}`);
-          return;
-        }
-        seen.add(normalized);
-      },
-    });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Invalid tar.gz archive: ${message}`);
-  }
-  if (auditError) throw auditError;
-  if (!MANIFESTS.some((name) => seen.has(name)))
-    throw new Error('Archive must contain skill.yml at its root');
+  await auditTarArchive(archive, MANIFESTS);
 }
 
 async function packageFiles(root: string): Promise<{
@@ -184,9 +160,7 @@ async function packageFiles(root: string): Promise<{
     const manifestPath = path.join(root, manifestName);
     try {
       await fs.access(manifestPath);
-      const manifest = parse(
-        await fs.readFile(manifestPath, 'utf8'),
-      ) as PackageManifest;
+      const manifest = await readManifest(root, manifestName);
       const audit = await structuralAudit(root, manifest);
       return {
         manifestPath,
@@ -208,10 +182,9 @@ async function extractedManifest(
 ): Promise<{ name: string; version: string }> {
   for (const filename of ['skill.yml', 'agent.yml']) {
     try {
-      return parse(await fs.readFile(path.join(root, filename), 'utf8')) as {
-        name: string;
-        version: string;
-      };
+      const manifest = await readManifest(root, filename);
+      await structuralAudit(root, manifest);
+      return manifest;
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
     }
@@ -293,5 +266,33 @@ async function moveExclusive(
 function validateArchiveIdentity(value: string, field: string): void {
   if (value.includes('/') || value.includes('\\') || value.includes('\0')) {
     throw new Error(`Manifest ${field} cannot be used in an archive filename`);
+  }
+}
+
+/** Buffer a bundle only up to the same compressed limit enforced before extraction. */
+export async function readArchiveResponse(response: Response): Promise<Buffer> {
+  const length = response.headers.get('content-length');
+  if (length && Number(length) > ARCHIVE_LIMITS.compressedBytes) {
+    await response.body?.cancel();
+    throw new Error('Archive exceeds compressed byte limit');
+  }
+  if (!response.body) return Buffer.alloc(0);
+  const reader = response.body.getReader();
+  const chunks: Buffer[] = [];
+  let bytes = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > ARCHIVE_LIMITS.compressedBytes) {
+        await reader.cancel();
+        throw new Error('Archive exceeds compressed byte limit');
+      }
+      chunks.push(Buffer.from(value));
+    }
+    return Buffer.concat(chunks, bytes);
+  } finally {
+    reader.releaseLock();
   }
 }

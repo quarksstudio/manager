@@ -17,7 +17,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: npm-publish-${{ github.ref }}
@@ -25,12 +24,19 @@ concurrency:
 
 jobs:
   publish:
+    if: github.event_name == 'push' || github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     environment: npm
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Verify release commit belongs to main
+        run: git merge-base --is-ancestor HEAD origin/main
 
       - uses: pnpm/action-setup@v4
         with:
@@ -50,18 +56,16 @@ jobs:
         run: test -z "$(find apps packages -type f -path '*/src/*' \( -name '*.js' -o -name '*.js.map' \) -print -quit)"
       - name: Resolve release version
         id: version
-        run: |
-          REF="${{ github.event_name == 'push' && github.ref_name || inputs.version }}"
-          VERSION="${REF#manager-v}"
-          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-]|$)'; then
-            echo "Invalid release version derived from ${REF}" >&2
-            exit 1
-          fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        env:
+          RELEASE_REF: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
+        run: node tools/resolve-release-version.mjs
       - run: pnpm format:check
       - run: pnpm exec nx run-many -t lint test build --all
       - run: pnpm test:web-artifacts
-      - run: node tools/set-release-version.mjs ${{ steps.version.outputs.version }}
+      - name: Apply release version
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: node tools/set-release-version.mjs "$RELEASE_VERSION"
       - run: node tools/prepare-npm-packages.mjs
       - name: Pack or publish in dependency order
         env:
