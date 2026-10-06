@@ -101,4 +101,4 @@ contracts.
 `auditTarArchive` implements the canonical archive checks shared with targz,
 including bounded input/decompression and duplicate detection after normalizing
 paths. Trusted callers may tighten its resource limits but cannot relax them.
-See [M05/M11](../../docs/solucion-hallazgos-restantes.md).
+See [M05/M11](../../../server/docs/auditoria-consolidada-hallazgos.md#correcciones-finales-de-manager-m03m11).

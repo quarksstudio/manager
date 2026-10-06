@@ -1,0 +1,3305 @@
+{
+  "date": "2026-10-04 America/Bogota",
+  "source": "pnpm audit --json",
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 14,
+      "moderate": 76,
+      "high": 61,
+      "critical": 2
+    },
+    "dependencies": 145,
+    "devDependencies": 1855,
+    "optionalDependencies": 271,
+    "totalDependencies": 2000
+  },
+  "advisories": [
+    {
+      "id": "DM1193723",
+      "advisory": "GHSA-26w7-cxv4-gfx2",
+      "module": "astro",
+      "severity": "critical",
+      "title": "Astro: Remote code execution through AVIF image optimization",
+      "vulnerableVersions": "<7.2.8",
+      "patchedVersions": ">=7.2.8",
+      "url": "https://github.com/advisories/GHSA-26w7-cxv4-gfx2",
+      "findings": [
+        {
+          "version": "5.18.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro", ".>@astrojs/node>astro"]
+        }
+      ]
+    },
+    {
+      "id": "DM1240851",
+      "advisory": "GHSA-67c8-pqhq-4rmx",
+      "module": "piscina",
+      "severity": "critical",
+      "title": "piscina: Prototype-pollution gadget in ThreadPool.options allows RCE via execArgv / loadBalancer / env",
+      "vulnerableVersions": "<4.9.4",
+      "patchedVersions": ">=4.9.4",
+      "url": "https://github.com/advisories/GHSA-67c8-pqhq-4rmx",
+      "findings": [
+        {
+          "version": "4.9.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>@swc/cli>piscina"]
+        }
+      ]
+    },
+    {
+      "id": "DM1240646",
+      "advisory": "GHSA-qh8j-hqjv-7m4x",
+      "module": "@astrojs/node",
+      "severity": "high",
+      "title": "Astro: Malformed port in the Host header can crash the Node adapter",
+      "vulnerableVersions": "<=11.1.2",
+      "patchedVersions": ">=11.1.3",
+      "url": "https://github.com/advisories/GHSA-qh8j-hqjv-7m4x",
+      "findings": [
+        {
+          "version": "9.5.5",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>@astrojs/node"]
+        }
+      ]
+    },
+    {
+      "id": "DM1239030",
+      "advisory": "GHSA-7q85-xj36-vmfc",
+      "module": "adm-zip",
+      "severity": "high",
+      "title": "adm-zip: Uncontrolled memory allocation via the declared uncompressed size (DoS)",
+      "vulnerableVersions": "<0.6.1",
+      "patchedVersions": ">=0.6.1",
+      "url": "https://github.com/advisories/GHSA-7q85-xj36-vmfc",
+      "findings": [
+        {
+          "version": "0.6.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240066",
+      "advisory": "GHSA-8238-w5pm-2374",
+      "module": "adm-zip",
+      "severity": "high",
+      "title": "adm-zip: Unhandled error event in async DEFLATE decompression crashes Node.js process (DoS)",
+      "vulnerableVersions": "<=0.6.0",
+      "patchedVersions": ">=0.6.1",
+      "url": "https://github.com/advisories/GHSA-8238-w5pm-2374",
+      "findings": [
+        {
+          "version": "0.6.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240034",
+      "advisory": "GHSA-j5f4-cc29-5x44",
+      "module": "adm-zip",
+      "severity": "high",
+      "title": "adm-zip extraction preserves SUID/SGID bits from untrusted ZIPs -> local privilege escalation",
+      "vulnerableVersions": "<=0.6.0",
+      "patchedVersions": ">=0.6.1",
+      "url": "https://github.com/advisories/GHSA-j5f4-cc29-5x44",
+      "findings": [
+        {
+          "version": "0.6.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240032",
+      "advisory": "GHSA-rcw4-f5rp-g42v",
+      "module": "adm-zip",
+      "severity": "high",
+      "title": "adm-zip: Decompression-bomb protection (fix for CVE-2026-39244) can be bypassed by declaring uncompressed size as 0",
+      "vulnerableVersions": "<=0.6.0",
+      "patchedVersions": ">=0.6.1",
+      "url": "https://github.com/advisories/GHSA-rcw4-f5rp-g42v",
+      "findings": [
+        {
+          "version": "0.6.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1139377",
+      "advisory": "GHSA-2pvr-wf23-7pc7",
+      "module": "astro",
+      "severity": "high",
+      "title": "Astro: Host header SSRF in prerendered error page fetch",
+      "vulnerableVersions": "<6.4.6",
+      "patchedVersions": ">=6.4.6",
+      "url": "https://github.com/advisories/GHSA-2pvr-wf23-7pc7",
+      "findings": [
+        {
+          "version": "5.18.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro", ".>@astrojs/node>astro"]
+        }
+      ]
+    },
+    {
+      "id": "DM1139378",
+      "advisory": "GHSA-8hv8-536x-4wqp",
+      "module": "astro",
+      "severity": "high",
+      "title": "Astro: Reflected XSS via unescaped slot name",
+      "vulnerableVersions": "<6.3.3",
+      "patchedVersions": ">=6.3.3",
+      "url": "https://github.com/advisories/GHSA-8hv8-536x-4wqp",
+      "findings": [
+        {
+          "version": "5.18.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro", ".>@astrojs/node>astro"]
+        }
+      ]
+    },
+    {
+      "id": "DM1120650",
+      "advisory": "GHSA-35jp-ww65-95wh",
+      "module": "axios",
+      "severity": "high",
+      "title": "axios Vulnerable to Full Man-in-the-Middle via Prototype Pollution Gadget in `config.proxy`",
+      "vulnerableVersions": ">=1.0.0 <1.16.0",
+      "patchedVersions": ">=1.16.0",
+      "url": "https://github.com/advisories/GHSA-35jp-ww65-95wh",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1120649",
+      "advisory": "GHSA-3g43-6gmg-66jw",
+      "module": "axios",
+      "severity": "high",
+      "title": "axios Vulnerable to Credential Theft and Response Hijacking via Prototype Pollution Gadget in Config Merge",
+      "vulnerableVersions": ">=1.0.0 <1.15.2",
+      "patchedVersions": ">=1.15.2",
+      "url": "https://github.com/advisories/GHSA-3g43-6gmg-66jw",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240607",
+      "advisory": "GHSA-3pq3-5fj3-cg6v",
+      "module": "axios",
+      "severity": "high",
+      "title": "Axios: HTTP/2 adapter bypasses configured DNS lookup and proxy controls",
+      "vulnerableVersions": ">=1.13.0 <1.20.0",
+      "patchedVersions": ">=1.20.0",
+      "url": "https://github.com/advisories/GHSA-3pq3-5fj3-cg6v",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240608",
+      "advisory": "GHSA-542g-h47m-68v8",
+      "module": "axios",
+      "severity": "high",
+      "title": "Axios: Denial of Service via Unhandled 'error' Event in HTTP/2 ClientHttp2Session Initialization",
+      "vulnerableVersions": ">=1.13.0 <1.20.0",
+      "patchedVersions": ">=1.20.0",
+      "url": "https://github.com/advisories/GHSA-542g-h47m-68v8",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1117593",
+      "advisory": "GHSA-6chq-wfr3-2hj9",
+      "module": "axios",
+      "severity": "high",
+      "title": "Axios: Header Injection via Prototype Pollution",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-6chq-wfr3-2hj9",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1120643",
+      "advisory": "GHSA-777c-7fjr-54vf",
+      "module": "axios",
+      "severity": "high",
+      "title": "Allocation of Resources Without Limits or Throttling in Axios",
+      "vulnerableVersions": ">=1.7.0 <1.16.0",
+      "patchedVersions": ">=1.16.0",
+      "url": "https://github.com/advisories/GHSA-777c-7fjr-54vf",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1120547",
+      "advisory": "GHSA-hfxv-24rg-xrqf",
+      "module": "axios",
+      "severity": "high",
+      "title": "Axios: Regular Expression Denial of Service (ReDoS) via Cookie Name Injection",
+      "vulnerableVersions": ">=1.0.0 <1.16.0",
+      "patchedVersions": ">=1.16.0",
+      "url": "https://github.com/advisories/GHSA-hfxv-24rg-xrqf",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1120647",
+      "advisory": "GHSA-j5f8-grm9-p9fc",
+      "module": "axios",
+      "severity": "high",
+      "title": "Axios: Proxy-Authorization header leaks to redirect target when proxy is re-evaluated to direct connection",
+      "vulnerableVersions": ">=1.0.0 <1.16.0",
+      "patchedVersions": ">=1.16.0",
+      "url": "https://github.com/advisories/GHSA-j5f8-grm9-p9fc",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240604",
+      "advisory": "GHSA-mghh-pgcx-3jjj",
+      "module": "axios",
+      "severity": "high",
+      "title": "Axios: ReDoS (O(N²)) in shouldBypassProxy host normalization, reachable via untrusted redirect Location",
+      "vulnerableVersions": ">=1.15.0 <1.20.0",
+      "patchedVersions": ">=1.20.0",
+      "url": "https://github.com/advisories/GHSA-mghh-pgcx-3jjj",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1120645",
+      "advisory": "GHSA-p92q-9vqr-4j8v",
+      "module": "axios",
+      "severity": "high",
+      "title": "Axios: Proxy-Authorization Credential Leak to Origin Server Across HTTP-to-HTTPS Redirect in Axios Node.js HTTP Adapter",
+      "vulnerableVersions": ">=1.0.0 <1.16.0",
+      "patchedVersions": ">=1.16.0",
+      "url": "https://github.com/advisories/GHSA-p92q-9vqr-4j8v",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1117591",
+      "advisory": "GHSA-pf86-5x62-jrwf",
+      "module": "axios",
+      "severity": "high",
+      "title": "Axios: Prototype Pollution Gadgets - Response Tampering, Data Exfiltration, and Request Hijacking",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-pf86-5x62-jrwf",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1123824",
+      "advisory": "GHSA-pjwm-pj3p-43mv",
+      "module": "axios",
+      "severity": "high",
+      "title": "axios's shouldBypassProxy does not recognize IPv4-mapped IPv6 addresses, allowing NO_PROXY bypass (incomplete fix for CVE-2025-62718)",
+      "vulnerableVersions": ">=1.15.0 <1.16.0",
+      "patchedVersions": ">=1.16.0",
+      "url": "https://github.com/advisories/GHSA-pjwm-pj3p-43mv",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1117576",
+      "advisory": "GHSA-pmwg-cvhr-8vh7",
+      "module": "axios",
+      "severity": "high",
+      "title": "Axios: Incomplete Fix for CVE-2025-62718 — NO_PROXY Protection Bypassed via RFC 1122 Loopback Subnet (127.0.0.0/8) in Axios 1.15.0",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-pmwg-cvhr-8vh7",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1118607",
+      "advisory": "GHSA-q8qp-cvcw-x6jj",
+      "module": "axios",
+      "severity": "high",
+      "title": "Axios has prototype pollution read-side gadgets in HTTP adapter that allow credential injection and request hijacking",
+      "vulnerableVersions": ">=1.0.0 <1.15.2",
+      "patchedVersions": ">=1.15.2",
+      "url": "https://github.com/advisories/GHSA-q8qp-cvcw-x6jj",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1123898",
+      "advisory": "GHSA-3jxr-9vmj-r5cp",
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups",
+      "vulnerableVersions": ">=3.0.0 <5.0.7",
+      "patchedVersions": ">=5.0.7",
+      "url": "https://github.com/advisories/GHSA-3jxr-9vmj-r5cp",
+      "findings": [
+        {
+          "version": "5.0.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>brace-expansion",
+            ".>@nx/jest>@nx/devkit>nx>brace-expansion",
+            ".>@nx/js>@nx/workspace>nx>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240108",
+      "advisory": "GHSA-6j4f-fj2g-mc7p",
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+      "vulnerableVersions": "<1.1.19",
+      "patchedVersions": ">=1.1.19",
+      "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+      "findings": [
+        {
+          "version": "1.1.18",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/eslint>eslint>minimatch>brace-expansion",
+            ".>@nx/react>@nx/eslint>eslint>minimatch>brace-expansion",
+            ".>@nx/eslint>eslint>@eslint/eslintrc>minimatch>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240109",
+      "advisory": "GHSA-6j4f-fj2g-mc7p",
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+      "vulnerableVersions": ">=2.0.0 <2.1.5",
+      "patchedVersions": ">=2.1.5",
+      "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+      "findings": [
+        {
+          "version": "2.1.4",
+          "dev": true,
+          "optional": false,
+          "pathCount": 93,
+          "samplePaths": [
+            ".>@swc/cli>minimatch>brace-expansion",
+            ".>@nx/jest>jest-config>glob>minimatch>brace-expansion",
+            ".>@nx/jest>@jest/reporters>glob>minimatch>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240111",
+      "advisory": "GHSA-6j4f-fj2g-mc7p",
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+      "vulnerableVersions": ">=4.0.0 <5.0.10",
+      "patchedVersions": ">=5.0.10",
+      "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+      "findings": [
+        {
+          "version": "5.0.9",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/jest>minimatch>brace-expansion",
+            ".>@nx/js>@nx/devkit>minimatch>brace-expansion",
+            ".>@nx/eslint>@nx/jest>minimatch>brace-expansion"
+          ]
+        },
+        {
+          "version": "5.0.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>brace-expansion",
+            ".>@nx/jest>@nx/devkit>nx>brace-expansion",
+            ".>@nx/js>@nx/workspace>nx>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1130591",
+      "advisory": "GHSA-mh99-v99m-4gvg",
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+      "vulnerableVersions": ">=4.0.0 <5.0.8",
+      "patchedVersions": ">=5.0.8",
+      "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg",
+      "findings": [
+        {
+          "version": "5.0.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>brace-expansion",
+            ".>@nx/jest>@nx/devkit>nx>brace-expansion",
+            ".>@nx/js>@nx/workspace>nx>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240104",
+      "advisory": "GHSA-qhr7-859c-m2p7",
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+      "vulnerableVersions": "<1.1.20",
+      "patchedVersions": ">=1.1.20",
+      "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+      "findings": [
+        {
+          "version": "1.1.18",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/eslint>eslint>minimatch>brace-expansion",
+            ".>@nx/react>@nx/eslint>eslint>minimatch>brace-expansion",
+            ".>@nx/eslint>eslint>@eslint/eslintrc>minimatch>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240105",
+      "advisory": "GHSA-qhr7-859c-m2p7",
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+      "vulnerableVersions": ">=2.0.0 <2.1.6",
+      "patchedVersions": ">=2.1.6",
+      "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+      "findings": [
+        {
+          "version": "2.1.4",
+          "dev": true,
+          "optional": false,
+          "pathCount": 93,
+          "samplePaths": [
+            ".>@swc/cli>minimatch>brace-expansion",
+            ".>@nx/jest>jest-config>glob>minimatch>brace-expansion",
+            ".>@nx/jest>@jest/reporters>glob>minimatch>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240107",
+      "advisory": "GHSA-qhr7-859c-m2p7",
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+      "vulnerableVersions": ">=4.0.0 <5.0.11",
+      "patchedVersions": ">=5.0.11",
+      "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+      "findings": [
+        {
+          "version": "5.0.9",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/jest>minimatch>brace-expansion",
+            ".>@nx/js>@nx/devkit>minimatch>brace-expansion",
+            ".>@nx/eslint>@nx/jest>minimatch>brace-expansion"
+          ]
+        },
+        {
+          "version": "5.0.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>brace-expansion",
+            ".>@nx/jest>@nx/devkit>nx>brace-expansion",
+            ".>@nx/js>@nx/workspace>nx>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1130734",
+      "advisory": "GHSA-rgw5-rvv9-x895",
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+      "vulnerableVersions": ">=4.0.0 <5.0.9",
+      "patchedVersions": ">=5.0.9",
+      "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895",
+      "findings": [
+        {
+          "version": "5.0.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>brace-expansion",
+            ".>@nx/jest>@nx/devkit>nx>brace-expansion",
+            ".>@nx/js>@nx/workspace>nx>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240992",
+      "advisory": "GHSA-vfj7-8cjw-p6xm",
+      "module": "braces",
+      "severity": "high",
+      "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+      "vulnerableVersions": "<=3.0.3",
+      "patchedVersions": ">=3.0.4",
+      "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+      "findings": [
+        {
+          "version": "3.0.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": [
+            ".>@nx/react>http-proxy-middleware>micromatch>braces",
+            ".>@nx/react>@nx/module-federation>http-proxy-middleware>micromatch>braces"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1116060",
+      "advisory": "GHSA-532v-xpq5-8h95",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron: Use-after-free in offscreen child window paint callback",
+      "vulnerableVersions": "<39.8.1",
+      "patchedVersions": ">=39.8.1",
+      "url": "https://github.com/advisories/GHSA-532v-xpq5-8h95",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116072",
+      "advisory": "GHSA-8337-3p73-46f4",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron: Use-after-free in WebContents fullscreen, pointer-lock, and keyboard-lock permission callbacks",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-8337-3p73-46f4",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136607",
+      "advisory": "GHSA-9f4c-93c8-jc8g",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron: Sandboxed iframe can bypass the allow-popups restriction via the OpenURL navigation path",
+      "vulnerableVersions": "<39.8.10",
+      "patchedVersions": ">=39.8.10",
+      "url": "https://github.com/advisories/GHSA-9f4c-93c8-jc8g",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1239985",
+      "advisory": "GHSA-9qh4-3jw8-366w",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron: <webview> can enable Node.js integration in Web Workers despite embedder restrictions",
+      "vulnerableVersions": "<41.10.6",
+      "patchedVersions": ">=41.10.6",
+      "url": "https://github.com/advisories/GHSA-9qh4-3jw8-366w",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1117459",
+      "advisory": "GHSA-9wfr-w7mm-pc7f",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron: Renderer command-line switch injection via undocumented commandLineSwitches webPreference",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-9wfr-w7mm-pc7f",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1239977",
+      "advisory": "GHSA-gr2m-v5gq-v685",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron: Windows opened from a sandboxed top-level document do not inherit its sandbox restrictions",
+      "vulnerableVersions": "<41.10.6",
+      "patchedVersions": ">=41.10.6",
+      "url": "https://github.com/advisories/GHSA-gr2m-v5gq-v685",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136567",
+      "advisory": "GHSA-h7rp-cf8h-j98x",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron: Context isolation bypass via Function.prototype.bind hijack",
+      "vulnerableVersions": "<39.8.9",
+      "patchedVersions": ">=39.8.9",
+      "url": "https://github.com/advisories/GHSA-h7rp-cf8h-j98x",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1239973",
+      "advisory": "GHSA-hq2x-r82h-9wj4",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron drops inherited HTML sandbox restrictions for popups opened through OpenURLFromTab",
+      "vulnerableVersions": "<41.10.4",
+      "patchedVersions": ">=41.10.4",
+      "url": "https://github.com/advisories/GHSA-hq2x-r82h-9wj4",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1239981",
+      "advisory": "GHSA-j84w-jfhq-vhvj",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron: File and HTTP protocol handlers allow cross-origin reads without corsEnabled",
+      "vulnerableVersions": "<41.10.6",
+      "patchedVersions": ">=41.10.6",
+      "url": "https://github.com/advisories/GHSA-j84w-jfhq-vhvj",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116076",
+      "advisory": "GHSA-jjp3-mq3x-295m",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron: Use-after-free in PowerMonitor on Windows and macOS",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-jjp3-mq3x-295m",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136552",
+      "advisory": "GHSA-v3j7-r9gq-3gjw",
+      "module": "electron",
+      "severity": "high",
+      "title": "Electron: Custom protocol with supportFetchAPI but not corsEnabled allows cross-origin reads",
+      "vulnerableVersions": "<39.8.10",
+      "patchedVersions": ">=39.8.10",
+      "url": "https://github.com/advisories/GHSA-v3j7-r9gq-3gjw",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1193685",
+      "advisory": "GHSA-7pqw-9j4j-h8q3",
+      "module": "extract-zip",
+      "severity": "high",
+      "title": "extract-zip allows arbitrary file writes through symlink archive entries",
+      "vulnerableVersions": "<=2.0.1",
+      "patchedVersions": ">=2.0.2",
+      "url": "https://github.com/advisories/GHSA-7pqw-9j4j-h8q3",
+      "findings": [
+        {
+          "version": "2.0.1",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron>extract-zip"]
+        }
+      ]
+    },
+    {
+      "id": "DM1139346",
+      "advisory": "GHSA-jmr9-qjv8-65gv",
+      "module": "extract-zip",
+      "severity": "high",
+      "title": "extract-zip unvalidated symlink path traversal",
+      "vulnerableVersions": "<=2.0.1",
+      "patchedVersions": ">=2.0.2",
+      "url": "https://github.com/advisories/GHSA-jmr9-qjv8-65gv",
+      "findings": [
+        {
+          "version": "2.0.1",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron>extract-zip"]
+        }
+      ]
+    },
+    {
+      "id": "DM1158521",
+      "advisory": "GHSA-5jgf-p345-68v8",
+      "module": "fast-uri",
+      "severity": "high",
+      "title": "fast-uri vulnerable to host confusion via skipped IDN canonicalization on scheme-relative references",
+      "vulnerableVersions": ">=3.1.3 <3.1.6",
+      "patchedVersions": ">=3.1.6",
+      "url": "https://github.com/advisories/GHSA-5jgf-p345-68v8",
+      "findings": [
+        {
+          "version": "3.1.5",
+          "dev": false,
+          "optional": false,
+          "pathCount": 55,
+          "samplePaths": [
+            ".>@nx/vite>ajv>fast-uri",
+            "packages__tester>ajv>fast-uri",
+            ".>@nx/web>@nx/vite>ajv>fast-uri"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1158524",
+      "advisory": "GHSA-f65p-4m7j-42xc",
+      "module": "fast-uri",
+      "severity": "high",
+      "title": "fast-uri vulnerable to server-side request forgery via malformed IPv6 normalization",
+      "vulnerableVersions": ">=3.0.0 <3.1.6",
+      "patchedVersions": ">=3.1.6",
+      "url": "https://github.com/advisories/GHSA-f65p-4m7j-42xc",
+      "findings": [
+        {
+          "version": "3.1.5",
+          "dev": false,
+          "optional": false,
+          "pathCount": 55,
+          "samplePaths": [
+            ".>@nx/vite>ajv>fast-uri",
+            "packages__tester>ajv>fast-uri",
+            ".>@nx/web>@nx/vite>ajv>fast-uri"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1158527",
+      "advisory": "GHSA-fph4-wmhf-6fwf",
+      "module": "fast-uri",
+      "severity": "high",
+      "title": "fast-uri vulnerable to server-side request forgery via repeated hostname percent-decoding",
+      "vulnerableVersions": ">=3.1.2 <3.1.6",
+      "patchedVersions": ">=3.1.6",
+      "url": "https://github.com/advisories/GHSA-fph4-wmhf-6fwf",
+      "findings": [
+        {
+          "version": "3.1.5",
+          "dev": false,
+          "optional": false,
+          "pathCount": 55,
+          "samplePaths": [
+            ".>@nx/vite>ajv>fast-uri",
+            "packages__tester>ajv>fast-uri",
+            ".>@nx/web>@nx/vite>ajv>fast-uri"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1158530",
+      "advisory": "GHSA-jqff-g426-hqxp",
+      "module": "fast-uri",
+      "severity": "high",
+      "title": "fast-uri vulnerable to host confusion via percent-encoded scheme normalization",
+      "vulnerableVersions": ">=3.0.0 <3.1.6",
+      "patchedVersions": ">=3.1.6",
+      "url": "https://github.com/advisories/GHSA-jqff-g426-hqxp",
+      "findings": [
+        {
+          "version": "3.1.5",
+          "dev": false,
+          "optional": false,
+          "pathCount": 55,
+          "samplePaths": [
+            ".>@nx/vite>ajv>fast-uri",
+            "packages__tester>ajv>fast-uri",
+            ".>@nx/web>@nx/vite>ajv>fast-uri"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1239943",
+      "advisory": "GHSA-qw65-cvwx-89v3",
+      "module": "fast-uri",
+      "severity": "high",
+      "title": "fast-uri vulnerable to authority injection via an unvalidated port in serialize",
+      "vulnerableVersions": ">=3.0.0 <3.1.7",
+      "patchedVersions": ">=3.1.7",
+      "url": "https://github.com/advisories/GHSA-qw65-cvwx-89v3",
+      "findings": [
+        {
+          "version": "3.1.5",
+          "dev": false,
+          "optional": false,
+          "pathCount": 55,
+          "samplePaths": [
+            ".>@nx/vite>ajv>fast-uri",
+            "packages__tester>ajv>fast-uri",
+            ".>@nx/web>@nx/vite>ajv>fast-uri"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1120743",
+      "advisory": "GHSA-hmw2-7cc7-3qxx",
+      "module": "form-data",
+      "severity": "high",
+      "title": "form-data: CRLF injection in form-data via unescaped multipart field names and filenames",
+      "vulnerableVersions": ">=4.0.0 <4.0.6",
+      "patchedVersions": ">=4.0.6",
+      "url": "https://github.com/advisories/GHSA-hmw2-7cc7-3qxx",
+      "findings": [
+        {
+          "version": "4.0.5",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>form-data",
+            ".>@nx/jest>@nx/devkit>nx>form-data",
+            ".>@nx/js>@nx/workspace>nx>form-data"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240991",
+      "advisory": "GHSA-ch52-4w7c-c8xp",
+      "module": "http-cache-semantics",
+      "severity": "high",
+      "title": "http-cache-semantics max-stale handling can disclose cross-user cached responses",
+      "vulnerableVersions": "<=4.2.0",
+      "patchedVersions": ">=4.2.1",
+      "url": "https://github.com/advisories/GHSA-ch52-4w7c-c8xp",
+      "findings": [
+        {
+          "version": "4.2.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 6,
+          "samplePaths": [
+            "apps__ui>astro>http-cache-semantics",
+            ".>@astrojs/node>astro>http-cache-semantics",
+            "apps__ui>electron>@electron/get>got>cacheable-request>http-cache-semantics"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1193726",
+      "advisory": "GHSA-2883-xcg3-v3hh",
+      "module": "js-yaml",
+      "severity": "high",
+      "title": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+      "vulnerableVersions": ">=3.0.0 <3.15.2",
+      "patchedVersions": ">=3.15.2",
+      "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh",
+      "findings": [
+        {
+          "version": "3.15.1",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/jest>jest-config>babel-jest>babel-plugin-istanbul>@istanbuljs/load-nyc-config>js-yaml",
+            ".>@nx/jest>@jest/reporters>@jest/transform>babel-plugin-istanbul>@istanbuljs/load-nyc-config>js-yaml",
+            ".>@nx/eslint>@nx/jest>jest-config>babel-jest>babel-plugin-istanbul>@istanbuljs/load-nyc-config>js-yaml"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1193727",
+      "advisory": "GHSA-2883-xcg3-v3hh",
+      "module": "js-yaml",
+      "severity": "high",
+      "title": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+      "vulnerableVersions": ">=4.0.0 <4.3.2",
+      "patchedVersions": ">=4.3.2",
+      "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh",
+      "findings": [
+        {
+          "version": "4.3.1",
+          "dev": true,
+          "optional": false,
+          "pathCount": 58,
+          "samplePaths": [
+            "apps__ui>astro>js-yaml",
+            ".>@astrojs/node>astro>js-yaml",
+            ".>eslint>@eslint/eslintrc>js-yaml"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1138112",
+      "advisory": "GHSA-vp3h-ghgh-jr7g",
+      "module": "nx",
+      "severity": "high",
+      "title": "Nx: Zip-Slip in the self-hosted remote cache",
+      "vulnerableVersions": ">=20.8.0 <22.7.7",
+      "patchedVersions": ">=22.7.7",
+      "url": "https://github.com/advisories/GHSA-vp3h-ghgh-jr7g",
+      "findings": [
+        {
+          "version": "22.7.1",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx",
+            ".>@nx/jest>@nx/devkit>nx",
+            ".>@nx/js>@nx/workspace>nx"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1124066",
+      "advisory": "GHSA-f88m-g3jw-g9cj",
+      "module": "sharp",
+      "severity": "high",
+      "title": "sharp inherited vulnerabilities in libvips: CVE-2026-33327, CVE-2026-33328, CVE-2026-35590, CVE-2026-35591",
+      "vulnerableVersions": "<0.35.0",
+      "patchedVersions": ">=0.35.0",
+      "url": "https://github.com/advisories/GHSA-f88m-g3jw-g9cj",
+      "findings": [
+        {
+          "version": "0.34.5",
+          "dev": true,
+          "optional": true,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro>sharp", ".>@astrojs/node>astro>sharp"]
+        }
+      ]
+    },
+    {
+      "id": "DM1193725",
+      "advisory": "GHSA-rgj7-g3m4-5g8c",
+      "module": "sharp",
+      "severity": "high",
+      "title": "sharp: Vulnerabilities in libheif: GHSA-g89c-p67h-r497 and GHSA-2jg2-4ch7-h545",
+      "vulnerableVersions": "<0.35.4",
+      "patchedVersions": ">=0.35.4",
+      "url": "https://github.com/advisories/GHSA-rgj7-g3m4-5g8c",
+      "findings": [
+        {
+          "version": "0.34.5",
+          "dev": true,
+          "optional": true,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro>sharp", ".>@astrojs/node>astro>sharp"]
+        }
+      ]
+    },
+    {
+      "id": "DM1193945",
+      "advisory": "GHSA-7w5x-hrqm-74c2",
+      "module": "smol-toml",
+      "severity": "high",
+      "title": "smol-toml: Denial of Service via malformed TOML documents",
+      "vulnerableVersions": "<=1.7.0",
+      "patchedVersions": ">=1.7.1",
+      "url": "https://github.com/advisories/GHSA-7w5x-hrqm-74c2",
+      "findings": [
+        {
+          "version": "1.6.1",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@astrojs/node>astro>smol-toml",
+            ".>@nx/js>@nx/devkit>nx>smol-toml",
+            ".>@nx/jest>@nx/devkit>nx>smol-toml"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1193736",
+      "advisory": "GHSA-w27v-7q3p-w38r",
+      "module": "svgo",
+      "severity": "high",
+      "title": "SVGO: removeScripts allows executable links through namespace and control-character bypasses",
+      "vulnerableVersions": ">=3.0.0 <3.3.5",
+      "patchedVersions": ">=3.3.5",
+      "url": "https://github.com/advisories/GHSA-w27v-7q3p-w38r",
+      "findings": [
+        {
+          "version": "3.3.4",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>@nx/react>@svgr/webpack>@svgr/plugin-svgo>svgo"]
+        }
+      ]
+    },
+    {
+      "id": "DM1120654",
+      "advisory": "GHSA-ph9p-34f9-6g65",
+      "module": "tmp",
+      "severity": "high",
+      "title": "tmp has Path Traversal via unsanitized prefix/postfix that enables directory escape",
+      "vulnerableVersions": "<0.2.6",
+      "patchedVersions": ">=0.2.6",
+      "url": "https://github.com/advisories/GHSA-ph9p-34f9-6g65",
+      "findings": [
+        {
+          "version": "0.2.4",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>tmp",
+            ".>@nx/jest>@nx/devkit>nx>tmp",
+            ".>@nx/js>@nx/workspace>nx>tmp"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240041",
+      "advisory": "GHSA-rfgv-xxqx-mfg5",
+      "module": "undici",
+      "severity": "high",
+      "title": "undici vulnerable to Denial of Service via unrequested WebSocket subprotocol",
+      "vulnerableVersions": ">=7.0.0 <7.29.1",
+      "patchedVersions": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-rfgv-xxqx-mfg5",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>undici"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240050",
+      "advisory": "GHSA-w293-vg96-wgc3",
+      "module": "undici",
+      "severity": "high",
+      "title": "undici vulnerable to TLS certificate validation bypass via dropped connect options in BalancedPool",
+      "vulnerableVersions": ">=7.24.1 <7.29.1",
+      "patchedVersions": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-w293-vg96-wgc3",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>undici"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1115625",
+      "advisory": "GHSA-3rmj-9m5h-8fpv",
+      "module": "@astrojs/node",
+      "severity": "moderate",
+      "title": "Astro: Memory exhaustion DoS due to missing request body size limit in Server Islands",
+      "vulnerableVersions": "<10.0.0",
+      "patchedVersions": ">=10.0.0",
+      "url": "https://github.com/advisories/GHSA-3rmj-9m5h-8fpv",
+      "findings": [
+        {
+          "version": "9.5.5",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>@astrojs/node"]
+        }
+      ]
+    },
+    {
+      "id": "DM1117137",
+      "advisory": "GHSA-c57f-mm3j-27q9",
+      "module": "@astrojs/node",
+      "severity": "moderate",
+      "title": "Astro: Cache Poisoning due to incorrect error handling when if-match header is malformed ",
+      "vulnerableVersions": "<10.0.5",
+      "patchedVersions": ">=10.0.5",
+      "url": "https://github.com/advisories/GHSA-c57f-mm3j-27q9",
+      "findings": [
+        {
+          "version": "9.5.5",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>@astrojs/node"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136293",
+      "advisory": "GHSA-2j2x-hqr9-3h42",
+      "module": "@remix-run/router",
+      "severity": "moderate",
+      "title": "React Router's same-origin redirect with path starting // causes open redirect via protocol-relative URL reinterpretation",
+      "vulnerableVersions": ">=1.3.0 <1.23.3",
+      "patchedVersions": ">=1.23.3",
+      "url": "https://github.com/advisories/GHSA-2j2x-hqr9-3h42",
+      "findings": [
+        {
+          "version": "1.23.2",
+          "dev": false,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": [
+            ".>react-router-dom>@remix-run/router",
+            ".>react-router-dom>react-router>@remix-run/router"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240065",
+      "advisory": "GHSA-c6fg-446q-cg94",
+      "module": "adm-zip",
+      "severity": "moderate",
+      "title": "adm-zip: getDataAsync() bypasses the maxOutputLength size guard enforced by the synchronous getData() path",
+      "vulnerableVersions": "<=0.6.0",
+      "patchedVersions": ">=0.6.1",
+      "url": "https://github.com/advisories/GHSA-c6fg-446q-cg94",
+      "findings": [
+        {
+          "version": "0.6.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240064",
+      "advisory": "GHSA-p634-w6r4-rjp2",
+      "module": "adm-zip",
+      "severity": "moderate",
+      "title": "adm-zip: Duplicate ZIP entry names: getEntry() and extractAllTo() resolve to different content",
+      "vulnerableVersions": "<=0.6.0",
+      "patchedVersions": ">=0.6.1",
+      "url": "https://github.com/advisories/GHSA-p634-w6r4-rjp2",
+      "findings": [
+        {
+          "version": "0.6.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1193734",
+      "advisory": "GHSA-vwc7-r8mq-g2x9",
+      "module": "adm-zip",
+      "severity": "moderate",
+      "title": "adm-zip extraction follows destination symlinks, allowing arbitrary file overwrite",
+      "vulnerableVersions": ">=0.5.9 <=0.6.0",
+      "patchedVersions": ">=0.6.1",
+      "url": "https://github.com/advisories/GHSA-vwc7-r8mq-g2x9",
+      "findings": [
+        {
+          "version": "0.6.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>adm-zip",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>adm-zip"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1193724",
+      "advisory": "GHSA-376h-93r7-7g6f",
+      "module": "astro",
+      "severity": "moderate",
+      "title": "Astro: Authorization bypass from missing path-segment boundary check when stripping the configured base",
+      "vulnerableVersions": "<=7.2.3",
+      "patchedVersions": ">=7.2.4",
+      "url": "https://github.com/advisories/GHSA-376h-93r7-7g6f",
+      "findings": [
+        {
+          "version": "5.18.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro", ".>@astrojs/node>astro"]
+        }
+      ]
+    },
+    {
+      "id": "DM1139376",
+      "advisory": "GHSA-4g3v-8h47-v7g6",
+      "module": "astro",
+      "severity": "moderate",
+      "title": "Astro: Reflected XSS via unescaped View Transition animation properties",
+      "vulnerableVersions": ">=2.9.0 <=7.0.9",
+      "patchedVersions": ">=7.0.10",
+      "url": "https://github.com/advisories/GHSA-4g3v-8h47-v7g6",
+      "findings": [
+        {
+          "version": "5.18.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro", ".>@astrojs/node>astro"]
+        }
+      ]
+    },
+    {
+      "id": "DM1139373",
+      "advisory": "GHSA-f48w-9m4c-m7f5",
+      "module": "astro",
+      "severity": "moderate",
+      "title": "Astro: XSS via unescaped spread attribute names in renderHTMLElement (incomplete fix for CVE-2026-54298)",
+      "vulnerableVersions": "<7.0.6",
+      "patchedVersions": ">=7.0.6",
+      "url": "https://github.com/advisories/GHSA-f48w-9m4c-m7f5",
+      "findings": [
+        {
+          "version": "5.18.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro", ".>@astrojs/node>astro"]
+        }
+      ]
+    },
+    {
+      "id": "DM1117141",
+      "advisory": "GHSA-j687-52p2-xcff",
+      "module": "astro",
+      "severity": "moderate",
+      "title": "Astro: XSS in define:vars via incomplete </script> tag sanitization",
+      "vulnerableVersions": "<6.1.6",
+      "patchedVersions": ">=6.1.6",
+      "url": "https://github.com/advisories/GHSA-j687-52p2-xcff",
+      "findings": [
+        {
+          "version": "5.18.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro", ".>@astrojs/node>astro"]
+        }
+      ]
+    },
+    {
+      "id": "DM1123700",
+      "advisory": "GHSA-jrpj-wcv7-9fh9",
+      "module": "astro",
+      "severity": "moderate",
+      "title": "Astro: XSS via Unescaped Attribute Names in Spread Props",
+      "vulnerableVersions": "<6.4.6",
+      "patchedVersions": ">=6.4.6",
+      "url": "https://github.com/advisories/GHSA-jrpj-wcv7-9fh9",
+      "findings": [
+        {
+          "version": "5.18.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro", ".>@astrojs/node>astro"]
+        }
+      ]
+    },
+    {
+      "id": "DM1117577",
+      "advisory": "GHSA-3w6x-2g7m-8v23",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Invisible JSON Response Tampering via Prototype Pollution Gadget in `parseReviver`",
+      "vulnerableVersions": ">=1.0.0 <1.15.2",
+      "patchedVersions": ">=1.15.2",
+      "url": "https://github.com/advisories/GHSA-3w6x-2g7m-8v23",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1153185",
+      "advisory": "GHSA-42h9-826w-cgv3",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Excessive recursion in formDataToJSON can cause denial of service",
+      "vulnerableVersions": ">=1.0.0 <1.18.0",
+      "patchedVersions": ">=1.18.0",
+      "url": "https://github.com/advisories/GHSA-42h9-826w-cgv3",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1117581",
+      "advisory": "GHSA-445q-vr5w-6q77",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: CRLF Injection in multipart/form-data body via unsanitized blob.type in formDataToStream",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-445q-vr5w-6q77",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240629",
+      "advisory": "GHSA-44g4-m2mj-wpvx",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: CIDR-form NO_PROXY entries are ignored, causing proxy exclusion bypass for internal IP ranges",
+      "vulnerableVersions": ">=1.15.0 <1.20.0",
+      "patchedVersions": ">=1.20.0",
+      "url": "https://github.com/advisories/GHSA-44g4-m2mj-wpvx",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240627",
+      "advisory": "GHSA-4hqw-qxg8-jxx2",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Fetch Adapter Header Injection via Inherited FormData getHeaders",
+      "vulnerableVersions": ">=1.12.0 <1.20.0",
+      "patchedVersions": ">=1.20.0",
+      "url": "https://github.com/advisories/GHSA-4hqw-qxg8-jxx2",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1117587",
+      "advisory": "GHSA-5c9x-8gcm-mpgx",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios' HTTP adapter-streamed uploads bypass maxBodyLength when maxRedirects: 0",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-5c9x-8gcm-mpgx",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1120125",
+      "advisory": "GHSA-62hf-57xw-28j9",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: unbounded recursion in toFormData causes DoS via deeply nested request data",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-62hf-57xw-28j9",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1153180",
+      "advisory": "GHSA-7q8q-rj6j-mhjq",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Nested axios option objects can consume polluted prototype values",
+      "vulnerableVersions": ">=1.0.0 <1.18.0",
+      "patchedVersions": ">=1.18.0",
+      "url": "https://github.com/advisories/GHSA-7q8q-rj6j-mhjq",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1120652",
+      "advisory": "GHSA-898c-q2cr-xwhg",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "axios has DoS & Header Injection via Prototype Pollution Read-Side Gadgets in axios merge functions",
+      "vulnerableVersions": ">=1.0.0 <1.16.0",
+      "patchedVersions": ">=1.16.0",
+      "url": "https://github.com/advisories/GHSA-898c-q2cr-xwhg",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240601",
+      "advisory": "GHSA-9fr6-4gfg-395g",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Prototype-Pollution Gadget in the Default Instance Allows Inherited Object.prototype.method to Override HTTP Method",
+      "vulnerableVersions": ">=1.0.0 <1.20.0",
+      "patchedVersions": ">=1.20.0",
+      "url": "https://github.com/advisories/GHSA-9fr6-4gfg-395g",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1153184",
+      "advisory": "GHSA-f4gw-2p7v-4548",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: NO_PROXY bypass for 0.0.0.0 local addresses in axios",
+      "vulnerableVersions": ">=1.15.0 <1.18.0",
+      "patchedVersions": ">=1.18.0",
+      "url": "https://github.com/advisories/GHSA-f4gw-2p7v-4548",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240626",
+      "advisory": "GHSA-j8rh-479h-cp32",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Header Injection via Inherited headers After Minimal Interceptor",
+      "vulnerableVersions": ">=1.0.0 <1.20.0",
+      "patchedVersions": ">=1.20.0",
+      "url": "https://github.com/advisories/GHSA-j8rh-479h-cp32",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1153182",
+      "advisory": "GHSA-jqh4-m9w3-8hp9",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Fetch adapter `ReadableStream` uploads bypass `maxBodyLength`",
+      "vulnerableVersions": ">=1.7.0 <1.18.0",
+      "patchedVersions": ">=1.18.0",
+      "url": "https://github.com/advisories/GHSA-jqh4-m9w3-8hp9",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1117583",
+      "advisory": "GHSA-m7pr-hjqh-92cm",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: no_proxy bypass via IP alias allows SSRF",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-m7pr-hjqh-92cm",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1147949",
+      "advisory": "GHSA-mmx7-hfxf-jppx",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Prototype pollution gadgets can alter axios request construction",
+      "vulnerableVersions": ">=1.0.0 <1.18.0",
+      "patchedVersions": ">=1.18.0",
+      "url": "https://github.com/advisories/GHSA-mmx7-hfxf-jppx",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1153175",
+      "advisory": "GHSA-mwf2-3pr3-8698",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: HTTP/2 streamed uploads bypass `maxBodyLength`",
+      "vulnerableVersions": ">=1.13.0 <1.18.0",
+      "patchedVersions": ">=1.18.0",
+      "url": "https://github.com/advisories/GHSA-mwf2-3pr3-8698",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1147950",
+      "advisory": "GHSA-pmv8-rq9r-6j72",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Deep formToJSON Key Recursion Can Cause Denial of Service",
+      "vulnerableVersions": ">=1.0.0 <1.18.0",
+      "patchedVersions": ">=1.18.0",
+      "url": "https://github.com/advisories/GHSA-pmv8-rq9r-6j72",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1117589",
+      "advisory": "GHSA-vf2m-468p-8v99",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: HTTP adapter streamed responses bypass maxContentLength",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-vf2m-468p-8v99",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240600",
+      "advisory": "GHSA-vh66-26gq-q6x8",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Prototype pollution gadget in fetch adapter can alter outbound requests",
+      "vulnerableVersions": ">=1.7.0 <1.20.0",
+      "patchedVersions": ">=1.20.0",
+      "url": "https://github.com/advisories/GHSA-vh66-26gq-q6x8",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1117574",
+      "advisory": "GHSA-w9j2-pvgh-6h63",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: Authentication Bypass via Prototype Pollution Gadget in `validateStatus` Merge Strategy",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-w9j2-pvgh-6h63",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1117595",
+      "advisory": "GHSA-xx6v-rp6x-q39c",
+      "module": "axios",
+      "severity": "moderate",
+      "title": "Axios: XSRF Token Cross-Origin Leakage via Prototype Pollution Gadget in `withXSRFToken` Boolean Coercion",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-xx6v-rp6x-q39c",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1115543",
+      "advisory": "GHSA-f886-m6hf-6m8v",
+      "module": "brace-expansion",
+      "severity": "moderate",
+      "title": "brace-expansion: Zero-step sequence causes process hang and memory exhaustion",
+      "vulnerableVersions": ">=4.0.0 <5.0.5",
+      "patchedVersions": ">=5.0.5",
+      "url": "https://github.com/advisories/GHSA-f886-m6hf-6m8v",
+      "findings": [
+        {
+          "version": "5.0.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>brace-expansion",
+            ".>@nx/jest>@nx/devkit>nx>brace-expansion",
+            ".>@nx/js>@nx/workspace>nx>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1120311",
+      "advisory": "GHSA-jxxr-4gwj-5jf2",
+      "module": "brace-expansion",
+      "severity": "moderate",
+      "title": "brace-expansion: Large numeric range defeats documented `max` DoS protection",
+      "vulnerableVersions": ">=5.0.0 <5.0.6",
+      "patchedVersions": ">=5.0.6",
+      "url": "https://github.com/advisories/GHSA-jxxr-4gwj-5jf2",
+      "findings": [
+        {
+          "version": "5.0.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>brace-expansion",
+            ".>@nx/jest>@nx/devkit>nx>brace-expansion",
+            ".>@nx/js>@nx/workspace>nx>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240100",
+      "advisory": "GHSA-q2hr-2g5m-vwhr",
+      "module": "brace-expansion",
+      "severity": "moderate",
+      "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+      "vulnerableVersions": "<1.1.21",
+      "patchedVersions": ">=1.1.21",
+      "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+      "findings": [
+        {
+          "version": "1.1.18",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/eslint>eslint>minimatch>brace-expansion",
+            ".>@nx/react>@nx/eslint>eslint>minimatch>brace-expansion",
+            ".>@nx/eslint>eslint>@eslint/eslintrc>minimatch>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240101",
+      "advisory": "GHSA-q2hr-2g5m-vwhr",
+      "module": "brace-expansion",
+      "severity": "moderate",
+      "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+      "vulnerableVersions": ">=2.0.0 <2.1.7",
+      "patchedVersions": ">=2.1.7",
+      "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+      "findings": [
+        {
+          "version": "2.1.4",
+          "dev": true,
+          "optional": false,
+          "pathCount": 93,
+          "samplePaths": [
+            ".>@swc/cli>minimatch>brace-expansion",
+            ".>@nx/jest>jest-config>glob>minimatch>brace-expansion",
+            ".>@nx/jest>@jest/reporters>glob>minimatch>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240103",
+      "advisory": "GHSA-q2hr-2g5m-vwhr",
+      "module": "brace-expansion",
+      "severity": "moderate",
+      "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+      "vulnerableVersions": ">=4.0.0 <5.0.12",
+      "patchedVersions": ">=5.0.12",
+      "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+      "findings": [
+        {
+          "version": "5.0.9",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/jest>minimatch>brace-expansion",
+            ".>@nx/js>@nx/devkit>minimatch>brace-expansion",
+            ".>@nx/eslint>@nx/jest>minimatch>brace-expansion"
+          ]
+        },
+        {
+          "version": "5.0.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>brace-expansion",
+            ".>@nx/jest>@nx/devkit>nx>brace-expansion",
+            ".>@nx/js>@nx/workspace>nx>brace-expansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1116053",
+      "advisory": "GHSA-3c8v-cfp5-9885",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Out-of-bounds read in second-instance IPC on macOS and Linux",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-3c8v-cfp5-9885",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136659",
+      "advisory": "GHSA-4f78-qhmw-8j8m",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: DevTools JavaScript Injection via Unsanitized Dock State Parameter",
+      "vulnerableVersions": "<39.8.7",
+      "patchedVersions": ">=39.8.7",
+      "url": "https://github.com/advisories/GHSA-4f78-qhmw-8j8m",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116088",
+      "advisory": "GHSA-4p4r-m79c-wq3v",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: HTTP Response Header Injection in custom protocol handlers and webRequest",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-4p4r-m79c-wq3v",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136560",
+      "advisory": "GHSA-5c9j-mhmv-5xgx",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: shell.openPath path validation bypass via embedded null byte",
+      "vulnerableVersions": "<39.8.6",
+      "patchedVersions": ">=39.8.6",
+      "url": "https://github.com/advisories/GHSA-5c9j-mhmv-5xgx",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116041",
+      "advisory": "GHSA-5rqw-r77c-jp79",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: AppleScript injection in app.moveToApplicationsFolder on macOS",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-5rqw-r77c-jp79",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136575",
+      "advisory": "GHSA-9pf5-hg6p-4pwp",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Permission Check Handler Receives Main Frame Origin Instead of Requesting Iframe Origin",
+      "vulnerableVersions": "<39.8.7",
+      "patchedVersions": ">=39.8.7",
+      "url": "https://github.com/advisories/GHSA-9pf5-hg6p-4pwp",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116068",
+      "advisory": "GHSA-9w97-2464-8783",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Use-after-free in download save dialog callback",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-9w97-2464-8783",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136647",
+      "advisory": "GHSA-f2r8-jv7c-xqmp",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: DevTools embedder handler executes arbitrary files via shell open",
+      "vulnerableVersions": "<39.8.9",
+      "patchedVersions": ">=39.8.9",
+      "url": "https://github.com/advisories/GHSA-f2r8-jv7c-xqmp",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116320",
+      "advisory": "GHSA-f3pv-wv63-48x8",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Named window.open targets not scoped to the opener's browsing context",
+      "vulnerableVersions": "<39.8.5",
+      "patchedVersions": ">=39.8.5",
+      "url": "https://github.com/advisories/GHSA-f3pv-wv63-48x8",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136651",
+      "advisory": "GHSA-ff2p-hmqr-hxm4",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: contextBridge object copy honors prototype setters",
+      "vulnerableVersions": "<39.8.9",
+      "patchedVersions": ">=39.8.9",
+      "url": "https://github.com/advisories/GHSA-ff2p-hmqr-hxm4",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136551",
+      "advisory": "GHSA-jm7p-cc5g-qwxx",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Parent process code-sign check is spoofable",
+      "vulnerableVersions": "<39.8.8",
+      "patchedVersions": ">=39.8.8",
+      "url": "https://github.com/advisories/GHSA-jm7p-cc5g-qwxx",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136559",
+      "advisory": "GHSA-m55f-7gqj-fr98",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Extension tab APIs operate across session boundaries",
+      "vulnerableVersions": "<39.8.8",
+      "patchedVersions": ">=39.8.8",
+      "url": "https://github.com/advisories/GHSA-m55f-7gqj-fr98",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116064",
+      "advisory": "GHSA-mwmh-mq4g-g6gr",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Registry key path injection in app.setAsDefaultProtocolClient on Windows",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-mwmh-mq4g-g6gr",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136634",
+      "advisory": "GHSA-p2rr-rvmm-c5fp",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Sandboxed iframes can launch external protocol handlers",
+      "vulnerableVersions": "<39.8.8",
+      "patchedVersions": ">=39.8.8",
+      "url": "https://github.com/advisories/GHSA-p2rr-rvmm-c5fp",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116049",
+      "advisory": "GHSA-r5p7-gp4j-qhrx",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Incorrect origin passed to permission request handler for iframe requests",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-r5p7-gp4j-qhrx",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136590",
+      "advisory": "GHSA-v64r-4m7r-3mvq",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: HTTP redirect followed into local file loader",
+      "vulnerableVersions": "<39.8.8",
+      "patchedVersions": ">=39.8.8",
+      "url": "https://github.com/advisories/GHSA-v64r-4m7r-3mvq",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136597",
+      "advisory": "GHSA-v93f-fgjr-hjrj",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: window.open features string controls some window options considered privileged",
+      "vulnerableVersions": "<39.8.8",
+      "patchedVersions": ">=39.8.8",
+      "url": "https://github.com/advisories/GHSA-v93f-fgjr-hjrj",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1240060",
+      "advisory": "GHSA-vv43-5jgx-7qv8",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Local race condition in Squirrel.Mac update installation on macOS",
+      "vulnerableVersions": "<39.8.10",
+      "patchedVersions": ">=39.8.10",
+      "url": "https://github.com/advisories/GHSA-vv43-5jgx-7qv8",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116045",
+      "advisory": "GHSA-xj5x-m3f3-5x3h",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: Service worker can spoof executeJavaScript IPC replies",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-xj5x-m3f3-5x3h",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116057",
+      "advisory": "GHSA-xwr5-m59h-vwqr",
+      "module": "electron",
+      "severity": "moderate",
+      "title": "Electron: nodeIntegrationInWorker not correctly scoped in shared renderer processes",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-xwr5-m59h-vwqr",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1240091",
+      "advisory": "GHSA-hrr3-gc8f-f4qj",
+      "module": "fast-uri",
+      "severity": "moderate",
+      "title": "fast-uri vulnerable to inconsistent host case normalization via percent-encoded octets",
+      "vulnerableVersions": ">=3.0.0 <3.1.8",
+      "patchedVersions": ">=3.1.8",
+      "url": "https://github.com/advisories/GHSA-hrr3-gc8f-f4qj",
+      "findings": [
+        {
+          "version": "3.1.5",
+          "dev": false,
+          "optional": false,
+          "pathCount": 55,
+          "samplePaths": [
+            ".>@nx/vite>ajv>fast-uri",
+            "packages__tester>ajv>fast-uri",
+            ".>@nx/web>@nx/vite>ajv>fast-uri"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1116560",
+      "advisory": "GHSA-r4q5-vmmm-2653",
+      "module": "follow-redirects",
+      "severity": "moderate",
+      "title": "follow-redirects leaks Custom Authentication Headers to Cross-Domain Redirect Targets",
+      "vulnerableVersions": "<=1.15.11",
+      "patchedVersions": ">=1.15.12",
+      "url": "https://github.com/advisories/GHSA-r4q5-vmmm-2653",
+      "findings": [
+        {
+          "version": "1.15.11",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>follow-redirects",
+            ".>@nx/jest>@nx/devkit>nx>follow-redirects",
+            ".>@nx/js>@nx/workspace>nx>follow-redirects"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1130579",
+      "advisory": "GHSA-g2r8-wvmj-jf5w",
+      "module": "nx",
+      "severity": "moderate",
+      "title": "`nx graph` dev server permissive CORS policy",
+      "vulnerableVersions": ">=17.0.4 <22.7.2",
+      "patchedVersions": ">=22.7.2",
+      "url": "https://github.com/advisories/GHSA-g2r8-wvmj-jf5w",
+      "findings": [
+        {
+          "version": "22.7.1",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx",
+            ".>@nx/jest>@nx/devkit>nx",
+            ".>@nx/js>@nx/workspace>nx"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1158507",
+      "advisory": "GHSA-4mjr-xmp4-gh2g",
+      "module": "qs",
+      "severity": "moderate",
+      "title": "qs: Denial of Service via Attacker Controlled isBuffer",
+      "vulnerableVersions": ">=2.2.5 <6.16.0",
+      "patchedVersions": ">=6.16.0",
+      "url": "https://github.com/advisories/GHSA-4mjr-xmp4-gh2g",
+      "findings": [
+        {
+          "version": "6.15.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 7,
+          "samplePaths": [
+            ".>@nx/react>express>qs",
+            ".>@nx/web>http-server>union>qs",
+            ".>@nx/react>express>body-parser>qs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1158506",
+      "advisory": "GHSA-x5fp-wj9c-mxmx",
+      "module": "qs",
+      "severity": "moderate",
+      "title": "qs array-limit bypass via bracket-key comma parsing",
+      "vulnerableVersions": ">=6.14.2 <=6.15.3",
+      "patchedVersions": ">=6.15.4",
+      "url": "https://github.com/advisories/GHSA-x5fp-wj9c-mxmx",
+      "findings": [
+        {
+          "version": "6.15.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 7,
+          "samplePaths": [
+            ".>@nx/react>express>qs",
+            ".>@nx/web>http-server>union>qs",
+            ".>@nx/react>express>body-parser>qs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1136303",
+      "advisory": "GHSA-2j2x-hqr9-3h42",
+      "module": "react-router",
+      "severity": "moderate",
+      "title": "React Router's same-origin redirect with path starting // causes open redirect via protocol-relative URL reinterpretation",
+      "vulnerableVersions": ">=6.7.0 <6.30.4",
+      "patchedVersions": ">=6.30.4",
+      "url": "https://github.com/advisories/GHSA-2j2x-hqr9-3h42",
+      "findings": [
+        {
+          "version": "6.30.3",
+          "dev": false,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>react-router-dom>react-router"]
+        }
+      ]
+    },
+    {
+      "id": "DM1124272",
+      "advisory": "GHSA-337j-9hxr-rhxg",
+      "module": "react-router",
+      "severity": "moderate",
+      "title": "React Router: Arbitrary Constructor Injection via deserializeErrors() in React Router SSR Hydration",
+      "vulnerableVersions": ">=6.4.0 <7.18.0",
+      "patchedVersions": ">=7.18.0",
+      "url": "https://github.com/advisories/GHSA-337j-9hxr-rhxg",
+      "findings": [
+        {
+          "version": "6.30.3",
+          "dev": false,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>react-router-dom>react-router"]
+        }
+      ]
+    },
+    {
+      "id": "DM1124268",
+      "advisory": "GHSA-wrjc-x8rr-h8h6",
+      "module": "react-router",
+      "severity": "moderate",
+      "title": "React Router: Open redirect via backslash in <Link> and useNavigate (CVE-2025-68470 bypass)",
+      "vulnerableVersions": ">=6.0.0 <7.18.0",
+      "patchedVersions": ">=7.18.0",
+      "url": "https://github.com/advisories/GHSA-wrjc-x8rr-h8h6",
+      "findings": [
+        {
+          "version": "6.30.3",
+          "dev": false,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>react-router-dom>react-router"]
+        }
+      ]
+    },
+    {
+      "id": "DM1193652",
+      "advisory": "GHSA-jjmj-jmhj-qwj2",
+      "module": "react-router-dom",
+      "severity": "moderate",
+      "title": "React Router: Open redirect leading to XSS",
+      "vulnerableVersions": ">=6.30.2 <=6.30.5",
+      "patchedVersions": ">=6.30.6",
+      "url": "https://github.com/advisories/GHSA-jjmj-jmhj-qwj2",
+      "findings": [
+        {
+          "version": "6.30.3",
+          "dev": false,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>react-router-dom"]
+        }
+      ]
+    },
+    {
+      "id": "DM1153195",
+      "advisory": "GHSA-g8qq-57p8-ggw5",
+      "module": "sanitize-html",
+      "severity": "moderate",
+      "title": "ApostropheCMS: Stored XSS via SVG SMIL URI-list scheme-policy bypass",
+      "vulnerableVersions": ">=1.9.0 <=2.17.6",
+      "patchedVersions": ">=2.17.7",
+      "url": "https://github.com/advisories/GHSA-g8qq-57p8-ggw5",
+      "findings": [
+        {
+          "version": "2.17.0",
+          "dev": false,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["packages__distribution>sanitize-html"]
+        }
+      ]
+    },
+    {
+      "id": "DM1164821",
+      "advisory": "GHSA-jxwj-j7wr-gfrw",
+      "module": "sanitize-html",
+      "severity": "moderate",
+      "title": "ApostropheCMS: Mutation-XSS / allowedTags bypass via literal `</textarea/>` solidus close",
+      "vulnerableVersions": "<=2.17.5",
+      "patchedVersions": ">=2.17.6",
+      "url": "https://github.com/advisories/GHSA-jxwj-j7wr-gfrw",
+      "findings": [
+        {
+          "version": "2.17.0",
+          "dev": false,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["packages__distribution>sanitize-html"]
+        }
+      ]
+    },
+    {
+      "id": "DM1130629",
+      "advisory": "GHSA-vccv-cmxp-4j9h",
+      "module": "sanitize-html",
+      "severity": "moderate",
+      "title": "sanitize-html has incomplete URI scheme validation in that allows javascript: URIs through action, formaction, data, poster, and background attributes",
+      "vulnerableVersions": ">=1.18.0 <=2.17.4",
+      "patchedVersions": ">=2.17.5",
+      "url": "https://github.com/advisories/GHSA-vccv-cmxp-4j9h",
+      "findings": [
+        {
+          "version": "2.17.0",
+          "dev": false,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["packages__distribution>sanitize-html"]
+        }
+      ]
+    },
+    {
+      "id": "DM1193739",
+      "advisory": "GHSA-4vpr-x523-8j87",
+      "module": "svgo",
+      "severity": "moderate",
+      "title": "SVGO: removeScripts incompletely sanitizes executable HTML in SVG foreignObject elements",
+      "vulnerableVersions": ">=3.0.0 <3.3.5",
+      "patchedVersions": ">=3.3.5",
+      "url": "https://github.com/advisories/GHSA-4vpr-x523-8j87",
+      "findings": [
+        {
+          "version": "3.3.4",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>@nx/react>@svgr/webpack>@svgr/plugin-svgo>svgo"]
+        }
+      ]
+    },
+    {
+      "id": "DM1240046",
+      "advisory": "GHSA-2jfj-6hjv-fm6j",
+      "module": "undici",
+      "severity": "moderate",
+      "title": "undici vulnerable to cross-user cookie disclosure via Set-Cookie caching in shared caches",
+      "vulnerableVersions": ">=7.0.0 <7.29.1",
+      "patchedVersions": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-2jfj-6hjv-fm6j",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>undici"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1239933",
+      "advisory": "GHSA-3wwx-pv8p-q78v",
+      "module": "undici",
+      "severity": "moderate",
+      "title": "undici vulnerable to Denial of Service via unhandled error in WebSocket permessage-deflate decompression",
+      "vulnerableVersions": ">=7.28.0 <7.29.1",
+      "patchedVersions": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-3wwx-pv8p-q78v",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>undici"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240044",
+      "advisory": "GHSA-3xpg-4rpp-hhhm",
+      "module": "undici",
+      "severity": "moderate",
+      "title": "undici vulnerable to Denial of Service via unbounded decompression of compressed responses",
+      "vulnerableVersions": ">=7.15.0 <7.29.1",
+      "patchedVersions": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-3xpg-4rpp-hhhm",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>undici"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240036",
+      "advisory": "GHSA-pmjh-fq2x-6v4x",
+      "module": "undici",
+      "severity": "moderate",
+      "title": "undici vulnerable to Denial of Service via orphaned RetryHandler response body",
+      "vulnerableVersions": ">=7.11.0 <7.29.1",
+      "patchedVersions": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-pmjh-fq2x-6v4x",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>undici"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240055",
+      "advisory": "GHSA-rx4f-c7p8-82vq",
+      "module": "undici",
+      "severity": "moderate",
+      "title": "undici vulnerable to Denial of Service via WebSocketStream unclean close",
+      "vulnerableVersions": ">=7.0.0 <7.29.1",
+      "patchedVersions": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-rx4f-c7p8-82vq",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>undici"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1115556",
+      "advisory": "GHSA-48c2-rrv3-qjmp",
+      "module": "yaml",
+      "severity": "moderate",
+      "title": "yaml is vulnerable to Stack Overflow via deeply nested YAML collections",
+      "vulnerableVersions": ">=2.0.0 <2.8.3",
+      "patchedVersions": ">=2.8.3",
+      "url": "https://github.com/advisories/GHSA-48c2-rrv3-qjmp",
+      "findings": [
+        {
+          "version": "2.8.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>yaml",
+            ".>@nx/jest>@nx/devkit>nx>yaml",
+            ".>@nx/js>@nx/workspace>nx>yaml"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1139372",
+      "advisory": "GHSA-r557-wffq-wvrc",
+      "module": "@astrojs/node",
+      "severity": "low",
+      "title": "@astrojs/node: Backslash-prefixed paths not recognized as internal by trailing-slash redirect",
+      "vulnerableVersions": ">=8.1.0 <11.0.2",
+      "patchedVersions": ">=11.0.2",
+      "url": "https://github.com/advisories/GHSA-r557-wffq-wvrc",
+      "findings": [
+        {
+          "version": "9.5.5",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": [".>@astrojs/node"]
+        }
+      ]
+    },
+    {
+      "id": "DM1139375",
+      "advisory": "GHSA-7pw4-f3q4-r2p2",
+      "module": "astro",
+      "severity": "low",
+      "title": "Astro: Cross-site scripting via unescaped transition:* directive values on hydrated islands",
+      "vulnerableVersions": ">=3.10.0 <7.0.4",
+      "patchedVersions": ">=7.0.4",
+      "url": "https://github.com/advisories/GHSA-7pw4-f3q4-r2p2",
+      "findings": [
+        {
+          "version": "5.18.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro", ".>@astrojs/node>astro"]
+        }
+      ]
+    },
+    {
+      "id": "DM1118920",
+      "advisory": "GHSA-xr5h-phrj-8vxv",
+      "module": "astro",
+      "severity": "low",
+      "title": "Astro: Server island encrypted parameters vulnerable to cross-component replay",
+      "vulnerableVersions": "<6.1.10",
+      "patchedVersions": ">=6.1.10",
+      "url": "https://github.com/advisories/GHSA-xr5h-phrj-8vxv",
+      "findings": [
+        {
+          "version": "5.18.2",
+          "dev": true,
+          "optional": false,
+          "pathCount": 2,
+          "samplePaths": ["apps__ui>astro", ".>@astrojs/node>astro"]
+        }
+      ]
+    },
+    {
+      "id": "DM1117580",
+      "advisory": "GHSA-xhjh-pmcv-23jw",
+      "module": "axios",
+      "severity": "low",
+      "title": "Axios: Null Byte Injection via Reverse-Encoding in AxiosURLSearchParams",
+      "vulnerableVersions": ">=1.0.0 <1.15.1",
+      "patchedVersions": ">=1.15.1",
+      "url": "https://github.com/advisories/GHSA-xhjh-pmcv-23jw",
+      "findings": [
+        {
+          "version": "1.15.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 100,
+          "samplePaths": [
+            ".>@nx/js>@nx/devkit>nx>axios",
+            ".>@nx/jest>@nx/devkit>nx>axios",
+            ".>@nx/js>@nx/workspace>nx>axios"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1116111",
+      "advisory": "GHSA-8x5q-pvf5-64mp",
+      "module": "electron",
+      "severity": "low",
+      "title": "Electron: Use-after-free in offscreen shared texture release() callback",
+      "vulnerableVersions": ">=33.0.0-alpha.1 <39.8.5",
+      "patchedVersions": ">=39.8.5",
+      "url": "https://github.com/advisories/GHSA-8x5q-pvf5-64mp",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116092",
+      "advisory": "GHSA-9899-m83m-qhpj",
+      "module": "electron",
+      "severity": "low",
+      "title": "Electron: USB device selection not validated against filtered device list",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-9899-m83m-qhpj",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116259",
+      "advisory": "GHSA-f37v-82c4-4x64",
+      "module": "electron",
+      "severity": "low",
+      "title": "Electron: Crash in clipboard.readImage() on malformed clipboard image data",
+      "vulnerableVersions": "<39.8.5",
+      "patchedVersions": ">=39.8.5",
+      "url": "https://github.com/advisories/GHSA-f37v-82c4-4x64",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1116084",
+      "advisory": "GHSA-jfqx-fxh3-c62j",
+      "module": "electron",
+      "severity": "low",
+      "title": "Electron: Unquoted executable path in app.setLoginItemSettings on Windows",
+      "vulnerableVersions": "<38.8.6",
+      "patchedVersions": ">=38.8.6",
+      "url": "https://github.com/advisories/GHSA-jfqx-fxh3-c62j",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136579",
+      "advisory": "GHSA-pfmc-3mgc-p6fp",
+      "module": "electron",
+      "severity": "low",
+      "title": "Electron: Off-screen rendering trusts GPU-supplied geometry over shared-memory size",
+      "vulnerableVersions": "<39.8.10",
+      "patchedVersions": ">=39.8.10",
+      "url": "https://github.com/advisories/GHSA-pfmc-3mgc-p6fp",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1136571",
+      "advisory": "GHSA-x8rc-wpg4-grpf",
+      "module": "electron",
+      "severity": "low",
+      "title": "Electron: Cross-origin iframe can position native autofill popup",
+      "vulnerableVersions": "<39.8.8",
+      "patchedVersions": ">=39.8.8",
+      "url": "https://github.com/advisories/GHSA-x8rc-wpg4-grpf",
+      "findings": [
+        {
+          "version": "37.10.3",
+          "dev": true,
+          "optional": false,
+          "pathCount": 1,
+          "samplePaths": ["apps__ui>electron"]
+        }
+      ]
+    },
+    {
+      "id": "DM1120680",
+      "advisory": "GHSA-g7r4-m6w7-qqqr",
+      "module": "esbuild",
+      "severity": "low",
+      "title": "esbuild allows arbitrary file read when running the development server on Windows",
+      "vulnerableVersions": ">=0.27.3 <0.28.1",
+      "patchedVersions": ">=0.28.1",
+      "url": "https://github.com/advisories/GHSA-g7r4-m6w7-qqqr",
+      "findings": [
+        {
+          "version": "0.27.7",
+          "dev": true,
+          "optional": false,
+          "pathCount": 47,
+          "samplePaths": [".>esbuild", ".>vite>esbuild", ".>ts-jest>esbuild"]
+        }
+      ]
+    },
+    {
+      "id": "DM1240048",
+      "advisory": "GHSA-2gqq-gqf2-x968",
+      "module": "undici",
+      "severity": "low",
+      "title": "undici vulnerable to response truncation via oversized chunked responses in the dump interceptor",
+      "vulnerableVersions": ">=7.1.0 <7.29.1",
+      "patchedVersions": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-2gqq-gqf2-x968",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>undici"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240052",
+      "advisory": "GHSA-8436-99hf-9mmv",
+      "module": "undici",
+      "severity": "low",
+      "title": "undici vulnerable to caching and replay of unsafe HTTP method responses",
+      "vulnerableVersions": ">=7.0.0 <7.29.1",
+      "patchedVersions": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-8436-99hf-9mmv",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>undici"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM1240038",
+      "advisory": "GHSA-r53p-7pc4-xj5r",
+      "module": "undici",
+      "severity": "low",
+      "title": "undici vulnerable to downstream response splitting via retry interceptor",
+      "vulnerableVersions": ">=7.0.0 <7.29.1",
+      "patchedVersions": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-r53p-7pc4-xj5r",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "optional": false,
+          "pathCount": 10,
+          "samplePaths": [
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/enhanced>@module-federation/cli>@module-federation/dts-plugin>undici",
+            ".>@nx/react>@nx/module-federation>@module-federation/node>@module-federation/enhanced>@module-federation/dts-plugin>undici"
+          ]
+        }
+      ]
+    }
+  ]
+}

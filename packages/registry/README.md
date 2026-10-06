@@ -19,4 +19,4 @@ client or business API entrypoints.
 Registry requests must stay on the configured HTTP(S) origin, including its port,
 and may not embed URL credentials. Automatic redirects are rejected to protect
 registry credentials. Use a separate unauthenticated transport for external
-resources. See [M03](../../docs/solucion-hallazgos-restantes.md).
+resources. See [M03 and the final manager corrections](../../../server/docs/auditoria-consolidada-hallazgos.md#correcciones-finales-de-manager-m03m11).

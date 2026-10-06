@@ -1,7 +1,4 @@
-import {
-  InstallDirectory,
-  assertRegularFileOrAbsent,
-} from './install-directory';
+import { InstallDirectory } from './install-directory';
 import {
   compare,
   satisfies as semverSatisfies,
@@ -10,7 +7,7 @@ import {
 } from 'semver';
 import { createHash } from 'crypto';
 import { loadConfig } from '@quarks.studio/config';
-import { promises as fs, constants as fsConstants } from 'fs';
+import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
@@ -87,7 +84,7 @@ export async function install(
   packageSelector?: string | string[],
   options: RecursiveInstallOptions = {},
 ): Promise<InstallResult> {
-  InstallDirectory.assertSupported();
+  InstallDirectory.preflight();
   const target = path.resolve(options.targetInstallDir ?? process.cwd());
   await fs.mkdir(target, { recursive: true });
   const previous = await readLockfile(target);
@@ -495,67 +492,44 @@ async function commit(
       stagedRelative: string,
       backupRelative: string,
     ) => {
-      await project.withEntry(relative, true, async (destination) => {
-        await assertRegularFileOrAbsent(destination);
-        await transaction.withEntry(backupRelative, true, async (backup) => {
-          const state = {
-            relative,
-            backup: backupRelative,
-            backedUp: false,
-            replaced: false,
-          };
-          applied.push(state);
-          try {
-            await fs.rename(destination, backup);
-            state.backedUp = true;
-          } catch (error) {
-            if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-          }
-          await transaction.withEntry(stagedRelative, false, async (staged) => {
-            await fs.rename(staged, destination);
-            state.replaced = true;
-          });
-        });
-      });
+      await project.assertFile(relative);
+      const state = {
+        relative,
+        backup: backupRelative,
+        backedUp: false,
+        replaced: false,
+      };
+      applied.push(state);
+      try {
+        await project.renameTo(relative, transaction, backupRelative);
+        state.backedUp = true;
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+      }
+      await transaction.renameTo(stagedRelative, project, relative);
+      state.replaced = true;
       await project.assertFile(relative);
     };
     try {
       for (const operation of operations) {
         const relative = path.relative(target, operation.destination);
-        await transaction.withEntry(
-          `files/${relative}`,
-          true,
-          async (staged) => {
-            await fs.copyFile(
-              operation.source,
-              staged,
-              fsConstants.COPYFILE_EXCL,
-            );
-          },
-        );
+        await transaction.copyFile(operation.source, `files/${relative}`);
       }
       for (const operation of operations) {
         const relative = path.relative(target, operation.destination);
         await replace(relative, `files/${relative}`, `backups/${relative}`);
       }
-      await transaction.withEntry('new-lock.yml', true, async (lockTemp) => {
-        await fs.writeFile(lockTemp, stringifyYaml(lock), { flag: 'wx' });
-      });
+      await transaction.writeFile('new-lock.yml', stringifyYaml(lock));
       await replace(LOCKFILE, 'new-lock.yml', 'previous-lock.yml');
     } catch (error) {
       const failures: unknown[] = [];
       for (const state of applied.reverse()) {
         if (!state.backedUp && !state.replaced) continue;
         try {
-          await project.withEntry(state.relative, true, async (destination) => {
-            await assertRegularFileOrAbsent(destination);
-            if (state.backedUp) {
-              await transaction.withEntry(state.backup, false, (backup) =>
-                fs.rename(backup, destination),
-              );
-            } else if (state.replaced)
-              await fs.rm(destination, { force: true });
-          });
+          await project.assertFile(state.relative);
+          if (state.backedUp)
+            await transaction.renameTo(state.backup, project, state.relative);
+          else if (state.replaced) await project.removeFile(state.relative);
         } catch (failure) {
           failures.push(failure);
         }
@@ -572,10 +546,7 @@ async function commit(
       throw error;
     } finally {
       await transaction.close();
-      if (!retainBackup)
-        await project.withEntry(transactionName, false, (entry) =>
-          fs.rm(entry, { recursive: true, force: true }),
-        );
+      if (!retainBackup) await project.removeTree(transactionName);
     }
   } finally {
     await project.close();
@@ -609,9 +580,12 @@ function installedManifestFor(
 function assertNoCollisions(operations: Array<{ destination: string }>): void {
   const seen = new Set<string>();
   for (const { destination } of operations) {
-    if (seen.has(destination))
-      throw new Error(`Mapped file collision: ${destination}`);
-    seen.add(destination);
+    const key =
+      process.platform === 'linux'
+        ? destination
+        : destination.normalize('NFC').toLowerCase();
+    if (seen.has(key)) throw new Error(`Mapped file collision: ${destination}`);
+    seen.add(key);
   }
 }
 

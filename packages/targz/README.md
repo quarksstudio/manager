@@ -27,4 +27,4 @@ paths and unsupported entry types are rejected. Limits are 10000 entries,
 280 MiB expanded tar including metadata. `readArchiveResponse(response)` buffers
 HTTP bundles up to the compressed limit, then cancels oversized streams.
 Modern manifests are schema-validated and their mapped sources checked.
-See [M04/M05/M11](../../docs/solucion-hallazgos-restantes.md).
+See [M04/M05/M11](../../../server/docs/auditoria-consolidada-hallazgos.md#correcciones-finales-de-manager-m03m11).

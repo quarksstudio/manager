@@ -1,4 +1,3 @@
-import { promises as fs } from 'fs';
 import * as path from 'path';
 
 import {
@@ -7,10 +6,7 @@ import {
   type SkillsManifest,
 } from '@quarks.studio/targz';
 
-import {
-  InstallDirectory,
-  assertRegularFileOrAbsent,
-} from './install-directory';
+import { InstallDirectory } from './install-directory';
 
 import type { SkillLockfile } from './recursive-installer';
 
@@ -89,41 +85,26 @@ export async function uninstall(
     const moved: string[] = [];
     let retainBackup = false;
     const writeLock = async (content: string, temporary: string) => {
-      await transaction.directory.withEntry(temporary, true, async (staged) => {
-        await fs.writeFile(staged, content, { flag: 'wx' });
-        await project.withEntry(
-          'skill.lock.yml',
-          false,
-          async (destination) => {
-            await fs.rename(staged, destination);
-          },
-        );
-      });
+      await transaction.directory.writeFile(temporary, content);
+      await transaction.directory.renameTo(
+        temporary,
+        project,
+        'skill.lock.yml',
+      );
     };
     try {
       onStep?.('removing-files', 45);
       for (const relative of files) {
-        await project.withEntry(
-          relative,
-          false,
-          async (source) => {
-            await assertRegularFileOrAbsent(source);
-            await transaction.directory.withEntry(
-              path.join('backup', relative),
-              true,
-              async (backup) => {
-                try {
-                  await fs.rename(source, backup);
-                  moved.push(relative);
-                } catch (error) {
-                  if ((error as NodeJS.ErrnoException).code !== 'ENOENT')
-                    throw error;
-                }
-              },
-            );
-          },
-          true,
-        );
+        try {
+          await project.renameTo(
+            relative,
+            transaction.directory,
+            path.join('backup', relative),
+          );
+          moved.push(relative);
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+        }
         await project.assertFile(relative);
       }
       delete lock.packages[locator];
@@ -142,14 +123,12 @@ export async function uninstall(
       }
       for (const relative of moved.reverse()) {
         try {
-          await project.withEntry(relative, true, async (source) => {
-            await assertRegularFileOrAbsent(source);
-            await transaction.directory.withEntry(
-              path.join('backup', relative),
-              false,
-              (backup) => fs.rename(backup, source),
-            );
-          });
+          await project.assertFile(relative);
+          await transaction.directory.renameTo(
+            path.join('backup', relative),
+            project,
+            relative,
+          );
         } catch (failure) {
           failures.push(failure);
         }
@@ -166,10 +145,7 @@ export async function uninstall(
       throw error;
     } finally {
       await transaction.directory.close();
-      if (!retainBackup)
-        await project.withEntry(transaction.name, false, (entry) =>
-          fs.rm(entry, { recursive: true, force: true }),
-        );
+      if (!retainBackup) await project.removeTree(transaction.name);
     }
   } finally {
     await project.close();
@@ -239,17 +215,7 @@ async function removeEmptyParents(
     }
   }
   for (const directory of [...candidates].sort((a, b) => b.length - a.length)) {
-    await project.withEntry(
-      directory,
-      false,
-      async (entry) => {
-        await fs.rmdir(entry).catch((error: NodeJS.ErrnoException) => {
-          if (error.code !== 'ENOENT' && error.code !== 'ENOTEMPTY')
-            throw error;
-        });
-      },
-      true,
-    );
+    await project.removeEmptyDirectory(directory);
   }
 }
 

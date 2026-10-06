@@ -175,8 +175,11 @@ describe('M07 descriptor-anchored installation', () => {
     await noTransaction();
     await intact();
   });
-  it.each(['darwin', 'win32'] as const)(
-    'rejects unsupported platform %s before registry access',
+  (process.platform === 'linux' ? it : it.skip).each([
+    'darwin',
+    'win32',
+  ] as const)(
+    'rejects a missing or incompatible native backend for %s before registry access',
     async (platform) => {
       const original = Object.getOwnPropertyDescriptor(process, 'platform')!;
       Object.defineProperty(process, 'platform', {
@@ -185,7 +188,7 @@ describe('M07 descriptor-anchored installation', () => {
       });
       try {
         await expect(run()).rejects.toThrow(
-          'Secure installation requires Linux directory descriptors',
+          'Native installer backend unavailable',
         );
         expect(apiRequest).not.toHaveBeenCalled();
         expect(apiFetch).not.toHaveBeenCalled();
@@ -196,63 +199,72 @@ describe('M07 descriptor-anchored installation', () => {
       }
     },
   );
-  it('does not follow a symlink introduced immediately before opening a destination parent', async () => {
-    await fs.mkdir(path.join(target, 'agents'));
-    const open = fs.open.bind(fs);
-    let swapped = false;
-    jest
-      .spyOn(fs, 'open')
-      .mockImplementation(async (...args: Parameters<typeof fs.open>) => {
-        const name = String(args[0]);
+  (process.platform === 'linux' ? it : it.skip)(
+    'does not follow a symlink introduced immediately before opening a destination parent',
+    async () => {
+      await fs.mkdir(path.join(target, 'agents'));
+      const open = fs.open.bind(fs);
+      let swapped = false;
+      jest
+        .spyOn(fs, 'open')
+        .mockImplementation(async (...args: Parameters<typeof fs.open>) => {
+          const name = String(args[0]);
+          if (
+            !swapped &&
+            name.startsWith('/proc/self/fd/') &&
+            path.basename(name) === 'agents' &&
+            (await fs.realpath(path.dirname(name))) === target
+          ) {
+            swapped = true;
+            await fs.rename(
+              path.join(target, 'agents'),
+              path.join(target, 'parked'),
+            );
+            await fs.symlink(outside, path.join(target, 'agents'));
+          }
+          return open(...args);
+        });
+      await expect(run()).rejects.toThrow('Unsafe installation directory');
+      expect(swapped).toBe(true);
+      await intact();
+      await noTransaction();
+    },
+  );
+  (process.platform === 'linux' ? it : it.skip)(
+    'keeps a rename anchored when a parent is swapped after it was opened',
+    async () => {
+      await fs.mkdir(path.join(target, 'agents'));
+      await fs.writeFile(path.join(target, 'agents/fixture.md'), 'old');
+      const rename = fs.rename.bind(fs);
+      let swapped = false;
+      jest.spyOn(fs, 'rename').mockImplementation(async (from, to) => {
         if (
           !swapped &&
-          name.startsWith('/proc/self/fd/') &&
-          path.basename(name) === 'agents' &&
-          (await fs.realpath(path.dirname(name))) === target
+          path.basename(String(to)) === 'fixture.md' &&
+          (await fs.realpath(path.dirname(String(from)))).includes('/files/')
         ) {
           swapped = true;
-          await fs.rename(
+          await rename(
             path.join(target, 'agents'),
             path.join(target, 'parked'),
           );
           await fs.symlink(outside, path.join(target, 'agents'));
         }
-        return open(...args);
+        return rename(from, to);
       });
-    await expect(run()).rejects.toThrow('Unsafe installation directory');
-    expect(swapped).toBe(true);
-    await intact();
-    await noTransaction();
-  });
-  it('keeps a rename anchored when a parent is swapped after it was opened', async () => {
-    await fs.mkdir(path.join(target, 'agents'));
-    await fs.writeFile(path.join(target, 'agents/fixture.md'), 'old');
-    const rename = fs.rename.bind(fs);
-    let swapped = false;
-    jest.spyOn(fs, 'rename').mockImplementation(async (from, to) => {
-      if (
-        !swapped &&
-        path.basename(String(to)) === 'fixture.md' &&
-        (await fs.realpath(path.dirname(String(from)))).includes('/files/')
-      ) {
-        swapped = true;
-        await rename(path.join(target, 'agents'), path.join(target, 'parked'));
-        await fs.symlink(outside, path.join(target, 'agents'));
-      }
-      return rename(from, to);
-    });
-    await expect(run()).rejects.toThrow('Unsafe installation directory');
-    expect(swapped).toBe(true);
-    await intact();
-    const transaction = (await fs.readdir(target)).find((name) =>
-      name.startsWith('.quark-transaction-'),
-    );
-    expect(transaction).toBeDefined();
-    expect(
-      await fs.readFile(
-        path.join(target, transaction!, 'backups/agents/fixture.md'),
-        'utf8',
-      ),
-    ).toBe('old');
-  });
+      await expect(run()).rejects.toThrow('Unsafe installation directory');
+      expect(swapped).toBe(true);
+      await intact();
+      const transaction = (await fs.readdir(target)).find((name) =>
+        name.startsWith('.quark-transaction-'),
+      );
+      expect(transaction).toBeDefined();
+      expect(
+        await fs.readFile(
+          path.join(target, transaction!, 'backups/agents/fixture.md'),
+          'utf8',
+        ),
+      ).toBe('old');
+    },
+  );
 });

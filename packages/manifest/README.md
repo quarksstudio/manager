@@ -16,4 +16,4 @@ pnpm nx test manifest
 canonical skill root. It returns the canonical path, permits internal symlinks
 and rejects links outside the skill. Missing files, broken links, loops and
 directories fail resolution. The check does not make interpreter startup atomic
-with filesystem validation; see [M02 and concurrency limits](../../docs/solucion-m02-entrypoint-fisico.md).
+with filesystem validation; see [M02 and concurrency limits](../../../server/docs/auditoria-consolidada-hallazgos.md#solución-de-m02).

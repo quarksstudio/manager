@@ -15,14 +15,12 @@ it('encodes the user identifier without changing it', async () => {
 });
 
 it('updates only username through auth/me', async () => {
-  const fetchJson = jest
-    .fn()
-    .mockResolvedValue({
-      id: 'uid',
-      username: 'alice',
-      photoURL: null,
-      createdAt: null,
-    });
+  const fetchJson = jest.fn().mockResolvedValue({
+    id: 'uid',
+    username: 'alice',
+    photoURL: null,
+    createdAt: null,
+  });
   const users = createHttpPublicUsers({
     fetchJson,
   } as unknown as OperationContext);

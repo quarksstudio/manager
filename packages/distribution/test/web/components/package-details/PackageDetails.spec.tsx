@@ -30,12 +30,63 @@ it('renders server data and working version/download links without fetching', ()
     />,
   );
   expect(screen.getByRole('heading', { name: 'README' })).toBeTruthy();
+  expect(screen.getByTestId('version').textContent).toBe('1.0.0');
+  expect(screen.getByText('quark install demo@1.0.0')).toBeTruthy();
   fireEvent.click(screen.getByRole('tab', { name: 'Versions' }));
   expect(
     screen
       .getByRole('link', { name: 'Download version 1.0.0' })
       .getAttribute('href'),
   ).toBe(urls.downloads['1.0.0']);
+});
+it('shows the viewed version and its install command, not the latest', () => {
+  const older = {
+    ...detail,
+    versions: [{ version: '1.0.0' }, { version: '0.9.0' }],
+  };
+  const olderUrls = {
+    retry: '/packages/demo/0.9.0',
+    versions: {
+      '1.0.0': '/packages/demo/1.0.0',
+      '0.9.0': '/packages/demo/0.9.0',
+    },
+    downloads: {
+      '1.0.0': '/packages/demo/1.0.0/download',
+      '0.9.0': '/packages/demo/0.9.0/download',
+    },
+    metadata: '/packages/demo/0.9.0',
+  };
+  render(
+    <PackageDetails
+      packageName="demo"
+      detail={older}
+      selectedVersion="0.9.0"
+      urls={olderUrls}
+      readme={{ content: '# README' }}
+    />,
+  );
+  expect(screen.getByTestId('version').textContent).toBe('0.9.0');
+  expect(screen.getByText('quark install demo@0.9.0')).toBeTruthy();
+});
+it('renders the info box before the tabs so mobile sees it first', () => {
+  const { container } = render(
+    <PackageDetails
+      packageName="demo"
+      detail={detail}
+      selectedVersion="1.0.0"
+      urls={urls}
+      readme={{ content: '# README' }}
+    />,
+  );
+  const sidebar = container.querySelector('[data-testid="package-sidebar"]');
+  const tabs = container.querySelector('[data-testid="package-tabs"]');
+  expect(sidebar).toBeTruthy();
+  expect(tabs).toBeTruthy();
+  const follows =
+    sidebar && tabs
+      ? sidebar.compareDocumentPosition(tabs) & Node.DOCUMENT_POSITION_FOLLOWING
+      : 0;
+  expect(follows).toBeTruthy();
 });
 it('renders a missing version with a latest-version link', () => {
   render(

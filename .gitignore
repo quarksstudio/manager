@@ -50,3 +50,6 @@ Thumbs.db
 .desktop-app
 
 vite.config.*.timestamp*
+
+# Installer native build artifacts (assembled by CI)
+/packages/installer/prebuilds/

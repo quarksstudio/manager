@@ -108,12 +108,10 @@ describe('M04/M05/M11: archive validation before extraction', () => {
   });
   it('M11: rejects a streaming download exceeding the limit even with a false Content-Length', async () => {
     const reader = {
-      read: jest
-        .fn()
-        .mockResolvedValue({
-          done: false,
-          value: { byteLength: ARCHIVE_LIMITS.compressedBytes + 1 },
-        }),
+      read: jest.fn().mockResolvedValue({
+        done: false,
+        value: { byteLength: ARCHIVE_LIMITS.compressedBytes + 1 },
+      }),
       cancel: jest.fn(),
       releaseLock: jest.fn(),
     };

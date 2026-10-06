@@ -60,7 +60,11 @@ const offer = (
 
 const eligible = [{ id: 'paypal', name: 'PayPal', countries: null }];
 const pending = [
-  { id: 'mercadopago', name: 'Mercado Pago', reason: 'Needs a stored card first.' },
+  {
+    id: 'mercadopago',
+    name: 'Mercado Pago',
+    reason: 'Needs a stored card first.',
+  },
 ];
 
 beforeEach(() => {

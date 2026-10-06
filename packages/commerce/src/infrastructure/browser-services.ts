@@ -11,7 +11,7 @@ export function createBrowserCommerceServices(
   }).then(createHttpBillingGateway);
 
   return {
-    createPaymentLink: async (system, target,) => {
+    createPaymentLink: async (system, target) => {
       return (await register).createPaymentLink(system, target);
     },
     listPayments: async (options) => {

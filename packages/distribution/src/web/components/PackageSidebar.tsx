@@ -6,7 +6,7 @@ import { InstallCommand } from './InstallCommand';
 
 export interface PackageSidebarProps {
   packageName: string;
-  latestVersion?: string | null;
+  version?: string | null;
   downloads?: number;
   downloadsSince?: string;
   authors?: string[];
@@ -15,7 +15,7 @@ export interface PackageSidebarProps {
 }
 
 export function PackageSidebar({
-  latestVersion,
+  version,
   downloads,
   downloadsSince,
   authors = [],
@@ -32,12 +32,12 @@ export function PackageSidebar({
           <Flex vertical gap={20}>
             <div className="grid grid-cols-2 gap-4">
               <Flex vertical gap={4}>
-                <FieldLabel>Last version</FieldLabel>
+                <FieldLabel>Version</FieldLabel>
                 <Typography.Text
                   className="font-mono !text-lg !font-semibold"
-                  data-testid="last-version"
+                  data-testid="version"
                 >
-                  {latestVersion ?? '—'}
+                  {version ?? '—'}
                 </Typography.Text>
               </Flex>
               <Flex vertical gap={4}>

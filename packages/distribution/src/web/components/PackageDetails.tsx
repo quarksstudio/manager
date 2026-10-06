@@ -40,6 +40,7 @@ export function PackageDetails({
 }: PackageDetailsProps) {
   if (loading) return <PackageDetailsSkeleton />;
   const latest = highestVersion(detail?.versions)?.version;
+  const version = selectedVersion || latest || null;
   const versionMissing =
     !!selectedVersion &&
     !(detail?.versions ?? []).some((v) => v.version === selectedVersion);
@@ -78,32 +79,38 @@ export function PackageDetails({
         ) : (
           detail && (
             <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
-              <PackageTabs
-                packageName={packageName}
-                detail={detail}
-                selectedVersion={selectedVersion}
-                readme={{
-                  content: readme?.content ?? '',
-                  error: readme?.error,
-                  loading: false,
-                  version: selectedVersion,
-                  retryUrl: urls.retry,
-                }}
-                urls={urls}
-                formError={formError}
-                draft={draft}
-              />
-              <div className="space-y-6">
+              <div className="space-y-6 lg:order-2">
                 <PackageSidebar
                   packageName={packageName}
-                  latestVersion={latest ?? null}
+                  version={version}
                   downloads={detail.downloads}
                   downloadsSince={detail.downloadsSince}
                   authors={detail.authors}
                   tags={detail.tags}
-                  installCommand={`quark add ${packageName}`}
+                  installCommand={
+                    version
+                      ? `quark install ${packageName}@${version}`
+                      : `quark install ${packageName}`
+                  }
                 />
                 {commercialPanel}
+              </div>
+              <div className="lg:order-1">
+                <PackageTabs
+                  packageName={packageName}
+                  detail={detail}
+                  selectedVersion={selectedVersion}
+                  readme={{
+                    content: readme?.content ?? '',
+                    error: readme?.error,
+                    loading: false,
+                    version: selectedVersion,
+                    retryUrl: urls.retry,
+                  }}
+                  urls={urls}
+                  formError={formError}
+                  draft={draft}
+                />
               </div>
             </div>
           )

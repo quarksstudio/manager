@@ -73,13 +73,11 @@ it('does not update a different signed-in account', async () => {
 });
 
 it('updates the stored name while preserving credentials and other identity fields', async () => {
-  jest
-    .mocked(loadSession)
-    .mockResolvedValue({
-      accessToken: 'token',
-      refreshToken: 'refresh',
-      user: { ...user, username: 'old-name' },
-    });
+  jest.mocked(loadSession).mockResolvedValue({
+    accessToken: 'token',
+    refreshToken: 'refresh',
+    user: { ...user, username: 'old-name' },
+  });
   await persistProfileIdentity({ ...profile, displayName: 'María Pérez' });
   expect(saveSession).toHaveBeenCalledWith({
     accessToken: 'token',
