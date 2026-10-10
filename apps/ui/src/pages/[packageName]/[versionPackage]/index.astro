@@ -6,96 +6,27 @@ import {
 } from '@quarks.studio/distribution/web';
 
 import { registryBaseUrl as browserRegistryBaseUrl } from '../../../lib/registry-base';
-import { packageUrl, registry, statusFor } from '../../../lib/registry';
-import { loadPricing } from '../../../lib/pricing';
+import { getPackage } from '../../../lib/registry';
 import Layout from '../../../layouts/Layout.astro';
 
-const client = (await loadConfig()).config.renderMode === 'client';
 const name = decodeURIComponent(Astro.params.packageName ?? '');
-const version = decodeURIComponent(Astro.params.versionPackage ?? '');
+const versionSt = decodeURIComponent(Astro.params.versionPackage ?? '');
 
-let detail;
-let error;
-let readme = { content: '', error: undefined as string | undefined };
-// The browser holds no session, so the panel is server-only. `getMe` is not
-// wrapped in `statusFor` on purpose: a 401 here must not delete the cookie the
-// rest of the page still needs.
-let plans = { records: [], catalog: [] as Array<{ id: string; name: string }> };
-if (!client) {
-  const clientServer = await registry(Astro.cookies);
-  try {
-    detail = await clientServer.Packages.get(name);
-    if (!(detail.versions ?? []).some((v) => v.version === version))
-      Astro.response.status = 404;
-    else {
-      try {
-        readme.content = (
-          await clientServer.Packages.getReadme(name, version)
-        ).content;
-      } catch (failure) {
-        statusFor(failure, Astro.cookies);
-        readme.error = 'README unavailable';
-      }
-    }
-  } catch (failure) {
-    Astro.response.status = statusFor(failure, Astro.cookies);
-    error =
-      Astro.response.status === 404 ? undefined : 'Could not load package.';
-  }
-  const [mine, pricing] = await Promise.all([
-    clientServer.Gateway.listSubscriptions().catch(() => []),
-    loadPricing(Astro.cookies).catch(() => null),
-  ]);
-  plans = {
-    // No `system` filter on the route, so the package is chosen here.
-    records: mine.filter((record) => record.packageId === name),
-    catalog: pricing?.plans ?? [],
-  };
-}
+const { detail, version } = await getPackage(
+  Astro.cookies,
+  name,
+  versionSt,
+).catch((e) => Astro.rewrite('/404'));
 ---
 
 <Layout
   title={`${name} · ${version}`}
   description={detail?.description ?? undefined}
 >
-  {
-    client ? (
-      <PackagesBoundary
-        apiBaseUrl={browserRegistryBaseUrl}
-        client:only="react"
-        packageName={name}
-        version={version}
-      />
-    ) : (
-      <PackageDetails
-        client:load
-        packageName={name}
-        detail={detail}
-        selectedVersion={version}
-        notFound={!detail && Astro.response.status === 404}
-        error={error}
-        readme={readme}
-        urls={{
-          retry: packageUrl(name, version),
-          versions: Object.fromEntries(
-            (detail?.versions ?? []).map((v) => [
-              v.version,
-              packageUrl(name, v.version),
-            ]),
-          ),
-          downloads: Object.fromEntries(
-            (detail?.versions ?? []).map((v) => [
-              v.version,
-              `${packageUrl(name, v.version)}/download`,
-            ]),
-          ),
-        }}
-        plans={{
-          plans: plans.records,
-          plansBase: `${packageUrl(name)}/payment`,
-          catalog: plans.catalog,
-        }}
-      />
-    )
-  }
+  <PackagesBoundary
+    apiBaseUrl={browserRegistryBaseUrl}
+    client:only="react"
+    packageName={name}
+    version={version}
+  />
 </Layout>

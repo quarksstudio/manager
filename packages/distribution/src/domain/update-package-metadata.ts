@@ -1,9 +1,9 @@
-/** The description/tags/authors shape the metadata editor edits. */
+/** The description/authors/visibility shape the metadata editor edits. */
 export interface UpdatePackageMetadataInput {
   id: string;
   description: string;
-  tags: string[];
   authors: string[];
+  isPrivate: boolean;
 }
 
 export function normalizeTag(value: string): string {

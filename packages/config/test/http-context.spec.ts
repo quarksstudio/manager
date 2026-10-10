@@ -149,6 +149,26 @@ describe('apiFetch', () => {
     expect(storage.getItem).toHaveBeenCalledWith(AUTH_SESSION_KEY);
   });
 
+  it('sends the browser session token when no config token is set', async () => {
+    process.env['QUARK_REGISTRY_URL'] = 'http://registry.test/v1';
+    storage.getItem.mockImplementation(async (key) =>
+      key === AUTH_SESSION_KEY ? { accessToken: 'session-secret' } : null,
+    );
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ id: 'private-package' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    await expect(apiFetch('package/private')).resolves.toEqual({
+      id: 'private-package',
+    });
+
+    const headers = new Headers(fetchMock.mock.calls[0][1]?.headers);
+    expect(headers.get('Authorization')).toBe('Bearer session-secret');
+  });
+
   it('omits authorization for guests and skipAuth requests', async () => {
     const fetchMock = jest
       .spyOn(global, 'fetch')

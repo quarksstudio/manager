@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { createHttpContext } from '@quarks.studio/registry/http';
+import { createConfiguredContext } from '@quarks.studio/config/http';
 import { createHttpPackageRegistry } from '../http';
 export function useDistributionClient(apiBaseUrl: string) {
   return useMemo(
-    () => createHttpPackageRegistry(createHttpContext({ baseUrl: apiBaseUrl })),
+    () => createHttpPackageRegistry(createConfiguredContext(apiBaseUrl)),
     [apiBaseUrl],
   );
 }

@@ -78,6 +78,11 @@ const detail = {
           status: 'approved',
           approvedAt: '2026-09-02T00:00:00.000Z',
           reportUrl: '/packages/demo/1.0.0/certificates/1',
+          logUrl: '/packages/demo/1.0.0/certificates/1/logs',
+          checks: [
+            { name: 'Check skills.yml', passed: true },
+            { name: 'Check all the files', passed: true },
+          ],
         },
       ],
     },
@@ -87,7 +92,15 @@ const detail = {
       signatures: [],
       certifications: [
         { tier: 'TIER_2', status: 'pending' },
-        { tier: 'TIER_1', status: 'rejected' },
+        {
+          tier: 'TIER_1',
+          status: 'rejected',
+          logUrl: '/packages/demo/0.9.0/certificates/1/logs',
+          checks: [
+            { name: 'Check skills.yml', passed: false },
+            { name: 'Check all the files', passed: true },
+          ],
+        },
       ],
     },
   ],

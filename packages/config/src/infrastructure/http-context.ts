@@ -1,4 +1,9 @@
-import { AUTH_SESSION_KEY, clearSession, loadConfig } from '../index';
+import {
+  AUTH_SESSION_KEY,
+  clearSession,
+  loadConfig,
+  loadSession,
+} from '../index';
 
 import { createStorageCache } from '@quarks.studio/storage/http-cache';
 import {
@@ -18,6 +23,22 @@ export interface ApiFetchOptions
 const cache = createStorageCache();
 
 /**
+ * The identity session in storage (a browser login) is the fallback bearer for
+ * every non-login request when the caller passed no explicit token and none is
+ * configured. Only set on a fetch, so a guest request carries no header.
+ */
+async function sessionToken(): Promise<string> {
+  try {
+    const session = await loadSession();
+    return session?.accessToken && session.accessToken.trim()
+      ? session.accessToken
+      : '';
+  } catch {
+    return '';
+  }
+}
+
+/**
  * Configured transport: resolve the endpoint and session before creating the
  * transport. Hosts may override the endpoint explicitly.
  */
@@ -31,7 +52,9 @@ export async function createGlobalContext(
 ): Promise<HttpContext> {
   const { config } = await loadConfig();
   const headers = new Headers(options.headers);
-  const token = options.skipAuth ? '' : (options.token ?? config.token);
+  const token = options.skipAuth
+    ? ''
+    : (options.token ?? config.token ?? (await sessionToken()));
   if (options.skipAuth) headers.delete('Authorization');
 
   if (!options.skipAuth && token && !headers.has('Authorization')) {

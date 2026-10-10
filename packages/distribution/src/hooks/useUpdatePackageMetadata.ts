@@ -22,8 +22,8 @@ export function useUpdatePackageMetadata(
         await client.update({
           id: input.id,
           description: input.description,
-          tags: input.tags,
           authors: input.authors,
+          isPrivate: input.isPrivate,
         });
         setStatus('success');
       } catch (reason) {

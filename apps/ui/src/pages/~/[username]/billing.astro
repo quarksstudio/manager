@@ -3,6 +3,11 @@ import { ConfiguredBillingBoundary as BillingBoundary } from '@quarks.studio/com
 
 import Layout from '../../../layouts/Layout.astro';
 import { registryBaseUrl } from '../../../lib/registry-base';
+import { getUser } from '../../../lib/registry';
+
+const username = decodeURIComponent(Astro.params.username ?? '');
+await getUser(Astro.cookies, username).catch((e) => Astro.rewrite('/404'));
+
 Astro.response.headers.set('Cache-Control', 'private, no-store');
 ---
 

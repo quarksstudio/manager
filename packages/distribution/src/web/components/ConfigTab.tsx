@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { PackageDetails } from '../../index';
-import { Alert, Button, Input, Tag } from 'antd';
+import { Alert, Button, Input, Switch, Tag } from 'antd';
 import { QuarkTheme } from '@quarks.studio/web-ui';
-import { ConfiguredMonthlyTotals } from '@quarks.studio/commerce/web';
 
 import { usePackageMetadataEditor } from '../../hooks/usePackageMetadataEditor';
 
@@ -27,8 +26,8 @@ export function ConfigTab({ detail }: ConfigTabProps) {
   }, [startEditing]);
 
   const authors = seeded ? editor.authors : (detail.authors ?? []);
-  const tags = seeded ? editor.tags : (detail.tags ?? []);
   const description = seeded ? editor.description : detail.description;
+  const isPrivate = seeded ? editor.isPrivate : (detail.isPrivate ?? false);
 
   return (
     <QuarkTheme>
@@ -74,8 +73,8 @@ export function ConfigTab({ detail }: ConfigTabProps) {
           )}
         </section>
 
-        <section aria-label="Metadatos">
-          <h3 className="!mb-3 text-base font-semibold">Metadatos</h3>
+        <section aria-label="Detalles">
+          <h3 className="!mb-3 text-base font-semibold">Detalles</h3>
           <div className="max-w-xl space-y-4">
             <div>
               <Input.TextArea
@@ -91,34 +90,18 @@ export function ConfigTab({ detail }: ConfigTabProps) {
                 </p>
               )}
             </div>
-            <div>
-              <div className="my-2 flex flex-wrap gap-2">
-                {tags.map((tag) => (
-                  <Tag
-                    key={tag}
-                    closable
-                    onClose={() => editor.removeTag(tag)}
-                    data-testid={`tag-${tag}`}
-                  >
-                    {tag}
-                  </Tag>
-                ))}
-              </div>
-              <div className="flex gap-2">
-                <Input
-                  aria-label="Nueva etiqueta"
-                  placeholder="Etiqueta"
-                  value={editor.tagInput}
-                  onChange={(event) => editor.setTagInput(event.target.value)}
-                  onPressEnter={editor.addTag}
-                />
-                <Button onClick={editor.addTag}>Añadir etiqueta</Button>
-              </div>
-              {editor.validation.tags && (
-                <p role="alert" className="mt-1 text-sm text-red-400">
-                  {editor.validation.tags}
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium">Paquete privado</p>
+                <p className="text-sm text-slate-500">
+                  Solo los miembros autorizados pueden verlo.
                 </p>
-              )}
+              </div>
+              <Switch
+                aria-label="Paquete privado"
+                checked={isPrivate}
+                onChange={editor.setIsPrivate}
+              />
             </div>
             {editor.saveError && (
               <Alert
@@ -136,10 +119,6 @@ export function ConfigTab({ detail }: ConfigTabProps) {
               Guardar cambios
             </Button>
           </div>
-        </section>
-
-        <section aria-label="Planes">
-          <ConfiguredMonthlyTotals />
         </section>
       </div>
     </QuarkTheme>

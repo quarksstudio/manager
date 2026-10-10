@@ -16,6 +16,11 @@ export function parseCertificationTier(value: string): CertificationTier {
 
 export type CertificationStatus = 'approved' | 'pending' | 'rejected';
 
+export interface CertificationCheck {
+  name: string;
+  passed: boolean;
+}
+
 export interface Certification {
   environment?: 'local';
   tier: CertificationTier;
@@ -23,4 +28,6 @@ export interface Certification {
   approvedAt?: string;
   reviewedBy?: string;
   reportUrl?: string;
+  checks?: CertificationCheck[];
+  logUrl?: string;
 }

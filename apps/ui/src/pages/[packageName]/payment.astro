@@ -1,5 +1,4 @@
 ---
-import { loadConfig } from '@quarks.studio/config';
 import {
   PricingModeNav,
   ConfiguredPricingBoundary as PricingBoundary,
@@ -7,15 +6,14 @@ import {
 } from '@quarks.studio/commerce/web';
 
 import Layout from '../../layouts/Layout.astro';
-import { loadPricing } from '../../lib/pricing';
 import { registryBaseUrl } from '../../lib/registry-base';
-import { packageUrl } from '../../lib/registry';
+import { packageUrl, getPackage } from '../../lib/registry';
 
-const client = (await loadConfig()).config.renderMode === 'client';
 const name = decodeURIComponent(Astro.params.packageName ?? '');
 const mode =
   Astro.url.searchParams.get('mode') === 'products' ? 'products' : 'plans';
-const pricing = client ? null : await loadPricing(Astro.cookies);
+
+await getPackage(Astro.cookies, name).catch((e) => Astro.rewrite('/404'));
 ---
 
 <Layout title={`Plans · ${name}`}>
@@ -33,40 +31,11 @@ const pricing = client ? null : await loadPricing(Astro.cookies);
         baseUrl={packageUrl(name, undefined) + '/payment'}
       />
     </div>
-
-    {
-      client ? (
-        <PricingBoundary
-          apiBaseUrl={registryBaseUrl}
-          client:only="react"
-          mode="plans"
-          packageName={name}
-        />
-      ) : (
-        <>
-          <section hidden={mode !== 'plans'}>
-            <PlanGrid
-              client:load
-              packageId={name}
-              plans={pricing?.plans ?? []}
-              systems={pricing?.planSystems ?? { eligible: [], pending: [] }}
-              apiBaseUrl={registryBaseUrl}
-            />
-          </section>
-          <section hidden={mode !== 'products'}>
-            <p class="text-sm text-slate-500">
-              A certification is bought for one concrete version.{' '}
-              <a href={packageUrl(name)}>Open the package</a> and pick it.
-            </p>
-          </section>
-        </>
-      )
-    }
-
-    {
-      pricing?.error && (
-        <p class="mt-6 text-sm text-slate-400">{pricing.error}</p>
-      )
-    }
+    <PricingBoundary
+      apiBaseUrl={registryBaseUrl}
+      client:only="react"
+      mode="plans"
+      packageName={name}
+    />
   </main>
 </Layout>

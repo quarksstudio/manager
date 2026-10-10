@@ -20,6 +20,7 @@ export interface PackageDetails {
   tags: string[];
   downloads: number;
   downloadsSince?: string;
+  isPrivate?: boolean;
   canEditMetadata: boolean;
   createdAt?: string;
   updatedAt?: string;

@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import {
   DistributionProvider,
   type DistributionServices,
@@ -49,19 +55,20 @@ it('gives authors a configuration tab that saves from the browser', async () => 
     </DistributionProvider>,
   );
   expect(screen.getByRole('tab', { name: 'Configuración' })).toBeTruthy();
+  expect(screen.getByRole('tab', { name: 'Suscripciones' })).toBeTruthy();
   // The server props are on screen before the editor seeds itself.
-  expect(screen.getByLabelText('Descripción')).toHaveProperty(
-    'value',
-    'Demo',
-  );
+  expect(screen.getByLabelText('Descripción')).toHaveProperty('value', 'Demo');
   expect(screen.getByTestId('member-alice')).toBeTruthy();
-  expect(screen.getByTestId('tag-demo')).toBeTruthy();
+  // Tags are no longer edited from the configuration tab.
+  expect(screen.queryByTestId('tag-demo')).toBeNull();
   // The panel is a browser island: it never posts to the package route.
   expect(screen.getByTestId('plans')).toBeTruthy();
+  expect(screen.getByTestId('run-certification')).toBeTruthy();
 
   await act(async () => {
     await Promise.resolve();
   });
+  fireEvent.click(screen.getByRole('tab', { name: 'Configuración' }));
   const input = screen.getByLabelText('Nuevo miembro');
   fireEvent.change(input, { target: { value: 'bob' } });
   fireEvent.click(screen.getByRole('button', { name: 'Añadir miembro' }));
@@ -72,12 +79,12 @@ it('gives authors a configuration tab that saves from the browser', async () => 
   expect(update).toHaveBeenCalledWith({
     id: 'demo',
     description: 'Demo',
-    tags: ['demo'],
     authors: ['alice', 'bob'],
+    isPrivate: false,
   });
 });
 
-it('does not expose configuration to a read-only viewer', () => {
+it('does not expose subscriptions or configuration to a read-only viewer', () => {
   render(
     <PackageTabs
       packageName="demo"
@@ -88,4 +95,36 @@ it('does not expose configuration to a read-only viewer', () => {
     />,
   );
   expect(screen.queryByRole('tab', { name: 'Configuración' })).toBeNull();
+  expect(screen.queryByRole('tab', { name: 'Suscripciones' })).toBeNull();
+});
+
+it('shows certifications inside the single Versions tab, not a Certs tab', () => {
+  render(
+    <PackageTabs
+      packageName="demo"
+      detail={{
+        ...detail,
+        canEditMetadata: false,
+        versions: [
+          {
+            version: '1.0.0',
+            certifications: [
+              {
+                tier: 'TIER_1',
+                status: 'approved',
+                checks: [{ name: 'Check skills.yml', passed: true }],
+              },
+            ],
+          },
+        ],
+      }}
+      selectedVersion="1.0.0"
+      readme={readme}
+      urls={urls}
+    />,
+  );
+  expect(screen.queryByRole('tab', { name: 'Certs' })).toBeNull();
+  fireEvent.click(screen.getByRole('tab', { name: 'Versions' }));
+  expect(screen.getByTestId('tier-1.0.0-TIER_1')).toBeTruthy();
+  expect(screen.queryByTestId('certs-list')).toBeNull();
 });

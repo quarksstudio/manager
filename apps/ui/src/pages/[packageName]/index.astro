@@ -1,49 +1,27 @@
 ---
-import { loadConfig } from '@quarks.studio/config';
 import {
   ConfiguredPackageDetails as PackageDetails,
   ConfiguredPackagesBoundary as PackagesBoundary,
 } from '@quarks.studio/distribution/web';
-import { highestVersion } from '@quarks.studio/distribution';
-
 import Layout from '../../layouts/Layout.astro';
 import { registryBaseUrl as browserRegistryBaseUrl } from '../../lib/registry-base';
-import { packageUrl, registry, statusFor } from '../../lib/registry';
+import { getPackage } from '../../lib/registry';
 
-const client = (await loadConfig()).config.renderMode === 'client';
 const name = decodeURIComponent(Astro.params.packageName ?? '');
-let detail;
-let error;
-if (!client) {
-  try {
-    detail = await registry(Astro.cookies).then((e) => e.Packages.get(name));
-    const latest = highestVersion(detail.versions)?.version;
-    if (latest) return Astro.redirect(packageUrl(name, latest), 302);
-  } catch (failure) {
-    Astro.response.status = statusFor(failure, Astro.cookies);
-    error =
-      Astro.response.status === 404 ? undefined : 'Could not load package.';
-  }
-}
+
+const { detail, version } = await getPackage(Astro.cookies, name).catch((e) =>
+  Astro.rewrite('/404'),
+);
 ---
 
-<Layout title={name}>
-  {
-    client ? (
-      <PackagesBoundary
-        apiBaseUrl={browserRegistryBaseUrl}
-        client:only="react"
-        packageName={name}
-      />
-    ) : (
-      <PackageDetails
-        client:load
-        packageName={name}
-        detail={detail}
-        error={error}
-        notFound={Astro.response.status === 404}
-        urls={{ retry: packageUrl(name), versions: {}, downloads: {} }}
-      />
-    )
-  }
+<Layout
+  title={`${name} · ${version}`}
+  description={detail?.description ?? undefined}
+>
+  <PackagesBoundary
+    apiBaseUrl={browserRegistryBaseUrl}
+    client:only="react"
+    packageName={name}
+    version={version}
+  />
 </Layout>

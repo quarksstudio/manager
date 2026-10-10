@@ -38,6 +38,7 @@ const DETAIL = {
   description: 'Demo package',
   authors: ['alice'],
   tags: ['demo'],
+  isPrivate: true,
   downloads: 0,
   canEditMetadata: true,
   versions: [],
@@ -61,8 +62,8 @@ describe('usePackageMetadataEditor', () => {
     );
     act(() => result.current.startEditing());
     expect(result.current.description).toBe('Demo package');
-    expect(result.current.tags).toEqual(['demo']);
     expect(result.current.authors).toEqual(['alice']);
+    expect(result.current.isPrivate).toBe(true);
   });
 
   it('rejects an empty description', async () => {
@@ -96,9 +97,7 @@ describe('usePackageMetadataEditor', () => {
       usePackageMetadataEditor(DETAIL, 'alice', onSaved),
     );
     act(() => result.current.startEditing());
-    act(() => result.current.addTag());
-    act(() => result.current.setTagInput('  Web Tool '));
-    act(() => result.current.addTag());
+    act(() => result.current.setIsPrivate(false));
     let ok: boolean | null = null;
     await act(async () => {
       ok = await result.current.save();
@@ -109,8 +108,8 @@ describe('usePackageMetadataEditor', () => {
     expect(mockSaveMetadata).toHaveBeenCalledWith({
       id: 'demo',
       description: 'Demo package',
-      tags: ['demo', 'web-tool'],
       authors: ['alice'],
+      isPrivate: false,
     });
   });
 

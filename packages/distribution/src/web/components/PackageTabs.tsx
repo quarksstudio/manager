@@ -1,10 +1,10 @@
-import { certificationsForVersion, type PackageDetails } from '../../index';
+import { type PackageDetails } from '../../index';
 import { Tabs, type TabsProps } from 'antd';
 
 import { QuarkTheme } from '@quarks.studio/web-ui';
-import { CertsTab } from './CertsTab';
 import { ConfigTab } from './ConfigTab';
 import { ReadmeTab } from './ReadmeTab';
+import { SubscriptionsTab } from './SubscriptionsTab';
 import { VersionsTab } from './VersionsTab';
 export interface ReadmeState {
   loading: boolean;
@@ -63,24 +63,22 @@ export function PackageTabs({
         </section>
       ),
     },
-    {
-      key: 'certs',
-      label: 'Certs',
-      forceRender: true,
-      children: (
-        <section id={sectionId('certs')}>
-          <h2 className="sr-only">Certs</h2>
-          <CertsTab
-            versions={detail.versions ?? []}
-            selectedVersion={selectedVersion}
-            versionUrls={urls.versions}
-            certifications={certificationsForVersion(detail, selectedVersion)}
-          />
-        </section>
-      ),
-    },
     ...(detail.canEditMetadata
       ? [
+          {
+            key: 'subscriptions',
+            label: 'Suscripciones',
+            forceRender: true,
+            children: (
+              <section id={sectionId('subscriptions')}>
+                <h2 className="sr-only">Suscripciones</h2>
+                <SubscriptionsTab
+                  detail={detail}
+                  selectedVersion={selectedVersion}
+                />
+              </section>
+            ),
+          },
           {
             key: 'config',
             label: 'Configuración',
@@ -98,11 +96,7 @@ export function PackageTabs({
   return (
     <QuarkTheme>
       <div className="space-y-6" data-testid="package-tabs">
-        <Tabs
-          defaultActiveKey="readme"
-          items={items}
-          tabBarGutter={32}
-        />
+        <Tabs defaultActiveKey="readme" items={items} tabBarGutter={32} />
       </div>
     </QuarkTheme>
   );

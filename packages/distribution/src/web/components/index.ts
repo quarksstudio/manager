@@ -1,8 +1,3 @@
-export {
-  type CertificationRow,
-  type CertsTabProps,
-  CertsTab,
-} from './CertsTab';
 export { type ConfigTabProps, ConfigTab } from './ConfigTab';
 export { type PackageDetailsProps, PackageDetails } from './PackageDetails';
 export { PackageDetailsSkeleton } from './PackageDetailsSkeleton';
@@ -18,4 +13,8 @@ export {
   PackageTabs,
 } from './PackageTabs';
 export { type ReadmeTabProps, ReadmeTab } from './ReadmeTab';
+export {
+  type SubscriptionsTabProps,
+  SubscriptionsTab,
+} from './SubscriptionsTab';
 export { type VersionsTabProps, VersionsTab } from './VersionsTab';

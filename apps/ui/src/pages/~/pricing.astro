@@ -1,5 +1,4 @@
 ---
-import { loadConfig } from '@quarks.studio/config';
 import {
   ConfiguredPlanGrid as PlanGrid,
   ConfiguredPricingBoundary as PricingBoundary,
@@ -7,16 +6,10 @@ import {
 } from '@quarks.studio/commerce/web';
 
 import Layout from '../../layouts/Layout.astro';
-import { loadPricing } from '../../lib/pricing';
-import {
-  registryBaseUrl,
-  registryBaseUrl as browserRegistryBaseUrl,
-} from '../../lib/registry-base';
+import { registryBaseUrl } from '../../lib/registry-base';
 
-const client = (await loadConfig()).config.renderMode === 'client';
 const mode =
   Astro.url.searchParams.get('mode') === 'plans' ? 'plans' : 'products';
-const pricing = client ? null : await loadPricing(Astro.cookies);
 ---
 
 <Layout title="Pricing · Quark // Skills">
@@ -31,37 +24,10 @@ const pricing = client ? null : await loadPricing(Astro.cookies);
       <PricingModeNav client:load mode={mode} baseUrl="/pricing" />
     </div>
 
-    {
-      client ? (
-        <PricingBoundary
-          apiBaseUrl={browserRegistryBaseUrl}
-          client:only="react"
-          mode={mode}
-        />
-      ) : (
-        <>
-          <section hidden={mode !== 'products'}>
-            <p class="text-sm text-slate-500">
-              A certification is bought for one concrete version of a package.
-              Open the package you want to certify to see its ladder.
-            </p>
-          </section>
-          <section hidden={mode !== 'plans'}>
-            <PlanGrid
-              client:load
-              plans={pricing?.plans ?? []}
-              systems={pricing?.planSystems ?? { eligible: [], pending: [] }}
-              apiBaseUrl={registryBaseUrl}
-            />
-          </section>
-        </>
-      )
-    }
-
-    {
-      pricing?.error ? (
-        <p class="mt-6 text-sm text-slate-400">{pricing.error}</p>
-      ) : null
-    }
+    <PricingBoundary
+      apiBaseUrl={registryBaseUrl}
+      client:only="react"
+      mode={mode}
+    />
   </main>
 </Layout>

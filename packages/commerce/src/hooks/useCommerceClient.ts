@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { createHttpContext } from '@quarks.studio/registry/http';
+import { createConfiguredContext } from '@quarks.studio/config/http';
 import { createHttpCatalog, createHttpBillingGateway } from '../http';
 import type { heldTier } from '@quarks.studio/certification';
 export function useCommerceClient(apiBaseUrl: string) {
   return useMemo(() => {
-    const context = createHttpContext({ baseUrl: apiBaseUrl });
+    const context = createConfiguredContext(apiBaseUrl);
     return {
       Catalog: createHttpCatalog(context),
       Gateway: createHttpBillingGateway(context),
