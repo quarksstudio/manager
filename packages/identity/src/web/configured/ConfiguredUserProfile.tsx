@@ -19,7 +19,7 @@ export function ConfiguredUserProfile({
         username={username}
         services={services}
         currentUserId={session?.user?.id ?? session?.user?.uid}
-        packageUrl={(name) => `/packages/${encodeURIComponent(name)}`}
+        packageUrl={(name) => `/${encodeURIComponent(name)}`}
       />
     </QuarkTheme>
   );

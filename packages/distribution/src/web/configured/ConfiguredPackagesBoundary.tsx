@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { PackagesBoundary as PackagesView } from '../containers/PackagesBoundary';
 import { DistributionWebProvider } from '../../presentation/web-services';
+import { DistributionProvider } from '../../presentation/services';
+import { createDistributionServices } from '../../presentation/configured-services';
 import { useDistributionClient } from '../../hooks/useDistributionClient';
 import { packageUrl, downloadUrl, navigate } from '../lib/package-links';
 
@@ -23,14 +25,18 @@ export function ConfiguredPackagesBoundary({
     }),
     [client],
   );
+  // The configuration tab issues its own writes against the registry.
+  const distributionServices = useMemo(() => createDistributionServices(), []);
   return (
-    <DistributionWebProvider services={services}>
-      <PackagesView
-        {...props}
-        packageUrl={packageUrl}
-        downloadUrl={downloadUrl}
-        navigate={navigate}
-      />
-    </DistributionWebProvider>
+    <DistributionProvider services={distributionServices}>
+      <DistributionWebProvider services={services}>
+        <PackagesView
+          {...props}
+          packageUrl={packageUrl}
+          downloadUrl={downloadUrl}
+          navigate={navigate}
+        />
+      </DistributionWebProvider>
+    </DistributionProvider>
   );
 }

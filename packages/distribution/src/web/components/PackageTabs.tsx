@@ -22,10 +22,7 @@ export interface PackageTabsProps {
   urls: {
     versions: Record<string, string>;
     downloads: Record<string, string>;
-    metadata?: string;
   };
-  formError?: string;
-  draft?: { description: string; tags: string; authors: string };
 }
 /** All sections render on the server; hydration adds purely visual tabs. */
 export function PackageTabs({
@@ -34,8 +31,6 @@ export function PackageTabs({
   selectedVersion,
   readme,
   urls,
-  formError,
-  draft,
 }: PackageTabsProps) {
   const sectionId = (tab: string) =>
     `${encodeURIComponent(packageName)}-${tab}`;
@@ -88,18 +83,12 @@ export function PackageTabs({
       ? [
           {
             key: 'config',
-            label: 'Config',
+            label: 'Configuración',
             forceRender: true,
             children: (
               <section id={sectionId('config')}>
-                <h2 className="sr-only">Config</h2>
-                <ConfigTab
-                  packageName={packageName}
-                  detail={detail}
-                  action={urls.metadata}
-                  error={formError}
-                  draft={draft}
-                />
+                <h2 className="sr-only">Configuración</h2>
+                <ConfigTab detail={detail} />
               </section>
             ),
           },
@@ -110,7 +99,7 @@ export function PackageTabs({
     <QuarkTheme>
       <div className="space-y-6" data-testid="package-tabs">
         <Tabs
-          defaultActiveKey={formError ? 'config' : 'readme'}
+          defaultActiveKey="readme"
           items={items}
           tabBarGutter={32}
         />

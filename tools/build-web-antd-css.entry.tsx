@@ -9,7 +9,10 @@ import * as Commerce from '../packages/commerce/src/web/index';
 import * as Distribution from '../packages/distribution/src/web/index';
 import * as Search from '../packages/package-search/src/web/index';
 import { CommerceProvider } from '../packages/commerce/src/presentation';
+import { DistributionProvider } from '../packages/distribution/src/presentation/services';
+import { createDistributionServices } from '../packages/distribution/src/presentation/configured-services';
 const UI = { ...Shared, ...Commerce, ...Distribution, ...Search };
+const distributionServices = createDistributionServices();
 const commerceServices = {
   createPaymentLink: async () => ({ url: '/' }),
   listPayments: async () => ({ items: [], nextCursor: null }),
@@ -167,6 +170,7 @@ const cache = createCache();
 renderToStaticMarkup(
   <StyleProvider cache={cache}>
     <CommerceProvider services={commerceServices}>
+      <DistributionProvider services={distributionServices}>
       <UI.SiteNavbar
         logo="QUARK // SKILLS"
         searchAction="/search"
@@ -193,7 +197,6 @@ renderToStaticMarkup(
             '1.0.0': '/packages/demo/1.0.0/download',
             '0.9.0': '/packages/demo/0.9.0/download',
           },
-          metadata: '/packages/demo/1.0.0',
         }}
         commercialPanel={
           <UI.PackagePlansPanel
@@ -253,12 +256,9 @@ renderToStaticMarkup(
         }}
         selectedVersion="1.0.0"
         readme={readme}
-        formError="Forbidden"
-        draft={{ description: 'Unsaved', authors: 'alice', tags: 'new' }}
         urls={{
           versions: {},
           downloads: {},
-          metadata: '/packages/demo2/1.0.0',
         }}
       />
       <UI.ReadmeTab loading />
@@ -291,6 +291,7 @@ renderToStaticMarkup(
           { label: 'Blog', href: 'https://blog.quarks.studio' },
         ]}
       />
+      </DistributionProvider>
     </CommerceProvider>
   </StyleProvider>,
 );

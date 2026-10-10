@@ -6,7 +6,7 @@ import { once } from 'node:events';
 import path from 'node:path';
 
 // Run after building web. The same checks can target an isolated packed consumer.
-test('Astro serves package routes, forms, downloads and request-scoped sessions', async () => {
+test('Astro serves package routes, downloads and request-scoped sessions', async () => {
   const requests = [];
   const api = http.createServer(async (req, res) => {
     const chunks = [];
@@ -154,44 +154,27 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
       'attachment; filename="demo.tgz"',
     );
     assert.equal(await download.text(), 'archive');
-    const form = new URLSearchParams({
-      description: 'Updated',
-      tags: 'demo',
-      authors: 'alice',
-    });
-    assert.equal(
-      (
-        await request(route, {
-          method: 'POST',
-          headers: { origin: 'https://other.example' },
-          body: form,
-        })
-      ).status,
-      403,
+    // The package route only reads: every write moved to the browser.
+    for (const method of ['POST', 'PUT', 'PATCH', 'DELETE']) {
+      const rejected = await request(route, {
+        method,
+        headers: { origin: base, cookie: 'quark-session=alice' },
+        body: new URLSearchParams({
+          description: 'Updated',
+          tags: 'demo',
+          authors: 'alice',
+        }),
+      });
+      assert.equal(rejected.status, 405, `${method} must not mutate`);
+    }
+    assert.deepEqual(
+      requests
+        .filter((req) => req.url.startsWith('/v1/package/'))
+        .filter((req) => req.method !== 'GET')
+        .map((req) => `${req.method} ${req.url}`),
+      [],
+      'the renderer never writes package metadata',
     );
-    const denied = await request(route, {
-      method: 'POST',
-      headers: { origin: base },
-      body: form,
-    });
-    assert.equal(denied.status, 403);
-    const invalid = await request(route, {
-      method: 'POST',
-      headers: { origin: base, cookie: 'quark-session=alice' },
-      body: new URLSearchParams({
-        description: '',
-        tags: 'demo',
-        authors: 'alice',
-      }),
-    });
-    assert.equal(invalid.status, 400, await invalid.clone().text());
-    assert.match(await invalid.text(), /Check description/);
-    const saved = await request(route, {
-      method: 'POST',
-      headers: { origin: base, cookie: 'quark-session=alice' },
-      body: form,
-    });
-    assert.equal(saved.status, 303);
     await Promise.all(
       ['alice', 'bob'].map((user) =>
         request(route, { headers: { cookie: `quark-session=${user}` } }),
@@ -217,6 +200,15 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
     );
     assert.equal(callback.status, 200, await callback.clone().text());
     assert.match(callback.headers.get('cache-control'), /no-store/);
+    // The renderer keeps the exchanged token in an http-only cookie; the page
+    // itself never learns it.
+    const cookie = callback.headers.get('set-cookie') ?? '';
+    const session = cookie.match(/quark-session=([^;]*)/)?.[1];
+    assert.equal(session, 'local-token', cookie);
+    assert.match(cookie, /httponly/i, cookie);
+    assert.match(cookie, /samesite=lax/i, cookie);
+    assert.match(cookie, /path=\//i, cookie);
+    assert.doesNotMatch(cookie, /secure/i, cookie);
     const exchanged = requests
       .filter((r) => r.url === '/v1/auth/exchange')
       .slice(before);
@@ -233,10 +225,14 @@ test('Astro serves package routes, forms, downloads and request-scoped sessions'
       !popup.includes('id-token'),
       'the provider token stays out of the page',
     );
-    // Without the state the opener generated there is nothing to answer.
+    // Without the state the opener generated there is nothing to answer, and
+    // the session the renderer may hold goes with it.
     const orphan = await request('/~/callback?idToken=id-token');
     assert.equal(orphan.status, 302);
     assert.equal(orphan.headers.get('location'), '/');
+    const cleared = orphan.headers.get('set-cookie') ?? '';
+    assert.equal(cleared.match(/quark-session=([^;]*)/)?.[1], '', cleared);
+    assert.match(cleared, /max-age=0|expires=/i, cleared);
   } catch (error) {
     console.error(logs);
     throw error;

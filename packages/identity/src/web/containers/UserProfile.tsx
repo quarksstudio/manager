@@ -42,6 +42,7 @@ export function UserProfile({
       </main>
     );
   }
+
   return (
     <main className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-8 sm:px-6 sm:py-12 lg:grid-cols-[240px_minmax(0,1fr)]">
       <div className="min-w-0">

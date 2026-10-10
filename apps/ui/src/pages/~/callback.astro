@@ -5,13 +5,17 @@ import { createHttpContext } from '@quarks.studio/registry/http';
 import { createHttpIdentityGateway } from '@quarks.studio/identity/http';
 
 import Layout from '../../layouts/Layout.astro';
+import { sessionCookie } from '../../lib/registry';
 
 const state = Astro.url.searchParams.get('state');
 const idToken =
   Astro.url.searchParams.get('idToken') ?? Astro.url.searchParams.get('token');
 const refreshToken = Astro.url.searchParams.get('refreshToken');
 
+// A callback that carries no token cannot vouch for a session: drop the one the
+// server renderer may still hold so it stops asking for it.
 if (!(state && idToken)) {
+  Astro.cookies.delete(sessionCookie, { path: '/' });
   return Astro.redirect('/');
 }
 
@@ -29,6 +33,16 @@ try {
     cause instanceof Error
       ? cause.message
       : 'Authentication failed. Try again.';
+}
+// The server renderer reads this cookie to reach the registry on behalf of the
+// signed-in user; the browser session itself still lives in local storage.
+if (session) {
+  Astro.cookies.set(sessionCookie, session.accessToken, {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+    secure: Astro.url.protocol === 'https:',
+  });
 }
 // The session is embedded in this document: never let it reach a cache.
 Astro.response.headers.set('Cache-Control', 'no-store');

@@ -19,10 +19,7 @@ export interface PackageDetailsProps {
     retry: string;
     versions: Record<string, string>;
     downloads: Record<string, string>;
-    metadata?: string;
   };
-  formError?: string;
-  draft?: { description: string; tags: string; authors: string };
   commercialPanel?: ReactNode;
 }
 export function PackageDetails({
@@ -34,8 +31,6 @@ export function PackageDetails({
   notFound,
   readme,
   urls,
-  formError,
-  draft,
   commercialPanel,
 }: PackageDetailsProps) {
   if (loading) return <PackageDetailsSkeleton />;
@@ -108,8 +103,6 @@ export function PackageDetails({
                     retryUrl: urls.retry,
                   }}
                   urls={urls}
-                  formError={formError}
-                  draft={draft}
                 />
               </div>
             </div>

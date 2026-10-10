@@ -3,6 +3,10 @@ export {
   ConfiguredBillingBoundary,
 } from './ConfiguredBillingBoundary';
 export { ConfiguredPaymentSystemButtons } from './ConfiguredPaymentSystemButtons';
+export {
+  type ConfiguredMonthlyTotalsProps,
+  ConfiguredMonthlyTotals,
+} from './ConfiguredMonthlyTotals';
 export { ConfiguredPlanGrid } from './ConfiguredPlanGrid';
 export {
   type ConfiguredPricingBoundaryProps,

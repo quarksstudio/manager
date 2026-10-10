@@ -1,5 +1,6 @@
 export * from './billing';
 export * from './money';
+export * from './monthly-totals';
 export * from './offer-eligibility';
 export * from './payment-history';
 export * from './payment-link-failure';
