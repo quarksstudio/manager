@@ -18,10 +18,10 @@ function page(
   return {
     items: [
       {
-        id: 'chat',
-        description: 'Chat assistant',
+        name: 'chat',
+        summary: 'Chat assistant',
         tags: ['ai'],
-        latest: { version: '1.2.0' },
+        latestVersion: '1.2.0',
       },
     ],
     totalCount: 1,
@@ -37,7 +37,7 @@ describe('the HTTP package search', () => {
     fetchJson.mockResolvedValue(page());
 
     await remote.search(
-      { query: '  chat  ', name: 'chat', description: 'assistant' },
+      { query: '  chat  ', name: 'chat', summary: 'assistant' },
       { matchMode: 'all', exact: true },
       'cursor-2',
     );
@@ -49,7 +49,7 @@ describe('the HTTP package search', () => {
       new URLSearchParams({
         query: 'chat',
         name: 'chat',
-        description: 'assistant',
+        summary: 'assistant',
         matchMode: 'all',
         exact: 'true',
         cursor: 'cursor-2',
@@ -78,7 +78,7 @@ describe('the HTTP package search', () => {
         {
           name: 'chat',
           version: '1.2.0',
-          description: 'Chat assistant',
+          summary: 'Chat assistant',
           tags: ['ai'],
         },
       ],
@@ -87,12 +87,12 @@ describe('the HTTP package search', () => {
     });
   });
 
-  it('falls back to the id and drops an entry that is not a package', async () => {
+  it('uses the package name and drops an entry that is not a package', async () => {
     fetchJson.mockResolvedValue(
       page({
         items: [
-          { id: 'by-id', latest: { version: '1.0.0' } },
-          { id: 'no-version', latest: null },
+          { name: 'by-id', latestVersion: '1.0.0' },
+          { name: 'no-version', latestVersion: null },
           { name: 'no-latest' },
         ],
       }),
@@ -101,7 +101,7 @@ describe('the HTTP package search', () => {
     const result = await remote.search({}, {});
 
     expect(result.items).toEqual([
-      { name: 'by-id', version: '1.0.0', description: '', tags: undefined },
+      { name: 'by-id', version: '1.0.0', summary: '', tags: undefined },
     ]);
   });
 

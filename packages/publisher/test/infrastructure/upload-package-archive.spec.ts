@@ -96,7 +96,7 @@ describe('archive upload transport', () => {
             Authorization: 'Bearer explicit',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ description: input.description }),
+          body: JSON.stringify({ summary: input.description }),
         },
       );
       expect(send.mock.calls[2][0]).toBe(send.mock.calls[0][0]);

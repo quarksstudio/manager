@@ -1,6 +1,6 @@
 import {
   certificationsForVersion,
-  highestVersion,
+  selectPackageVersion,
   type PackageDetails,
 } from '../domain/package-details';
 import {
@@ -20,11 +20,13 @@ export function usePackageCertifications(
     refetch,
   } = useFetchPackage<PackageDetails>(name, override);
   const versions = detail?.versions ?? [];
-  const target = version ?? highestVersion(versions)?.version;
+  const target = detail
+    ? selectPackageVersion(detail, version)?.version
+    : undefined;
   return {
     data: target ? certificationsForVersion(detail, target) : null,
     versions,
-    latestVersion: highestVersion(versions)?.version,
+    latestVersion: detail?.latestVersion ?? undefined,
     loading,
     error,
     refetch,

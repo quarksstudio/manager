@@ -23,7 +23,7 @@ export function UserPackageGrid({
             {item.name}
           </a>
           <p className="mt-3 line-clamp-3 break-words text-sm text-slate-400">
-            {item.description}
+            {item.summary}
           </p>
         </Card>
       ))}

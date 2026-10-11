@@ -12,7 +12,7 @@ const services = { searchParams };
 const item = (name: string) => ({
   name,
   version: '1.0.0',
-  description: `${name} package`,
+  summary: `${name} package`,
 });
 beforeEach(() => {
   jest.resetAllMocks();

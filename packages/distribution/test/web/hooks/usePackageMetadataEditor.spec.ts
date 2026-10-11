@@ -19,7 +19,7 @@ let mockUser = { id: 'alice' };
 
 const services: DistributionServices = {
   get: jest.fn(),
-  getReadme: jest.fn(),
+  getVersion: jest.fn(),
   update: mockSaveMetadata,
   downloadBundle: jest.fn(),
   getCurrentUser: async () => mockUser,
@@ -33,9 +33,9 @@ const renderHook: typeof renderHookWithServices = (callback, options) =>
   });
 
 const DETAIL = {
-  id: 'demo',
   name: 'demo',
-  description: 'Demo package',
+  name: 'demo',
+  summary: 'Demo package',
   authors: ['alice'],
   tags: ['demo'],
   isPrivate: true,
@@ -61,24 +61,23 @@ describe('usePackageMetadataEditor', () => {
       usePackageMetadataEditor(DETAIL, 'alice'),
     );
     act(() => result.current.startEditing());
-    expect(result.current.description).toBe('Demo package');
     expect(result.current.authors).toEqual(['alice']);
     expect(result.current.isPrivate).toBe(true);
   });
 
-  it('rejects an empty description', async () => {
+  it('rejects an empty authors list', async () => {
     const onSaved = jest.fn();
     const { result } = renderHook(() =>
       usePackageMetadataEditor(DETAIL, '', onSaved),
     );
     act(() => result.current.startEditing());
-    act(() => result.current.setDescription('   '));
+    act(() => result.current.removeAuthor('alice'));
     let ok: boolean | null = null;
     await act(async () => {
       ok = await result.current.save();
     });
     expect(ok).toBe(false);
-    expect(result.current.validation.description).toMatch(/required/i);
+    expect(result.current.validation.authors).toMatch(/author|signed/i);
     expect(mockSaveMetadata).not.toHaveBeenCalled();
   });
 
@@ -107,7 +106,6 @@ describe('usePackageMetadataEditor', () => {
     expect(onSaved).toHaveBeenCalledTimes(1);
     expect(mockSaveMetadata).toHaveBeenCalledWith({
       id: 'demo',
-      description: 'Demo package',
       authors: ['alice'],
       isPrivate: false,
     });

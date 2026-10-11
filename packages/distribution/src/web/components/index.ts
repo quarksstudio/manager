@@ -7,11 +7,7 @@ export {
   type PackageStateNoticeProps,
   PackageStateNotice,
 } from './PackageStateNotice';
-export {
-  type ReadmeState,
-  type PackageTabsProps,
-  PackageTabs,
-} from './PackageTabs';
+export { type PackageTabsProps, PackageTabs } from './PackageTabs';
 export { type ReadmeTabProps, ReadmeTab } from './ReadmeTab';
 export {
   type SubscriptionsTabProps,

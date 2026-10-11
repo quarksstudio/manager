@@ -1,1 +1,1 @@
-export * from './http';
+export type * from './package';

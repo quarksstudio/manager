@@ -1,6 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Box, Text, useApp } from 'ink';
-import { useSearchPackages } from '../hooks';
+import { useServices } from '../hooks/useServices';
+import { useQuery } from '@quarks.studio/storage/query';
+import type {
+  SearchFilters,
+  SearchOptions,
+  RemoteSearchPage,
+} from '../domain/package-search-item';
 
 import {
   EmptyState,
@@ -9,29 +15,70 @@ import {
   StatusLine,
 } from '@quarks.studio/terminal-ui';
 
-interface SearchScreenProps {
-  query: string;
+export interface SearchScreenProps {
+  query?: string;
+  filters?: SearchFilters;
+  options?: SearchOptions;
+  cursor?: string;
   json?: boolean;
 }
 
-export function SearchScreen({ query, json }: SearchScreenProps) {
-  const {
-    combinedResults: items,
-    isSearchingRemote,
-    searchError,
-  } = useSearchPackages({
-    query,
+export function SearchScreen({
+  query,
+  filters,
+  options = {},
+  cursor,
+  json,
+}: SearchScreenProps) {
+  const { fetchRemotePackages } = useServices();
+  const requestKey = JSON.stringify({
+    filters: filters ?? { query },
+    options,
+    cursor,
   });
+  const load = useCallback(() => {
+    const request = JSON.parse(requestKey) as {
+      filters: SearchFilters;
+      options: SearchOptions;
+      cursor?: string;
+    };
+    return fetchRemotePackages(
+      request.filters,
+      request.options,
+      request.cursor,
+    );
+  }, [requestKey, fetchRemotePackages]);
+  const {
+    data: page,
+    loading: isSearchingRemote,
+    error,
+  } = useQuery<RemoteSearchPage>(load);
+  const items = page?.items ?? [];
+  const searchError =
+    error === undefined
+      ? null
+      : error instanceof Error
+        ? error.message
+        : String(error);
+  const label = filters?.query ?? query;
   const { exit } = useApp();
 
   useEffect(() => {
-    if (!isSearchingRemote) exit();
-  }, [exit, isSearchingRemote]);
+    if (!isSearchingRemote) {
+      if (error !== undefined) process.exitCode = 1;
+      exit();
+    }
+  }, [exit, isSearchingRemote, error]);
 
   if (isSearchingRemote && items.length === 0) {
     return (
       <Screen title="Search">
-        <StatusLine status="running" message={`Searching for "${query}"...`} />
+        <StatusLine
+          status="running"
+          message={
+            label ? `Searching for "${label}"...` : 'Searching registry...'
+          }
+        />
       </Screen>
     );
   }
@@ -53,7 +100,10 @@ export function SearchScreen({ query, json }: SearchScreenProps) {
   }
 
   return (
-    <Screen title="Search" subtitle={`Results for "${query}"`}>
+    <Screen
+      title="Search"
+      subtitle={label ? `Results for "${label}"` : 'Registry results'}
+    >
       {items.length === 0 ? (
         <EmptyState message="No matching packages found" />
       ) : (
@@ -68,8 +118,11 @@ export function SearchScreen({ query, json }: SearchScreenProps) {
       )}
       <Result
         success={items.length > 0}
-        message={`${items.length} package(s) found`}
+        message={`${items.length} package(s) shown; ${page?.totalCount ?? 0} total matches`}
       />
+      {page?.nextCursor && (
+        <Text wrap="wrap">Next cursor: {page.nextCursor}</Text>
+      )}
     </Screen>
   );
 }

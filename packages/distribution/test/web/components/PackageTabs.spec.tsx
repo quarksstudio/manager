@@ -8,8 +8,8 @@ import {
 import {
   DistributionProvider,
   type DistributionServices,
-} from '../../../../src/presentation';
-import { PackageTabs } from '../../../../src/web';
+} from '../../../src/presentation';
+import { PackageTabs } from '../../../src/web';
 
 jest.mock('@quarks.studio/commerce/web', () => ({
   ...jest.requireActual('@quarks.studio/commerce/web'),
@@ -19,15 +19,17 @@ jest.mock('@quarks.studio/commerce/web', () => ({
 const detail = {
   id: 'demo',
   name: 'demo',
-  description: 'Demo',
+  summary: 'Demo',
   authors: ['alice'],
   tags: ['demo'],
   downloads: 0,
   canEditMetadata: true,
-  versions: [{ version: '1.0.0' }],
+  latestVersion: '1.0.0',
+  versions: [
+    { version: '1.0.0', description: '', dist: { sha256: null, sizeBytes: 1 } },
+  ],
 };
 
-const readme = { content: '', loading: false, version: '1.0.0' };
 const urls = { versions: {}, downloads: {} };
 
 function servicesWith(update = jest.fn().mockResolvedValue({})) {
@@ -35,7 +37,7 @@ function servicesWith(update = jest.fn().mockResolvedValue({})) {
     downloadBundle: jest.fn(),
     getCurrentUser: jest.fn().mockResolvedValue({ id: 'alice' }),
     get: jest.fn(),
-    getReadme: jest.fn(),
+    getVersion: jest.fn(),
     update,
   };
   return { services, update };
@@ -49,7 +51,6 @@ it('gives authors a configuration tab that saves from the browser', async () => 
         packageName="demo"
         detail={detail}
         selectedVersion="1.0.0"
-        readme={readme}
         urls={urls}
       />
     </DistributionProvider>,
@@ -57,7 +58,7 @@ it('gives authors a configuration tab that saves from the browser', async () => 
   expect(screen.getByRole('tab', { name: 'Configuración' })).toBeTruthy();
   expect(screen.getByRole('tab', { name: 'Suscripciones' })).toBeTruthy();
   // The server props are on screen before the editor seeds itself.
-  expect(screen.getByLabelText('Descripción')).toHaveProperty('value', 'Demo');
+  expect(screen.queryByLabelText('Descripción')).toBeNull();
   expect(screen.getByTestId('member-alice')).toBeTruthy();
   // Tags are no longer edited from the configuration tab.
   expect(screen.queryByTestId('tag-demo')).toBeNull();
@@ -78,7 +79,6 @@ it('gives authors a configuration tab that saves from the browser', async () => 
   await waitFor(() => expect(update).toHaveBeenCalledTimes(1));
   expect(update).toHaveBeenCalledWith({
     id: 'demo',
-    description: 'Demo',
     authors: ['alice', 'bob'],
     isPrivate: false,
   });
@@ -90,7 +90,6 @@ it('does not expose subscriptions or configuration to a read-only viewer', () =>
       packageName="demo"
       detail={{ ...detail, canEditMetadata: false }}
       selectedVersion="1.0.0"
-      readme={readme}
       urls={urls}
     />,
   );
@@ -119,7 +118,6 @@ it('shows certifications inside the single Versions tab, not a Certs tab', () =>
         ],
       }}
       selectedVersion="1.0.0"
-      readme={readme}
       urls={urls}
     />,
   );

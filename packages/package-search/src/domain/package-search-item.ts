@@ -1,7 +1,7 @@
 export interface PackageSearchItem {
   name: string;
   version: string;
-  description: string;
+  summary: string;
   tags?: string[];
   [key: string]: unknown;
 }
@@ -10,7 +10,7 @@ export interface SearchFilters {
   /** Exact remote author ID; not a local text filter. */
   author?: string;
   name?: string;
-  description?: string;
+  summary?: string;
   tags?: string[];
   query?: string;
 }

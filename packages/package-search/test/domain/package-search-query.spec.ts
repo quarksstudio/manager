@@ -12,7 +12,7 @@ describe('filterPackages', () => {
 
   it('ranks an exact name match above a prefix, and a prefix above the rest', () => {
     // `chatty` matches as a name prefix; `zulu` matches only in its
-    // description, so it scores lowest; `chat` is the exact name.
+    // summary, so it scores lowest; `chat` is the exact name.
     const anywhere = item('zulu', 'Chat assistant', ['ai']);
     const result = filterPackages(
       [anywhere, chat, item('chatty', 'Nope', [])],
@@ -27,12 +27,12 @@ describe('filterPackages', () => {
     ]);
   });
 
-  it('is case insensitive and searches the description and tags', () => {
+  it('is case insensitive and searches the summary and tags', () => {
     expect(
       filterPackages([chat, review], { query: 'CHAT' }).map((e) => e.name),
     ).toEqual(['chat']);
     expect(
-      filterPackages([chat, review], { description: 'reviewer' }).map(
+      filterPackages([chat, review], { summary: 'reviewer' }).map(
         (e) => e.name,
       ),
     ).toEqual(['review']);
@@ -90,9 +90,9 @@ describe('filterPackages', () => {
 
 function item(
   name: string,
-  description: string,
+  summary: string,
   tags: string[],
   version = '1.0.0',
 ): PackageSearchItem {
-  return { name, version, description, tags };
+  return { name, version, summary, tags };
 }

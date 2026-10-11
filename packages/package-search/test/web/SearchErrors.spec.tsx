@@ -3,7 +3,7 @@ import { useSearchPackages } from '../../src/hooks/useSearchPackages';
 jest.mock('../../src/hooks/useServices', () => ({
   useServices: (override: unknown) => override,
 }));
-const item = { name: 'local', version: '1.0.0', description: 'Local package' };
+const item = { name: 'local', version: '1.0.0', summary: 'Local package' };
 it('exposes unsupported native searches while keeping local results', async () => {
   const services = {
     searchPackages: jest.fn(async () => ({

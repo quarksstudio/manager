@@ -6,19 +6,10 @@ import { ConfigTab } from './ConfigTab';
 import { ReadmeTab } from './ReadmeTab';
 import { SubscriptionsTab } from './SubscriptionsTab';
 import { VersionsTab } from './VersionsTab';
-export interface ReadmeState {
-  loading: boolean;
-  error?: unknown;
-  content: string;
-  version: string;
-  retryUrl?: string;
-  onRetry?: () => void;
-}
 export interface PackageTabsProps {
   packageName: string;
   detail: PackageDetails;
   selectedVersion: string;
-  readme: ReadmeState;
   urls: {
     versions: Record<string, string>;
     downloads: Record<string, string>;
@@ -29,7 +20,6 @@ export function PackageTabs({
   packageName,
   detail,
   selectedVersion,
-  readme,
   urls,
 }: PackageTabsProps) {
   const sectionId = (tab: string) =>
@@ -42,7 +32,13 @@ export function PackageTabs({
       children: (
         <section id={sectionId('readme')}>
           <h2 className="sr-only">ReadMe</h2>
-          <ReadmeTab {...readme} />
+          <ReadmeTab
+            content={
+              detail.versions.find((item) => item.version === selectedVersion)
+                ?.description ?? ''
+            }
+            version={selectedVersion}
+          />
         </section>
       ),
     },

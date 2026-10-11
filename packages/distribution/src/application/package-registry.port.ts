@@ -1,7 +1,7 @@
-import type { PackageDetails, PackageReadme } from '../domain/package-details';
+import type { PackageDetails, PackageVersion } from '../domain/package-details';
 
 export interface SearchResult {
-  items: Array<{ id: string }>;
+  items: Array<{ name: string }>;
 }
 
 export interface UpdatePackageInput {
@@ -24,8 +24,8 @@ export interface CreateVersionInput {
 export interface PackageRegistry {
   search(query?: string): Promise<SearchResult>;
   get(name: string): Promise<PackageDetails>;
-  getVersion(name: string, version: string): Promise<PackageDetails>;
-  getReadme(name: string, version: string): Promise<PackageReadme>;
+  getVersion(name: string, version: string): Promise<PackageVersion>;
+  getBundleUrl(name: string, version: string): string;
   downloadBundle(name: string, version: string): Promise<Response>;
   update(input: UpdatePackageInput, isNew?: boolean): Promise<PackageDetails>;
   createVersion(

@@ -14,11 +14,23 @@ Run `pnpm nx test-web package-search` for its presentation tests.
 
 ## Remote Firestore search
 
-The registry uses Firestore Standard queries. `query` searches a package **name prefix**, rather than a substring across name, description and tags. `name` and `description` accept prefixes, or equality with `exact: true`. Comparisons are case-sensitive. Tags match complete values; `matchMode: all` supports one tag only.
+The registry filters visible, published candidates with Firestore. With `exact: false`, `query` matches a substring anywhere in the name or summary, ignoring case; explicit `name` and `summary` filters also use case-insensitive substrings. Partial search reads candidates in batches to count all matches. With `exact: true`, text filters retain case-sensitive equality and `query` matches the name. Tags match complete values; `matchMode: all` supports one tag only.
 
 The registry includes public packages and private packages the signed-in user may access. Firestore cannot combine tag membership with author/private-access membership, or a different author with private-access membership. Those requests return HTTP 400; the client exposes this as `useSearchPackages().searchError` while preserving available results. The CLI displays the error instead of reporting an empty successful search.
 
 Pagination cursors are opaque and tied to the filters, authenticated user and page size. Start a new search without a cursor after changing any of them. Local catalog search retains its existing substring behavior.
+
+## CLI search
+
+`quark search [skill]` (alias `find`) accepts `--query`, `--search`, `--author`,
+`--name`, `--summary`, `--tags`, `--match-mode`, `--exact [boolean]`, `--limit`,
+and `--cursor`. Text priority is `--query`, then `--search`, then `skill`.
+The CLI shows one remote page, the total count, and the next cursor; local cached
+results are not merged. Repeat the same filters and limit when following a cursor.
+CLI validation and remote failures set a nonzero exit status.
+
+Run `node packages/package-search/test/CLI/search-command.spec.mjs` to verify
+Commander wiring in addition to the package's Jest tests.
 
 ## Homepage search
 

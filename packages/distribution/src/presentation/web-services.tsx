@@ -1,8 +1,7 @@
 import { createContext, type ReactNode } from 'react';
-import type { PackageDetails, PackageReadme } from '../index';
+import type { PackageDetails } from '../index';
 export interface DistributionWebServices {
   get(name: string): Promise<PackageDetails>;
-  getReadme(name: string, version: string): Promise<PackageReadme>;
 }
 export const Context = createContext<DistributionWebServices | null>(null);
 export function DistributionWebProvider({

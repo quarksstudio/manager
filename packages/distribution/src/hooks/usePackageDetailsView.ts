@@ -4,7 +4,7 @@ import { ApiError } from '@quarks.studio/registry/http';
 import { useDistributionServices } from './useDistributionServices';
 import {
   certificationsForVersion,
-  highestVersion,
+  selectPackageVersion,
   sortVersions,
   type PackageDetails,
   type PackageVersion,
@@ -72,26 +72,15 @@ export function usePackageDetailsView(
     () => sortVersions(detail?.versions ?? []),
     [detail],
   );
-  const latestVersion = versions[0]?.version ?? null;
-  const versionStrings = useMemo(
-    () => versions.map((version) => version.version),
-    [versions],
-  );
+  const latestVersion = detail?.latestVersion ?? null;
 
   const [requested, setRequested] = useState<string>(
     options.initialVersion ?? '',
   );
 
-  const requestedExists =
-    requested !== '' && versionStrings.includes(requested);
-  const versionNotFound =
-    requested !== '' && versions.length > 0 && !requestedExists;
-
-  const selectedVersion = requestedExists
-    ? requested
-    : versionNotFound
-      ? ''
-      : (latestVersion ?? '');
+  const selected = detail ? selectPackageVersion(detail, requested) : null;
+  const versionNotFound = requested !== '' && versions.length > 0 && !selected;
+  const selectedVersion = selected?.version ?? '';
 
   const setSelectedVersion = useCallback(
     (version: string) => {
@@ -102,14 +91,13 @@ export function usePackageDetailsView(
   );
 
   const selectedCertifications = useMemo(
-    () => certificationsForVersion({ versions }, selectedVersion),
-    [versions, selectedVersion],
+    () => certificationsForVersion(detail, selectedVersion),
+    [detail, selectedVersion],
   );
 
   const badge = useMemo(() => {
-    const latest = highestVersion(versions);
-    return certificationBadge(latest?.certifications);
-  }, [versions]);
+    return certificationBadge(selected?.certifications);
+  }, [selected]);
 
   const notFound = error instanceof ApiError && error.status === 404;
 

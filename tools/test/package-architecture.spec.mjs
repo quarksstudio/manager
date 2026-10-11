@@ -102,16 +102,16 @@ test('every custom hook has its own file in its owner hooks directory', async ()
 
 test('business contracts have one owner and the domain kernel stays minimal', async () => {
   const declarations = new Map([
-    ['Certification', 'certification'],
-    ['CertificationTier', 'certification'],
-    ['CertificationStatus', 'certification'],
+    ['Certification', 'registry'],
+    ['CertificationTier', 'registry'],
+    ['CertificationStatus', 'registry'],
     ['SubscriptionRecord', 'commerce'],
     ['DomainError', 'domain-kernel'],
   ]);
   const found = new Map();
   for (const file of await files('packages')) {
     if (
-      file.endsWith('.d.ts') ||
+      (file.endsWith('.d.ts') && file !== 'packages/registry/src/domain/package.d.ts') ||
       !file.endsWith('.ts') ||
       !file.includes('/src/')
     )

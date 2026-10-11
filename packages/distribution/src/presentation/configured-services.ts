@@ -3,7 +3,8 @@ import { loadSession } from '@quarks.studio/config';
 import { createHttpPackageRegistry } from '../http';
 import type { DistributionServices } from './services';
 export function createDistributionServices(): DistributionServices {
-  const gateway = createHttpPackageRegistry(createConfiguredContext());
+  const context = createConfiguredContext();
+  const gateway = createHttpPackageRegistry(context);
   return {
     ...gateway,
     getCurrentUser: async () => {

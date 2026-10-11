@@ -19,12 +19,7 @@ export function useUpdatePackageMetadata(
       setStatus('saving');
       setError(null);
       try {
-        await client.update({
-          id: input.id,
-          description: input.description,
-          authors: input.authors,
-          isPrivate: input.isPrivate,
-        });
+        await client.update({ ...input });
         setStatus('success');
       } catch (reason) {
         const failure =

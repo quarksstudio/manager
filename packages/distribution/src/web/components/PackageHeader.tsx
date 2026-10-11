@@ -15,14 +15,10 @@ function tierColor(tier?: string): TierColor {
 export interface PackageHeaderProps {
   name: string;
   badge: CertificationBadge | null;
-  description?: string;
+  summary?: string;
 }
 
-export function PackageHeader({
-  name,
-  badge,
-  description,
-}: PackageHeaderProps) {
+export function PackageHeader({ name, badge, summary }: PackageHeaderProps) {
   return (
     <QuarkTheme>
       <header data-testid="package-header" className="space-y-2">
@@ -37,12 +33,12 @@ export function PackageHeader({
             {badge?.label ?? 'Uncertified'}
           </Tag>
         </div>
-        {description && (
+        {summary && (
           <Typography.Paragraph
             type="secondary"
             className="!mb-0 max-w-3xl !text-base"
           >
-            {description}
+            {summary}
           </Typography.Paragraph>
         )}
       </header>

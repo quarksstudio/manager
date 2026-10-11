@@ -6,6 +6,8 @@ export function useLandingServices(apiBaseUrl: string) {
     return {
       search: () =>
         context.fetchJson<{ items: Array<{ id: string }> }>('package?query='),
+      home: () =>
+          context.fetchJson<{ items: Array<{ id: string }> }>('package'),
     };
   }, [apiBaseUrl]);
 }

@@ -1,4 +1,7 @@
-import { highestVersion, type PackageDetails as Detail } from '../../index';
+import {
+  selectPackageVersion,
+  type PackageDetails as Detail,
+} from '../../index';
 import { certificationBadge } from '../lib/certification';
 import { QuarkTheme } from '@quarks.studio/web-ui';
 import { PackageHeader } from './PackageHeader';
@@ -14,7 +17,6 @@ export interface PackageDetailsProps {
   loading?: boolean;
   error?: string;
   notFound?: boolean;
-  readme?: { content: string; error?: string };
   urls: {
     retry: string;
     versions: Record<string, string>;
@@ -29,16 +31,17 @@ export function PackageDetails({
   loading,
   error,
   notFound,
-  readme,
   urls,
   commercialPanel,
 }: PackageDetailsProps) {
   if (loading) return <PackageDetailsSkeleton />;
-  const latest = highestVersion(detail?.versions)?.version;
-  const version = selectedVersion || latest || null;
+  const latest = detail?.latestVersion;
+  const selected = detail
+    ? selectPackageVersion(detail, selectedVersion)
+    : null;
+  const version = selected?.version ?? null;
   const versionMissing =
-    !!selectedVersion &&
-    !(detail?.versions ?? []).some((v) => v.version === selectedVersion);
+    !!selectedVersion && !!detail?.versions.length && !selected;
   const notice = notFound
     ? 'Package not found'
     : error
@@ -58,10 +61,8 @@ export function PackageDetails({
       >
         <PackageHeader
           name={packageName}
-          description={detail?.description}
-          badge={certificationBadge(
-            highestVersion(detail?.versions)?.certifications,
-          )}
+          summary={detail?.summary}
+          badge={certificationBadge(selected?.certifications)}
         />
         {notice ? (
           <section className="py-8">
@@ -78,8 +79,8 @@ export function PackageDetails({
                 <PackageSidebar
                   packageName={packageName}
                   version={version}
-                  downloads={detail.downloads}
-                  downloadsSince={detail.downloadsSince}
+                  downloads={detail.stats?.downloads}
+                  downloadsSince={detail.stats?.series[0]?.time}
                   authors={detail.authors}
                   tags={detail.tags}
                   installCommand={
@@ -94,14 +95,7 @@ export function PackageDetails({
                 <PackageTabs
                   packageName={packageName}
                   detail={detail}
-                  selectedVersion={selectedVersion}
-                  readme={{
-                    content: readme?.content ?? '',
-                    error: readme?.error,
-                    loading: false,
-                    version: selectedVersion,
-                    retryUrl: urls.retry,
-                  }}
+                  selectedVersion={version ?? ''}
                   urls={urls}
                 />
               </div>

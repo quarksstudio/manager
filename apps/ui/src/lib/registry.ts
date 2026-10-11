@@ -2,7 +2,7 @@ import type { AstroCookies } from 'astro';
 import { loadConfig } from '@quarks.studio/config';
 import { createAppApi } from './api';
 import { RegistryHttpError } from '@quarks.studio/registry/http';
-import { highestVersion } from '@quarks.studio/distribution';
+import { selectPackageVersion } from '@quarks.studio/distribution';
 
 export const sessionCookie = 'quark-session';
 
@@ -31,26 +31,28 @@ export function packageUrl(name: string, version?: string) {
   return `/${encodeURIComponent(name)}${version ? `/${encodeURIComponent(version)}` : ''}`;
 }
 
-
-export async function getPackage(cookies: AstroCookies, name: string, version?: string) {
+export async function getPackage(
+  cookies: AstroCookies,
+  name: string,
+  version?: string,
+) {
   const clientServer = await registry(cookies);
   const detail = await clientServer.Packages.get(name);
   if (!detail) {
-    throw new Error("Dont exist package");
+    throw new Error('Dont exist package');
   }
 
   return {
     detail,
-    version: highestVersion(detail.versions)?.version
+    version: selectPackageVersion(detail, version)?.version ?? version,
   };
 }
-
 
 export async function getUser(cookies: AstroCookies, name: string) {
   const clientServer = await registry(cookies);
   const detail = await clientServer.Users.get(name);
   if (!detail) {
-    throw new Error("Dont exist user");
+    throw new Error('Dont exist user');
   }
 
   return detail;

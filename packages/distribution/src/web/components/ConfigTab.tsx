@@ -26,12 +26,45 @@ export function ConfigTab({ detail }: ConfigTabProps) {
   }, [startEditing]);
 
   const authors = seeded ? editor.authors : (detail.authors ?? []);
-  const description = seeded ? editor.description : detail.description;
   const isPrivate = seeded ? editor.isPrivate : (detail.isPrivate ?? false);
 
   return (
     <QuarkTheme>
       <div className="space-y-8" data-testid="config-tab">
+        <section aria-label="Detalles">
+          <h3 className="!mb-3 text-base font-semibold">Detalles</h3>
+          <div className="max-w-xl space-y-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium">Paquete privado</p>
+                <p className="text-sm text-slate-500">
+                  Solo los miembros autorizados pueden verlo.
+                </p>
+              </div>
+              <Switch
+                aria-label="Paquete privado"
+                checked={isPrivate}
+                onChange={editor.setIsPrivate}
+              />
+            </div>
+            {editor.saveError && (
+              <Alert
+                type="error"
+                showIcon
+                message="No se pudieron guardar los cambios."
+                description={editor.saveError.message}
+              />
+            )}
+            <Button
+              type="primary"
+              loading={editor.saving}
+              onClick={() => void editor.save()}
+            >
+              Guardar cambios
+            </Button>
+          </div>
+        </section>
+
         <section aria-label="Miembros autorizados">
           <h3 className="!mb-2 text-base font-semibold">
             Miembros autorizados
@@ -71,54 +104,6 @@ export function ConfigTab({ detail }: ConfigTabProps) {
               {editor.validation.authors}
             </p>
           )}
-        </section>
-
-        <section aria-label="Detalles">
-          <h3 className="!mb-3 text-base font-semibold">Detalles</h3>
-          <div className="max-w-xl space-y-4">
-            <div>
-              <Input.TextArea
-                aria-label="Descripción"
-                maxLength={500}
-                rows={4}
-                value={description}
-                onChange={(event) => editor.setDescription(event.target.value)}
-              />
-              {editor.validation.description && (
-                <p role="alert" className="mt-1 text-sm text-red-400">
-                  {editor.validation.description}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm font-medium">Paquete privado</p>
-                <p className="text-sm text-slate-500">
-                  Solo los miembros autorizados pueden verlo.
-                </p>
-              </div>
-              <Switch
-                aria-label="Paquete privado"
-                checked={isPrivate}
-                onChange={editor.setIsPrivate}
-              />
-            </div>
-            {editor.saveError && (
-              <Alert
-                type="error"
-                showIcon
-                message="No se pudieron guardar los cambios."
-                description={editor.saveError.message}
-              />
-            )}
-            <Button
-              type="primary"
-              loading={editor.saving}
-              onClick={() => void editor.save()}
-            >
-              Guardar cambios
-            </Button>
-          </div>
         </section>
       </div>
     </QuarkTheme>

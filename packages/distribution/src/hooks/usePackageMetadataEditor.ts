@@ -5,16 +5,14 @@ import { useUpdatePackageMetadata } from './useUpdatePackageMetadata';
 export { normalizeTag } from '../domain/update-package-metadata';
 import { type PackageDetails } from '../domain/package-details';
 
-const MAX_DESCRIPTION = 500;
-
 export interface PackageMetadataDraft {
-  description: string;
+  summary: string;
   authors: string[];
   isPrivate: boolean;
 }
 
 export interface PackageMetadataValidation {
-  description?: string;
+  summary?: string;
   authors?: string;
 }
 
@@ -22,8 +20,6 @@ export interface UsePackageMetadataEditorReturn {
   isEditing: boolean;
   startEditing: () => void;
   cancelEdit: () => void;
-  description: string;
-  setDescription: (value: string) => void;
   isPrivate: boolean;
   setIsPrivate: (value: boolean) => void;
   authors: string[];
@@ -51,14 +47,12 @@ export function usePackageMetadataEditor(
   const { save: saveMetadata, status, error } = useUpdatePackageMetadata();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [description, setDescription] = useState('');
   const [authors, setAuthors] = useState<string[]>([]);
   const [isPrivate, setIsPrivate] = useState(false);
   const [authorInput, setAuthorInput] = useState('');
   const [validation, setValidation] = useState<PackageMetadataValidation>({});
 
   const startEditing = useCallback(() => {
-    setDescription(detail?.description ?? '');
     setAuthors(detail?.authors ?? []);
     setIsPrivate(detail?.isPrivate ?? false);
     setValidation({});
@@ -91,12 +85,7 @@ export function usePackageMetadataEditor(
   const save = useCallback(async () => {
     if (!detail) return false;
     const errors: PackageMetadataValidation = {};
-    const trimmed = description.trim();
-    if (!trimmed) {
-      errors.description = 'Description is required.';
-    } else if (trimmed.length > MAX_DESCRIPTION) {
-      errors.description = `Description must be ${MAX_DESCRIPTION} characters or fewer.`;
-    }
+
     const cleanedAuthors = authors
       .map((author) => author.trim())
       .filter(Boolean);
@@ -113,8 +102,7 @@ export function usePackageMetadataEditor(
 
     try {
       await saveMetadata({
-        id: detail.id,
-        description: trimmed,
+        id: detail.name,
         authors: cleanedAuthors,
         isPrivate,
       });
@@ -124,22 +112,12 @@ export function usePackageMetadataEditor(
     } catch {
       return false;
     }
-  }, [
-    authors,
-    description,
-    detail,
-    identity,
-    isPrivate,
-    onSaved,
-    saveMetadata,
-  ]);
+  }, [authors, detail, identity, isPrivate, onSaved, saveMetadata]);
 
   return {
     isEditing,
     startEditing,
     cancelEdit,
-    description,
-    setDescription,
     isPrivate,
     setIsPrivate,
     authors,

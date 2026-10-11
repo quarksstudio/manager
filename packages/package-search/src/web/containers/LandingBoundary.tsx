@@ -26,7 +26,7 @@ export function LandingBoundary({
     let cancelled = false;
     void (async () => {
       try {
-        const result = await services.search();
+        const result = await services.home();
         if (!cancelled) setTiers(landingTiers(result.items, packageUrl));
       } catch {
         if (!cancelled) setError('Could not load packages.');

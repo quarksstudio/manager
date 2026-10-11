@@ -2,7 +2,7 @@ const searchKeys = new Set([
   'query',
   'search',
   'name',
-  'description',
+  'summary',
   'author',
   'tags',
   'matchMode',

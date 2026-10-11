@@ -1,36 +1,13 @@
 import type { Certification } from '@quarks.studio/certification';
-
-/** The editor's input belongs to the same aggregate, so it re-exports here. */
-export type { UpdatePackageMetadataInput } from './update-package-metadata';
-
-export interface PackageVersion {
-  version: string;
-  date?: string;
-  publishedBy?: string;
-  reports?: number;
-  files?: string[];
-  certifications?: Certification[];
-}
-
-export interface PackageDetails {
-  id: string;
-  name: string;
-  description: string;
-  authors: string[];
-  tags: string[];
-  downloads: number;
-  downloadsSince?: string;
-  isPrivate?: boolean;
-  canEditMetadata: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  latest?: PackageVersion | null;
-  versions?: PackageVersion[];
-}
-
-export interface PackageReadme {
-  content: string;
-}
+import type {
+  PackageDetails,
+  PackageVersion,
+} from '@quarks.studio/registry/domain';
+export type {
+  PackageDetails,
+  PackageVersion,
+  UpdatePackageMetadataInput,
+} from '@quarks.studio/registry/domain';
 
 const PRERELEASE_ORDER: Record<string, number> = {
   alpha: 1,
@@ -75,11 +52,26 @@ export function highestVersion(
 }
 
 export function certificationsForVersion(
-  detail: Pick<PackageDetails, 'versions'> | null,
+  detail: Pick<PackageDetails, 'versions' | 'latestVersion'> | null,
   version?: string,
 ): Certification[] {
   if (!detail?.versions?.length) return [];
-  const target = version ?? highestVersion(detail.versions)?.version;
+  const target = version ?? detail.latestVersion;
   const selected = detail.versions.find((item) => item.version === target);
   return selected?.certifications ?? [];
+}
+
+export function selectPackageVersion(
+  detail: Pick<PackageDetails, 'versions' | 'latestVersion'>,
+  selector = 'latest',
+): PackageVersion | null {
+  const target =
+    !selector || selector === 'latest'
+      ? detail.latestVersion || detail.versions[0].version
+      : selector === 'cert'
+        ? sortVersions(detail.versions).find((version) =>
+            version.certifications?.some((cert) => cert.status === 'approved'),
+          )?.version
+        : selector;
+  return detail.versions.find((version) => version.version === target) ?? null;
 }

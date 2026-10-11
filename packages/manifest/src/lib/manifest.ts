@@ -20,6 +20,7 @@ export const ManifestSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   version: z.string().min(1, 'Version is required'),
   description: z.string().optional(),
+  license: z.string().optional(),
   entrypoint: z.string().min(1, 'Entrypoint is required'),
   runtime: RuntimeSchema.optional(),
   models: z.array(z.string()).optional(),

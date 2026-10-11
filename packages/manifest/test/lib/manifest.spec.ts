@@ -5,6 +5,7 @@ describe('manifest validation', () => {
     const validJson = {
       name: '@axcel/route-intelligence',
       version: '1.4.2',
+      license: 'MIT',
       description: 'Optimization and dispatch routing skill',
       entrypoint: './src/index.py',
       runtime: {
@@ -28,6 +29,7 @@ describe('manifest validation', () => {
     const res = validateManifest(validJson);
     expect(res.success).toBe(true);
     if (res.success) {
+      expect(res.data.license).toBe('MIT');
       expect(res.data.name).toBe('@axcel/route-intelligence');
       expect(res.data.permissions?.filesystem).toBe(false);
     }

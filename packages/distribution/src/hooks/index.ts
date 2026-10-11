@@ -6,6 +6,4 @@ export * from './usePackageCertifications';
 export * from './usePackageDetailsView';
 export * from './usePackageDownload';
 export * from './usePackageMetadataEditor';
-export * from './usePackageReadme';
-export * from './useReadmeCached';
 export * from './useUpdatePackageMetadata';

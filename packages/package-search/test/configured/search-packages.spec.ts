@@ -60,10 +60,10 @@ describe('searchPackages', () => {
     fetchJson.mockResolvedValue({
       items: [
         {
-          id: 'remote',
-          description: 'Remote',
+          name: 'remote',
+          summary: 'Remote',
           tags: ['web'],
-          latest: { version: '2.0.0' },
+          latestVersion: '2.0.0',
         },
       ],
       totalCount: 1,
@@ -98,8 +98,8 @@ describe('searchPackages', () => {
 
 function item(
   name: string,
-  description: string,
+  summary: string,
   tags: string[],
 ): PackageSearchItem {
-  return { name, version: '1.0.0', description, tags };
+  return { name, version: '1.0.0', summary, tags };
 }

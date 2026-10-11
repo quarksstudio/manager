@@ -1,5 +1,5 @@
 import type { OperationContext } from '@quarks.studio/registry/http';
-import type { PackageDetails, PackageReadme } from '../domain/package-details';
+import type { PackageDetails, PackageVersion } from '../domain/package-details';
 import type {
   PackageRegistry,
   SearchResult,
@@ -13,6 +13,8 @@ import type {
 export function createHttpPackageRegistry(
   context: OperationContext,
 ): PackageRegistry {
+  const bundlePath = (name: string, version: string) =>
+    `package/${encodeURIComponent(name)}/${encodeURIComponent(version)}/bundle`;
   return {
     search: (query = ''): Promise<SearchResult> =>
       context.fetchJson(`package?query=${encodeURIComponent(query)}`),
@@ -20,20 +22,15 @@ export function createHttpPackageRegistry(
     get: (name): Promise<PackageDetails> =>
       context.fetchJson(`package/${encodeURIComponent(name)}`),
 
-    getVersion: (name, version): Promise<PackageDetails> =>
+    getVersion: (name, version): Promise<PackageVersion> =>
       context.fetchJson(
         `package/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
       ),
 
-    getReadme: (name, version): Promise<PackageReadme> =>
-      context.fetchJson(
-        `package/${encodeURIComponent(name)}/${encodeURIComponent(version)}/readme`,
-      ),
-
+    getBundleUrl: (name, version) =>
+      `${context.baseUrl.replace(/\/$/, '')}/${bundlePath(name, version)}`,
     downloadBundle: (name, version) =>
-      context.request(
-        `package/${encodeURIComponent(name)}/${encodeURIComponent(version)}/bundle`,
-      ),
+      context.request(bundlePath(name, version)),
 
     update: (input, isNew = false) => update(context, input, isNew),
 

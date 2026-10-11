@@ -1,21 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useApp } from 'ink';
-import { useFetchPackage } from '../hooks';
-
-import {
-  KeyValue,
-  Panel,
-  Result,
-  Screen,
-  StatusLine,
-} from '@quarks.studio/terminal-ui';
+import { useQuery } from '@quarks.studio/storage/query';
+import { Result, Screen, StatusLine } from '@quarks.studio/terminal-ui';
+import { useDistributionServices } from '../hooks/useDistributionServices';
+import { loadPackageInfo } from '../application/package-info';
+import { InfoContent } from './InfoContent';
 
 interface InfoScreenProps {
   name: string;
 }
 
 export function InfoScreen({ name }: InfoScreenProps) {
-  const { data: item, error, loading } = useFetchPackage(name);
+  const services = useDistributionServices();
+  const load = useCallback(
+    () => loadPackageInfo(name, services),
+    [name, services],
+  );
+  const { data: info, error, loading } = useQuery(load);
   const { exit } = useApp();
 
   useEffect(() => {
@@ -29,42 +30,18 @@ export function InfoScreen({ name }: InfoScreenProps) {
       </Screen>
     );
   }
-
-  if (error) {
+  if (error || !info) {
     return (
       <Screen title="Info">
-        <Result success={false} message={String(error)} />
+        <Result
+          success={false}
+          message={String(error ?? 'Package not found')}
+        />
       </Screen>
     );
   }
 
-  const pkg = item as Record<string, unknown> | undefined;
-
-  return (
-    <Screen title="Info" subtitle={name}>
-      <Panel color="info">
-        <KeyValue
-          items={[
-            { key: 'Package', value: name },
-            {
-              key: 'Version',
-              value: pkg?.['version'] ? String(pkg['version']) : undefined,
-            },
-            {
-              key: 'Description',
-              value: pkg?.['description']
-                ? String(pkg['description'])
-                : undefined,
-            },
-            {
-              key: 'Author',
-              value: pkg?.['author'] ? String(pkg['author']) : undefined,
-            },
-          ].filter((i) => i.value !== undefined)}
-        />
-      </Panel>
-    </Screen>
-  );
+  return <InfoContent info={info} />;
 }
 
 export default InfoScreen;

@@ -1,15 +1,16 @@
 import type { Certification } from '@quarks.studio/certification';
 import { createContext, createElement, type ReactNode } from 'react';
 import {
-  type PackageReadme,
+  type PackageDetails,
   type PackageVersion,
   type UpdatePackageMetadataInput,
 } from '../domain/package-details';
 export interface DistributionServices {
+  getBundleUrl?(name: string, version: string): string;
   downloadBundle(name: string, version: string): Promise<Response>;
   getCurrentUser(): Promise<{ id: string } | null>;
-  get(name: string): Promise<unknown>;
-  getReadme(name: string, version: string): Promise<PackageReadme>;
+  get(name: string): Promise<PackageDetails>;
+  getVersion(name: string, version: string): Promise<PackageVersion>;
   update(
     body: { id: string; [key: string]: unknown },
     isNew?: boolean,

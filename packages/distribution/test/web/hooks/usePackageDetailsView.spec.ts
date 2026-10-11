@@ -17,7 +17,7 @@ const mockGet = jest.fn();
 
 const services: DistributionServices = {
   get: mockGet,
-  getReadme: jest.fn(),
+  getVersion: jest.fn(),
   update: jest.fn(),
   downloadBundle: jest.fn(),
   getCurrentUser: jest.fn(),
@@ -31,8 +31,9 @@ const renderHook: typeof renderHookWithServices = (callback, options) =>
   });
 
 const DETAIL = {
-  id: 'demo',
-  description: 'Demo',
+  name: 'demo',
+  summary: 'Demo',
+  latestVersion: '1.0.0',
   authors: ['a'],
   tags: ['demo'],
   downloads: 10,

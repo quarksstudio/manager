@@ -35,5 +35,5 @@ it('renders local results before merging remote results', async () => {
   ]);
 });
 function item(name: string) {
-  return { name, version: '1.0.0', description: name + ' skill' };
+  return { name, version: '1.0.0', summary: name + ' skill' };
 }

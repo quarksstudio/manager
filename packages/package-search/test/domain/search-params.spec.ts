@@ -7,7 +7,7 @@ it('does not activate searches for unrelated parameters', () => {
 it.each([
   'query=',
   'name=demo',
-  'description=Hello',
+  'summary=Hello',
   'author=uid',
   'tags=AI',
   'limit=20',

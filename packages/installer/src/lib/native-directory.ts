@@ -38,7 +38,7 @@ export function loadNativeDirectory(): NativeDirectoryApi {
   } catch (cause) {
     throw new Error(
       `Native installer backend unavailable for ${platform}; reinstall the package with its prebuilt binaries`,
-      { cause },
+      // ToDo: { cause },
     );
   }
 }

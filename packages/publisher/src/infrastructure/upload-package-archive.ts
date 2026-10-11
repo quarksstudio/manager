@@ -102,7 +102,7 @@ export async function uploadPackageArchive(
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ description: input.description }),
+      body: JSON.stringify({ summary: input.description }),
     });
     if (created.status !== 409) check(created, 'Package creation');
     response = await authorize();

@@ -25,7 +25,7 @@ export function filterPackages(
   return packages
     .filter((item) => {
       if (!matches(item.name, filters.name)) return false;
-      if (!matches(item.description, filters.description)) return false;
+      if (!matches(item.summary, filters.summary)) return false;
       const tags = item.tags ?? [];
       if (filters.tags?.length) {
         const checks = filters.tags.map((tag) =>
@@ -41,7 +41,7 @@ export function filterPackages(
       }
       return (
         !filters.query?.trim() ||
-        [item.name, item.description, ...tags].some((value) =>
+        [item.name, item.summary, ...tags].some((value) =>
           matches(value, filters.query),
         )
       );

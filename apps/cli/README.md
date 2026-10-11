@@ -25,6 +25,37 @@ quark cache clean
 
 Use `quark publish <folder> --dry-run` to build and verify an archive without uploading it. Authentication tokens are stored by the actions and local-store packages; do not pass credentials as command arguments.
 
+## Registry search
+
+`search` (alias `find`) displays one page from the registry, its total match count,
+and the next cursor when more results exist. Cached local results are not mixed
+into this page.
+
+```bash
+quark search e2e
+quark search --query e2e
+quark find --search e2e
+quark search --tags e2e,testing --match-mode any
+quark search --author USER_UID --limit 10
+quark search --name demo --exact
+quark search --query e2e --exact false --limit 10 --cursor CURSOR
+```
+
+The text priority is `--query`, then `--search`, then the optional positional
+argument. You can also use `--name`, `--summary`, `--author` (UID), and `--tags`
+(comma-separated). `--match-mode` accepts `any` (default) or `all`; the server
+currently supports `all` with only one tag. Tags cannot be combined with author
+or authenticated private-access searches.
+
+`--exact` means true; `--exact true` and `--exact false` are also supported. Partial
+text search ignores case and finds text anywhere in the name or description.
+`--limit` must be a positive integer; the server defaults to 20 and caps it at 100.
+To follow a cursor, repeat the same filters and limit and pass `--cursor` with the
+printed value. Pages are not loaded automatically. `quark search` without filters
+requests the first page. `--models` remains accepted for compatibility and does
+not affect registry searches. Invalid options and API failures exit with a nonzero
+status.
+
 ## Development
 
 ```bash

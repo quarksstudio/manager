@@ -6,12 +6,19 @@ import { PackageDetails } from '@quarks.studio/distribution/web';
 const detail = {
   id: 'demo',
   name: 'demo',
-  description: 'Demo package',
+  summary: 'Demo package',
   authors: ['alice'],
   tags: ['demo'],
-  downloads: 42,
+  stats: { downloads: 42, views: 0, series: [] },
+  latestVersion: '1.0.0',
   canEditMetadata: false,
-  versions: [{ version: '1.0.0' }],
+  versions: [
+    {
+      version: '1.0.0',
+      description: '# README',
+      dist: { sha256: null, sizeBytes: 1 },
+    },
+  ],
 };
 const urls = {
   retry: '/packages/demo',
@@ -26,7 +33,6 @@ it('renders server data and working version/download links without fetching', ()
       detail={detail}
       selectedVersion="1.0.0"
       urls={urls}
-      readme={{ content: '# README' }}
     />,
   );
   expect(screen.getByRole('heading', { name: 'README' })).toBeTruthy();
@@ -42,7 +48,14 @@ it('renders server data and working version/download links without fetching', ()
 it('shows the viewed version and its install command, not the latest', () => {
   const older = {
     ...detail,
-    versions: [{ version: '1.0.0' }, { version: '0.9.0' }],
+    versions: [
+      detail.versions[0],
+      {
+        version: '0.9.0',
+        description: '# Older README',
+        dist: { sha256: null, sizeBytes: 1 },
+      },
+    ],
   };
   const olderUrls = {
     retry: '/packages/demo/0.9.0',
@@ -62,7 +75,6 @@ it('shows the viewed version and its install command, not the latest', () => {
       detail={older}
       selectedVersion="0.9.0"
       urls={olderUrls}
-      readme={{ content: '# README' }}
     />,
   );
   expect(screen.getByTestId('version').textContent).toBe('0.9.0');
@@ -75,7 +87,6 @@ it('renders the info box before the tabs so mobile sees it first', () => {
       detail={detail}
       selectedVersion="1.0.0"
       urls={urls}
-      readme={{ content: '# README' }}
     />,
   );
   const sidebar = container.querySelector('[data-testid="package-sidebar"]');
@@ -120,10 +131,17 @@ it('supports SSR with a sanitized README', () => {
   const html = renderToString(
     <PackageDetails
       packageName="demo"
-      detail={detail}
+      detail={{
+        ...detail,
+        versions: [
+          {
+            ...detail.versions[0],
+            description: '# README\n<script>alert(1)</script>',
+          },
+        ],
+      }}
       selectedVersion="1.0.0"
       urls={urls}
-      readme={{ content: '# README\n<script>alert(1)</script>' }}
     />,
   );
   expect(html).toContain('<h1>README</h1>');
@@ -137,7 +155,6 @@ it('hydrates SSR markup without replacing it or fetching data', async () => {
       detail={detail}
       selectedVersion="1.0.0"
       urls={urls}
-      readme={{ content: '# README' }}
     />
   );
   const container = document.createElement('div');

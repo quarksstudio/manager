@@ -21,11 +21,12 @@ const { detail, version } = await getPackage(
 
 <Layout
   title={`${name} · ${version}`}
-  description={detail?.description ?? undefined}
+  description={detail?.summary ?? undefined}
 >
   <PackagesBoundary
     apiBaseUrl={browserRegistryBaseUrl}
     client:only="react"
+    initialDetail={detail}
     packageName={name}
     version={version}
   />

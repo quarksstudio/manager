@@ -13,7 +13,14 @@
         "outputPath": "dist/packages/registry",
         "main": "packages/registry/src/index.ts",
         "tsConfig": "packages/registry/tsconfig.lib.json",
-        "assets": ["packages/registry/*.md"]
+        "assets": [
+          "packages/registry/*.md",
+          {
+            "input": "packages/registry/src/domain",
+            "glob": "package.d.ts",
+            "output": "src/domain"
+          }
+        ]
       }
     },
     "test": {
@@ -31,7 +38,14 @@
         "outputPath": "dist/packages/registry",
         "main": "packages/registry/src/index.ts",
         "tsConfig": "packages/registry/tsconfig.lib.json",
-        "assets": ["packages/registry/*.md"]
+        "assets": [
+          "packages/registry/*.md",
+          {
+            "input": "packages/registry/src/domain",
+            "glob": "package.d.ts",
+            "output": "src/domain"
+          }
+        ]
       }
     }
   }

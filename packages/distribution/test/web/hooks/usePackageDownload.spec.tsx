@@ -8,7 +8,7 @@ import {
 const downloadBundle = jest.fn();
 const services: DistributionServices = {
   get: jest.fn(),
-  getReadme: jest.fn(),
+  getVersion: jest.fn(),
   update: jest.fn(),
   getCurrentUser: jest.fn(),
   downloadBundle,

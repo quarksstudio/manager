@@ -25,7 +25,8 @@ export function registerCommands(program: Command): void {
     .option('--verbose', 'enable verbose logging (like --loglevel verbose)');
 
   program
-    .command('add|install')
+    .command('add')
+    .alias('install')
     .description('Install a skill')
     .argument('<skill>', 'skill package name')
     .option('--global', 'install for the current user')
@@ -82,7 +83,10 @@ export function registerCommands(program: Command): void {
   program
     .command('info')
     .description('Show package information')
-    .argument('<skill>', 'skill package name')
+    .argument(
+      '<skill>',
+      'skill package name with optional version (e.g. name@1.0.0, name@cert, name@latest, name)',
+    )
     .action(Info);
 
   program
@@ -115,7 +119,8 @@ export function registerCommands(program: Command): void {
     );
 
   program
-    .command('remove|uninstall')
+    .command('remove')
+    .alias('uninstall')
     .description('Remove an installed skill')
     .argument('<skill>', 'skill package name')
     .option('--global', 'remove from the current user installation')
@@ -126,10 +131,38 @@ export function registerCommands(program: Command): void {
     );
 
   program
-    .command('search|find')
-    .description('Search the Quark skill registry')
-    .argument('<skill>', 'name or search query')
-    .option('-m, --models <models>', 'comma-separated model targets', ',')
+    .command('search')
+    .alias('find')
+    .description('Search one page of the Quark skill registry')
+    .argument('[skill]', 'name or search query')
+    .option(
+      '--query <text>',
+      'search text (takes precedence over --search and skill)',
+    )
+    .option(
+      '--search <text>',
+      'alias for --query (takes precedence over skill)',
+    )
+    .option('--author <uid>', 'filter by author UID')
+    .option('--name <text>', 'filter by package name')
+    .option('--summary <text>', 'filter by package description')
+    .option('--tags <tags>', 'comma-separated tags')
+    .option('--match-mode <mode>', 'tag match mode: any or all', 'any')
+    .option(
+      '--exact [boolean]',
+      'exact matching: true or false; flag alone means true',
+      false,
+    )
+    .option(
+      '--limit <number>',
+      'page size (positive integer; server maximum 100)',
+    )
+    .option('--cursor <cursor>', 'page cursor returned by a previous search')
+    .option(
+      '-m, --models <models>',
+      'accepted for compatibility; does not filter registry search',
+      ',',
+    )
     .action(Search);
 
   const config = program.command('config').description('Manage the CLI config');

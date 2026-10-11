@@ -8,8 +8,8 @@ import {
 import InfoScreen from './InfoScreen';
 export default function Info(
   name: string,
-  services: DistributionServices = createDistributionServices(),
 ): void {
+  const services: DistributionServices = createDistributionServices();
   renderAction(
     React.createElement(DistributionProvider, {
       services,

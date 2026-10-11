@@ -1,15 +1,17 @@
 import { useMemo } from 'react';
+import type { PackageDetails } from '../../domain/package-details';
 import { PackagesBoundary as PackagesView } from '../containers/PackagesBoundary';
 import { DistributionWebProvider } from '../../presentation/web-services';
 import { DistributionProvider } from '../../presentation/services';
 import { createDistributionServices } from '../../presentation/configured-services';
 import { useDistributionClient } from '../../hooks/useDistributionClient';
-import { packageUrl, downloadUrl, navigate } from '../lib/package-links';
+import { packageUrl, downloadUrl } from '../lib/package-links';
 
 export interface PackagesBoundaryProps {
   apiBaseUrl: string;
   packageName: string;
   version?: string;
+  initialDetail?: PackageDetails;
 }
 
 export function ConfiguredPackagesBoundary({
@@ -20,8 +22,6 @@ export function ConfiguredPackagesBoundary({
   const services = useMemo(
     () => ({
       get: (name: string) => client.get(name),
-      getReadme: (name: string, version: string) =>
-        client.getReadme(name, version),
     }),
     [client],
   );
@@ -34,7 +34,6 @@ export function ConfiguredPackagesBoundary({
           {...props}
           packageUrl={packageUrl}
           downloadUrl={downloadUrl}
-          navigate={navigate}
         />
       </DistributionWebProvider>
     </DistributionProvider>

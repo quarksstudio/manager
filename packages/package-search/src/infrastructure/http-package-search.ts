@@ -8,11 +8,10 @@ import type {
 import type { PackageSearchRemote } from '../application/package-catalog.repository';
 
 interface ServerPackage {
-  id?: string;
   name?: string;
-  description?: string;
+  summary?: string;
   tags?: string[];
-  latest?: { version?: string } | null;
+  latestVersion?: string | null;
   [key: string]: unknown;
 }
 
@@ -53,7 +52,7 @@ export function createHttpPackageSearch(
         query.set('limit', String(options.limit));
       append(query, 'query', filters.query);
       append(query, 'name', filters.name);
-      append(query, 'description', filters.description);
+      append(query, 'summary', filters.summary);
       if (filters.tags?.length) query.set('tags', filters.tags.join(','));
       query.set('matchMode', options.matchMode ?? 'any');
       query.set('exact', String(options.exact ?? false));
@@ -64,21 +63,19 @@ export function createHttpPackageSearch(
 }
 
 /**
- * The wire shape carries an `id` and a nested `latest`; the catalog wants a
- * name and a version. An entry without both is not a package and is dropped.
+ * The catalog selects the publication referenced by latestVersion. An entry without both is not a package and is dropped.
  */
 function toSearchItem(item: ServerPackage): PackageSearchItem | null {
-  const name = item.name ?? item.id;
-  const version = item.latest?.version;
+  const name = item.name;
+  const version = item.latestVersion;
   if (!name || !version) return null;
   const additional = { ...item };
-  delete additional.id;
-  delete additional.latest;
+  delete additional.latestVersion;
   return {
     ...additional,
     name,
     version,
-    description: item.description ?? '',
+    summary: item.summary ?? '',
     tags: item.tags,
   };
 }

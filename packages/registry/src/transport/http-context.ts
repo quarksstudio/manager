@@ -45,6 +45,7 @@ export function createHttpContext(options: HttpContextOptions): HttpContext {
     path: string,
     requestOptions: RegistryRequestOptions = {},
   ): Promise<Response> {
+    console.log("path", path);
     const method = (requestOptions.method ?? 'GET').toUpperCase();
     if (path.includes('\\'))
       throw new TypeError('Registry request URLs must not contain backslashes');

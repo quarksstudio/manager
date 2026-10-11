@@ -2,11 +2,10 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import {
   useFetchPackage,
-  usePackageReadme,
   usePackageCertifications,
   useUpdatePackageMetadata,
 } from '../../src/hooks';
-const api = { get: jest.fn(), getReadme: jest.fn(), update: jest.fn() };
+const api = { get: jest.fn(), getVersion: jest.fn(), update: jest.fn() };
 const services = {
   ...api,
   downloadBundle: jest.fn(),
@@ -24,29 +23,10 @@ it('fetches a package and supports refetching', async () => {
   await waitFor(() => expect(api.get).toHaveBeenCalledTimes(2));
   expect(result.current.data).toEqual({ id: '@scope/private' });
 });
-it('fetches a readme for a given version', async () => {
-  api.getReadme.mockResolvedValue({ content: '# docs' });
-  const { result } = renderHook(() =>
-    usePackageReadme('demo', '1.0.0', services),
-  );
-
-  await waitFor(() =>
-    expect(result.current.data).toEqual({ content: '# docs' }),
-  );
-  expect(api.getReadme).toHaveBeenCalledWith('demo', '1.0.0');
-  expect(result.current.loading).toBe(false);
-});
-it('skips fetching a readme when no version is selected', () => {
-  const { result } = renderHook(() =>
-    usePackageReadme('demo', undefined, services),
-  );
-
-  expect(result.current.loading).toBe(false);
-  expect(api.getReadme).not.toHaveBeenCalled();
-});
 it('derives certifications for the selected version', async () => {
   api.get.mockResolvedValue({
-    id: 'demo',
+    name: 'demo',
+    latestVersion: '2.0.0',
     versions: [
       {
         version: '2.0.0',
@@ -71,7 +51,8 @@ it('derives certifications for the selected version', async () => {
 });
 it('falls back to the latest version for certifications', async () => {
   api.get.mockResolvedValue({
-    id: 'demo',
+    name: 'demo',
+    latestVersion: '2.0.0',
     versions: [
       {
         version: '2.0.0',
@@ -94,14 +75,14 @@ it('persists metadata updates and reports the status', async () => {
   await act(async () =>
     result.current.save({
       id: 'demo',
-      description: 'new',
+      summary: 'new',
       tags: ['demo'],
       authors: ['alice'],
     }),
   );
   expect(api.update).toHaveBeenCalledWith({
     id: 'demo',
-    description: 'new',
+    summary: 'new',
     tags: ['demo'],
     authors: ['alice'],
   });
@@ -116,7 +97,7 @@ it('surfaces metadata update failures', async () => {
     await expect(
       result.current.save({
         id: 'demo',
-        description: 'new',
+        summary: 'new',
         tags: [],
         authors: ['alice'],
       }),
