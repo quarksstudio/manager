@@ -79,3 +79,21 @@ node ./dist/apps/cli/main.js auth login google -s manual-code
 
 To distribute the CLI, copy `dist/apps/cli` and install the dependencies from its
 `package.json` and `pnpm-lock.yaml`. The build does not copy workspace modules.
+
+## Independent local image
+
+Requires Node 24.14, pnpm 11.21.0 and Podman. Build from this repository:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm build:cli:local
+podman build -f tools/local/Dockerfile -t localhost/quark-local-cli:latest dist/apps/cli
+podman run --rm localhost/quark-local-cli:latest --help
+```
+
+The image installs runtime dependencies from the artifact's frozen lockfile,
+including the exported pnpm patch configuration. It does not compile or copy host
+`node_modules` and needs no server checkout. The regular entrypoint runs `main.js`;
+local-stack orchestration can select `node /quark/cli/local-cli.mjs` to authenticate
+via the configured Auth emulator and API. Configure `QUARK_ENV=local`,
+`FIREBASE_AUTH_EMULATOR_HOST` and `API_URL` for that wrapper.

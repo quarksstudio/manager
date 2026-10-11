@@ -17,7 +17,8 @@
     "ui:preview": "pnpm --filter @quarks.studio/ui-app preview",
     "ui:check": "pnpm --filter @quarks.studio/ui-app check",
     "ui:desktop": "pnpm --filter @quarks.studio/ui-app desktop",
-    "ui:desktop:pack": "pnpm --filter @quarks.studio/ui-app desktop:pack"
+    "ui:desktop:pack": "pnpm --filter @quarks.studio/ui-app desktop:pack",
+    "build:cli:local": "NX_DAEMON=false NX_ISOLATE_PLUGINS=false pnpm exec nx build cli"
   },
   "private": true,
   "packageManager": "pnpm@11.21.0",

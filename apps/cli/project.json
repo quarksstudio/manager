@@ -43,7 +43,10 @@
         "{workspaceRoot}/tools/build-cli-app.cjs",
         "{workspaceRoot}/tsconfig.base.json",
         "{workspaceRoot}/tsconfig.json",
-        "{workspaceRoot}/pnpm-lock.yaml"
+        "{workspaceRoot}/pnpm-lock.yaml",
+        "{workspaceRoot}/pnpm-workspace.yaml",
+        "{workspaceRoot}/patches/**/*",
+        "{workspaceRoot}/tools/local/cli.mjs"
       ]
     },
     "prune-lockfile": {

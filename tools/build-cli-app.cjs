@@ -1,7 +1,16 @@
-const { readFileSync, writeFileSync } = require('node:fs');
-const { dirname, join } = require('node:path');
+const {
+  readFileSync,
+  writeFileSync,
+  mkdirSync,
+  copyFileSync,
+} = require('node:fs');
+const { dirname, join, resolve } = require('node:path');
 const { readCachedProjectGraph } = require('@nx/devkit');
 const { createLockFile } = require('@nx/js');
+const { createRequire } = require('node:module');
+const { parse, stringify } = createRequire(
+  resolve(__dirname, '../apps/cli/package.json'),
+)('yaml');
 
 module.exports = {
   jsx: 'automatic',
@@ -40,9 +49,35 @@ module.exports = {
             }
           }
           writeFileSync(file, JSON.stringify(pkg, null, 2) + '\n');
+          const lock = createLockFile(pkg, readCachedProjectGraph(), 'pnpm');
+          writeFileSync(join(directory, 'pnpm-lock.yaml'), lock);
+          const workspace = parse(readFileSync('pnpm-workspace.yaml', 'utf8'));
+          const patchedDependencies = {};
+          mkdirSync(join(directory, 'patches'), { recursive: true });
+          for (const name of Object.keys(
+            parse(lock).patchedDependencies ?? {},
+          )) {
+            const patch = workspace.patchedDependencies?.[name];
+            if (!patch) throw new Error(`Missing runtime patch for ${name}`);
+            const relative = `patches/${name.replace(/[^a-zA-Z0-9._-]/g, '_')}.patch`;
+            copyFileSync(resolve(patch), join(directory, relative));
+            patchedDependencies[name] = relative;
+          }
           writeFileSync(
-            join(directory, 'pnpm-lock.yaml'),
-            createLockFile(pkg, readCachedProjectGraph(), 'pnpm'),
+            join(directory, 'pnpm-workspace.yaml'),
+            stringify({
+              packages: [],
+              allowBuilds: workspace.allowBuilds ?? {},
+              ...(workspace.overrides
+                ? { overrides: workspace.overrides }
+                : {}),
+              patchedDependencies,
+            }),
+          );
+          copyFileSync('tools/local/cli.mjs', join(directory, 'local-cli.mjs'));
+          writeFileSync(
+            join(directory, '.dockerignore'),
+            'node_modules\nsrc\nmeta.json\n',
           );
         });
       },
