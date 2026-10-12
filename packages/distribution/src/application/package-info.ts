@@ -37,6 +37,8 @@ export async function loadPackageInfo(
     integrity: selected?.dist.integrity || 'N/A',
     certification: badge?.label ?? 'None',
     authors: pkg.authors ?? [],
-    versions: versions.filter((e, i) => i <= 5 ).map((version) => version.version),
+    versions: versions
+      .filter((e, i) => i <= 5)
+      .map((version) => version.version),
   };
 }

@@ -82,3 +82,18 @@ use the immutable user ID. New sessions carry `user.id` and `user.username`;
 legacy browser sessions resolve `auth/me` before building username-based links.
 Only the owner sees the username editor, which writes to `POST /v1/auth/me`,
 updates the stored identity and navigates to the new profile URL.
+
+## Account tools
+
+`ConfiguredTokensAPISettingsDashboard` and
+`ConfiguredIntegrationsSettingsDashboard` render the `/~/{username}/token` and
+`/~/{username}/integrations` routes as client-only islands. Each configured
+component wraps its dashboard in `QuarkTheme`, wires `useIdentitySession()` and
+memoizes `createAccountDashboardServices(apiBaseUrl)`.
+
+`TokensAPISettingsDashboard` loads and manages API tokens, while
+`IntegrationsSettingsDashboard` loads and saves AI integration settings. Both
+use `AccountSettingsAccessGate` for session and profile loading/error states,
+authentication, and canonical username navigation. The gate shows a sign-in
+link when the session is missing and retry actions when session or profile
+loading fails.

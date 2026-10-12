@@ -129,10 +129,10 @@ export function VersionsTab({
                           key={cert.tier}
                           color={passed ? tierColor(cert.tier) : 'default'}
                           className={
-                            ( passed
+                            (passed
                               ? 'cursor-pointer !select-none'
-                              : 'cursor-pointer !select-none !text-slate-400' ) +
-                                (active ? ' expanded' : '')
+                              : 'cursor-pointer !select-none !text-slate-400') +
+                            (active ? ' expanded' : '')
                           }
                           role="button"
                           tabIndex={0}

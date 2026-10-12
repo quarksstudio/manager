@@ -8,10 +8,18 @@ import * as Shared from '../packages/web-ui/src/index';
 import * as Commerce from '../packages/commerce/src/web/index';
 import * as Distribution from '../packages/distribution/src/web/index';
 import * as Search from '../packages/package-search/src/web/index';
+import * as Identity from '../packages/identity/src/web/index';
+import { Modal, Popconfirm } from 'antd';
 import { CommerceProvider } from '../packages/commerce/src/presentation';
 import { DistributionProvider } from '../packages/distribution/src/presentation/services';
 import { createDistributionServices } from '../packages/distribution/src/presentation/configured-services';
-const UI = { ...Shared, ...Commerce, ...Distribution, ...Search };
+const UI = {
+  ...Shared,
+  ...Identity,
+  ...Commerce,
+  ...Distribution,
+  ...Search,
+};
 const distributionServices = createDistributionServices();
 const commerceServices = {
   createPaymentLink: async () => ({ url: '/' }),
@@ -184,126 +192,206 @@ renderToStaticMarkup(
   <StyleProvider cache={cache}>
     <CommerceProvider services={commerceServices}>
       <DistributionProvider services={distributionServices}>
-      <UI.SiteNavbar
-        logo="QUARK // SKILLS"
-        searchAction="/search"
-        searchPlaceholder="Search packages and skills..."
-        loginUrl="/login"
-      />
-      <UI.LandingHero
-        exploreUrl="/search"
-        blogUrl="https://blog.quarks.studio"
-      />
-      <UI.LandingTierMatrix tiers={landing} />
-      <UI.PackageDetails
-        packageName="demo"
-        detail={detail}
-        selectedVersion="1.0.0"
-        readme={readme}
-        urls={{
-          retry: '/packages/demo',
-          versions: {
-            '1.0.0': '/packages/demo/1.0.0',
-            '0.9.0': '/packages/demo/0.9.0',
-          },
-          downloads: {
-            '1.0.0': '/packages/demo/1.0.0/download',
-            '0.9.0': '/packages/demo/0.9.0/download',
-          },
-        }}
-        commercialPanel={
-          <UI.PackagePlansPanel
-            packageName="demo"
-            plans={[subscription]}
-            plansBase="/packages/demo/payment"
-            catalog={plans}
-          />
-        }
-      />
-      <UI.PackagePlansPanel
-        packageName="demo"
-        plans={[]}
-        plansBase="/packages/demo/payment"
-      />
-      <UI.PricingModeNav mode="plans" baseUrl="/pricing" />
-      <UI.PlanGrid
-        plans={plans}
-        systems={{
-          eligible: [systems[0]],
-          pending: [{ ...systems[1], reason: 'Needs a stored card first.' }],
-        }}
-        packageId="demo"
-      />
-      <UI.PlanGrid
-        plans={[]}
-        systems={{ eligible: [], pending: [] }}
-        packageId="demo"
-      />
-      <UI.TierMatrix
-        offers={tiers}
-        systems={systems}
-        packageId="demo"
-        versionId="1.0.0"
-      />
-      <UI.TierMatrix
-        offers={[]}
-        systems={systems}
-        packageId="demo"
-        versionId="1.0.0"
-      />
-      <UI.SystemHints
-        pending={[{ ...systems[1], reason: 'Needs a stored card first.' }]}
-      />
-      <UI.CertificationCta
-        href="/packages/demo/1.0.0/payment"
-        versionId="1.0.0"
-        held={1}
-      />
-      <UI.PackageTabs
-        packageName="demo2"
-        detail={{
-          ...detail,
-          id: 'demo2',
-          name: 'demo2',
-          canEditMetadata: true,
-        }}
-        selectedVersion="1.0.0"
-        readme={readme}
-        urls={{
-          versions: {},
-          downloads: {},
-        }}
-      />
-      <UI.ReadmeTab loading />
-      <UI.ReadmeTab
-        loading={false}
-        content=""
-        version="1.0.0"
-        retryUrl="/packages/demo"
-      />
-      <UI.PackageSidebar
-        packageName="demo"
-        latestVersion="1.0.0"
-        downloads={1234}
-        downloadsSince="2026-08-01T00:00:00.000Z"
-        authors={['alice', 'bob']}
-        tags={['camera']}
-        installCommand="quark add demo"
-      />
-      <UI.PackageStateNotice
-        title="Package not found"
-        description="No such package in the registry."
-        onRetry={() => ({})}
-      />
-      <UI.PackageDetailsSkeleton />
-      <UI.SiteFooter
-        links={[
-          { label: 'Documentation', href: 'https://docs.quarks.studio' },
-          { label: 'Registry', href: '/search' },
-          { label: 'Legal', href: '/terms' },
-          { label: 'Blog', href: 'https://blog.quarks.studio' },
-        ]}
-      />
+        <UI.SiteNavbar
+          logo="QUARK // SKILLS"
+          searchAction="/search"
+          searchPlaceholder="Search packages and skills..."
+          loginUrl="/login"
+        />
+        <UI.LandingHero
+          exploreUrl="/search"
+          blogUrl="https://blog.quarks.studio"
+        />
+        <UI.LandingTierMatrix tiers={landing} />
+        <UI.PackageDetails
+          packageName="demo"
+          detail={detail}
+          selectedVersion="1.0.0"
+          readme={readme}
+          urls={{
+            retry: '/packages/demo',
+            versions: {
+              '1.0.0': '/packages/demo/1.0.0',
+              '0.9.0': '/packages/demo/0.9.0',
+            },
+            downloads: {
+              '1.0.0': '/packages/demo/1.0.0/download',
+              '0.9.0': '/packages/demo/0.9.0/download',
+            },
+          }}
+          commercialPanel={
+            <UI.PackagePlansPanel
+              packageName="demo"
+              plans={[subscription]}
+              plansBase="/packages/demo/payment"
+              catalog={plans}
+            />
+          }
+        />
+        <UI.PackagePlansPanel
+          packageName="demo"
+          plans={[]}
+          plansBase="/packages/demo/payment"
+        />
+        <UI.PricingModeNav mode="plans" baseUrl="/pricing" />
+        <UI.PlanGrid
+          plans={plans}
+          systems={{
+            eligible: [systems[0]],
+            pending: [{ ...systems[1], reason: 'Needs a stored card first.' }],
+          }}
+          packageId="demo"
+        />
+        <UI.PlanGrid
+          plans={[]}
+          systems={{ eligible: [], pending: [] }}
+          packageId="demo"
+        />
+        <UI.TierMatrix
+          offers={tiers}
+          systems={systems}
+          packageId="demo"
+          versionId="1.0.0"
+        />
+        <UI.TierMatrix
+          offers={[]}
+          systems={systems}
+          packageId="demo"
+          versionId="1.0.0"
+        />
+        <UI.SystemHints
+          pending={[{ ...systems[1], reason: 'Needs a stored card first.' }]}
+        />
+        <UI.CertificationCta
+          href="/packages/demo/1.0.0/payment"
+          versionId="1.0.0"
+          held={1}
+        />
+        <UI.PackageTabs
+          packageName="demo2"
+          detail={{
+            ...detail,
+            id: 'demo2',
+            name: 'demo2',
+            canEditMetadata: true,
+          }}
+          selectedVersion="1.0.0"
+          readme={readme}
+          urls={{
+            versions: {},
+            downloads: {},
+          }}
+        />
+        <UI.ReadmeTab content="" version="1.0.0" />
+        <UI.ReadmeTab
+          content={'# README\n\nDeterministic package content.\n'}
+          version="1.0.0"
+        />
+        <UI.PackageSidebar
+          packageName="demo"
+          latestVersion="1.0.0"
+          downloads={1234}
+          downloadsSince="2026-08-01T00:00:00.000Z"
+          authors={['alice', 'bob']}
+          tags={['camera']}
+          installCommand="quark add demo"
+        />
+        <UI.PackageStateNotice
+          title="Package not found"
+          description="No such package in the registry."
+          onRetry={() => ({})}
+        />
+        <UI.PackageDetailsSkeleton />
+        <UI.SiteFooter
+          links={[
+            { label: 'Documentation', href: 'https://docs.quarks.studio' },
+            { label: 'Registry', href: '/search' },
+            { label: 'Legal', href: '/terms' },
+            { label: 'Blog', href: 'https://blog.quarks.studio' },
+          ]}
+        />
+        <UI.SettingsSidebar active="profile" onSelect={() => undefined} />
+        <UI.TokensTab
+          tokens={[
+            {
+              id: 'tk-1',
+              name: 'cli-publish',
+              scope: 'publish-packages',
+              createdAt: '2026-07-01T09:24:00.000Z',
+              lastUsedAt: '2026-09-28T14:02:00.000Z',
+              expiresAt: '2027-07-01T09:24:00.000Z',
+              tokenPrefix: 'pt_',
+              isRevoked: false,
+            },
+          ]}
+          loading={false}
+          error=""
+          busy={false}
+          onRevoke={async () => undefined}
+        />
+        <UI.IntegrationsTab
+          settings={{
+            targets: [
+              {
+                client: 'claude-desktop',
+                enabled: true,
+                configPath: '~/.claude/claude_desktop_config.json',
+                ssePort: null,
+              },
+              {
+                client: 'gemini',
+                enabled: false,
+                configPath: null,
+                ssePort: 8791,
+              },
+            ],
+            storagePath: '~/.quark/skills/',
+          }}
+          loading={false}
+          saving={false}
+          error=""
+          saved={false}
+          preview
+          onSave={async (settings) => true}
+        />
+        <UI.BillingTab
+          billing={{
+            subscription: {
+              plan: 'pro',
+              pro: true,
+              amountCents: 2000,
+              currency: 'USD',
+              renewalDate: '2026-11-03T00:00:00.000Z',
+              isPrivateDistributionEnabled: true,
+            },
+            credits: {
+              tier2MonthlyUsed: 0,
+              tier2MonthlyLimit: 1,
+              standalone: [
+                {
+                  id: 'cr-1',
+                  tier: 'TIER_3',
+                  packageId: 'rag-engine',
+                  amountCents: 5000,
+                  currency: 'USD',
+                  paidAt: '2026-08-20T12:00:00.000Z',
+                },
+              ],
+            },
+            portalUrl: 'https://billing.stripe.com/session/preview',
+          }}
+          loading={false}
+          error=""
+          busy={false}
+          preview
+          onSetPrivate={async () => true}
+        />
+        <Modal open title="Generate a new token">
+          <div />
+        </Modal>
+        <Popconfirm open title="Revoke this token?">
+          <div />
+        </Popconfirm>
       </DistributionProvider>
     </CommerceProvider>
   </StyleProvider>,

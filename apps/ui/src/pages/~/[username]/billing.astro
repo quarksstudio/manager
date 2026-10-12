@@ -1,23 +1,23 @@
 ---
-import { ConfiguredBillingBoundary as BillingBoundary } from '@quarks.studio/commerce/web';
-
-import Layout from '../../../layouts/Layout.astro';
+import { ConfiguredBillingBoundary } from '@quarks.studio/commerce/web';
+import UserAccountLayout from '../../../layouts/UserAccountLayout.astro';
 import { registryBaseUrl } from '../../../lib/registry-base';
 import { getUser } from '../../../lib/registry';
 
 const username = decodeURIComponent(Astro.params.username ?? '');
-await getUser(Astro.cookies, username).catch((e) => Astro.rewrite('/404'));
+const user = await getUser(Astro.cookies, username).catch((e) =>
+  Astro.rewrite('/404'),
+);
 
 Astro.response.headers.set('Cache-Control', 'private, no-store');
 ---
 
-<Layout title="My payments · Quark // Skills">
-  <main class="mx-auto w-full max-w-6xl px-4 py-8">
-    <h1 class="text-2xl font-semibold">My payments</h1>
-    <p class="my-4 text-slate-400">
-      Recorded transactions for your signed-in account. Sign in to view your
-      payments.
-    </p>
-    <BillingBoundary client:only="react" apiBaseUrl={registryBaseUrl} />
-  </main>
-</Layout>
+<UserAccountLayout
+  title="Purchases · Quark // Skills"
+  description="Review purchases and subscription details for your Quark account."
+  username={username}
+  profileId={user.id}
+  active="billing"
+>
+  <ConfiguredBillingBoundary client:only="react" apiBaseUrl={registryBaseUrl} />
+</UserAccountLayout>

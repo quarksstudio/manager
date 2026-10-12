@@ -76,8 +76,7 @@ export function SubscriptionsList({
                     <td className="p-3 font-mono">{subscription.packageId}</td>
                     <td className="p-3">{subscription.productId}</td>
                     <td className="p-3">
-                      {STATUS_LABEL[subscription.status] ??
-                        subscription.status}
+                      {STATUS_LABEL[subscription.status] ?? subscription.status}
                     </td>
                     <td className="p-3">
                       {formatPrice(

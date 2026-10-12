@@ -29,7 +29,10 @@ export function ConfiguredMonthlyTotals({
     setState((current) => ({ ...current, loading: true, error: undefined }));
     try {
       const gateway = createHttpBillingGateway(createConfiguredContext());
-      setState({ subscriptions: await gateway.listSubscriptions(), loading: false });
+      setState({
+        subscriptions: await gateway.listSubscriptions(),
+        loading: false,
+      });
     } catch {
       setState({
         subscriptions: [],

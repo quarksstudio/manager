@@ -85,7 +85,15 @@ node --test apps/ui/test/ssr.spec.mjs           # full server flow against a fak
 ## User profiles
 
 `/~/{username}` renders a client-only React profile from the identity package in
-both web and desktop modes. Profile and package queries go directly to the
-configured registry API; there are no Astro user API proxies. The API must allow
-the web/desktop origin through CORS and the Authorization header. Username edits
-use `POST /v1/auth/me`; package ownership continues to use the stable Firebase UID.
+both web and desktop modes, and `/~/{username}/settings` renders the account
+settings dashboard (Profile, Tokens & API, AI Integrations, Billing) from the
+same package. Profile and package queries go directly to the configured registry
+API; there are no Astro user API proxies. The API must allow the web/desktop
+origin through CORS and the Authorization header. Username edits use
+`POST /v1/auth/me`; package ownership continues to use the stable Firebase UID.
+
+Both pages run `getUser` in the frontmatter only as an ownership/404 guard, so a
+single `GET /v1/users/{username}` reaches the registry per request. The account
+settings dashboard reads the profile over HTTP and serves the remaining tabs from
+in-memory preview fixtures (`createAccountDashboardServices`) until production
+adapters replace them.

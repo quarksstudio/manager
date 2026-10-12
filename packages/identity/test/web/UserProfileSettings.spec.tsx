@@ -13,7 +13,11 @@ const profile = {
   photoURL: null,
   createdAt: null,
 };
-const services = { get: jest.fn(), update: jest.fn() };
+const services = {
+  get: jest.fn(),
+  update: jest.fn(),
+  checkEmail: jest.fn().mockResolvedValue({ email: '', available: true }),
+};
 const navigate = jest.fn();
 beforeEach(() => {
   jest.resetAllMocks();

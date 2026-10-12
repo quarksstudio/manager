@@ -6,9 +6,7 @@ import {
   type DistributionServices,
 } from '../presentation';
 import InfoScreen from './InfoScreen';
-export default function Info(
-  name: string,
-): void {
+export default function Info(name: string): void {
   const services: DistributionServices = createDistributionServices();
   renderAction(
     React.createElement(DistributionProvider, {

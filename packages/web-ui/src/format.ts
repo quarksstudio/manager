@@ -30,6 +30,15 @@ export function formatDate(value?: string | number | Date): string {
   }).format(date);
 }
 
+export function formatPrice(cents: number, currency: string): string {
+  if (!Number.isFinite(cents)) return 'Unknown';
+  return new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency,
+    currencyDisplay: 'narrowSymbol',
+  }).format(cents / 100);
+}
+
 export function formatSinceDate(value?: string): string {
   if (!value) return 'Unknown';
   return formatDate(value);

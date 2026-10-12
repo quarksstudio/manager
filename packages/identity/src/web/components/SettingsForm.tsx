@@ -1,29 +1,55 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type {
   UserSettings,
   UserSettingsChanges,
 } from '../../application/user-settings.port';
+import { EmailsSettingsCard } from './EmailsSettingsCard';
+import { ProfileSettingsCard } from './ProfileSettingsCard';
 
 export function SettingsForm({
   profile,
   saving,
   error,
   onSave,
+  checkEmail,
 }: {
   profile: UserSettings;
   saving: boolean;
   error: string;
   onSave: (changes: UserSettingsChanges) => Promise<void>;
+  checkEmail: (email: string) => Promise<{ email: string; available: boolean }>;
 }) {
   const [username, setUsername] = useState(profile.username);
   const [displayName, setDisplayName] = useState(profile.displayName ?? '');
+  const [linkedEmails, setLinkedEmails] = useState(
+    profile.linkedEmails?.filter(Boolean) ??
+      (profile.email ? [profile.email] : []),
+  );
+  const [publicEmail, setPublicEmail] = useState(profile.publicEmail ?? null);
   const [validation, setValidation] = useState('');
+  useEffect(() => {
+    setUsername(profile.username);
+    setDisplayName(profile.displayName ?? '');
+    setLinkedEmails(
+      profile.linkedEmails?.filter(Boolean) ??
+        (profile.email ? [profile.email] : []),
+    );
+    setPublicEmail(profile.publicEmail ?? null);
+  }, [profile]);
+
   const changed =
     (username.trim() !== profile.username &&
       username.trim().toLowerCase() !== profile.username) ||
-    displayName.trim() !== (profile.displayName ?? '');
+    displayName.trim() !== (profile.displayName ?? '') ||
+    linkedEmails.join('|') !==
+      (
+        profile.linkedEmails?.filter(Boolean) ??
+        (profile.email ? [profile.email] : [])
+      ).join('|') ||
+    publicEmail !== (profile.publicEmail ?? null);
   return (
     <form
+      className="space-y-6"
       onSubmit={(event) => {
         event.preventDefault();
         const changes: UserSettingsChanges = {};
@@ -42,62 +68,45 @@ export function SettingsForm({
           }
           changes.displayName = displayName.trim();
         }
+        const originalEmails =
+          profile.linkedEmails?.filter(Boolean) ??
+          (profile.email ? [profile.email] : []);
+        if (linkedEmails.join('|') !== originalEmails.join('|'))
+          changes.linkedEmails = linkedEmails;
+        if (publicEmail !== (profile.publicEmail ?? null))
+          changes.publicEmail = publicEmail;
         setValidation('');
         void onSave(changes);
       }}
     >
-      <label htmlFor="settings-username" className="block text-sm">
-        Username
-      </label>
-      <input
-        id="settings-username"
-        value={username}
-        onChange={(event) => {
-          setUsername(event.target.value);
+      <EmailsSettingsCard
+        linkedEmails={linkedEmails}
+        publicEmail={publicEmail}
+        primaryEmail={profile.email ?? null}
+        saving={saving}
+        checkEmail={checkEmail}
+        onChange={(emails, selectedPublicEmail) => {
+          setLinkedEmails(emails);
+          setPublicEmail(selectedPublicEmail);
+        }}
+      />
+      <ProfileSettingsCard
+        username={username}
+        displayName={displayName}
+        saving={saving}
+        changed={changed}
+        error={error}
+        validation={validation}
+        profileUrl={`/~/${encodeURIComponent(profile.username)}`}
+        onUsernameChange={(value) => {
+          setUsername(value);
           setValidation('');
         }}
-        disabled={saving}
-        autoComplete="username"
-        aria-describedby="settings-username-help"
-        className="mt-2 w-full rounded border border-slate-700 bg-slate-900 px-3 py-2"
-      />
-      <p id="settings-username-help" className="mt-2 text-xs text-slate-400">
-        3–30 letters, numbers, underscores or hyphens.
-      </p>
-      <label htmlFor="settings-name" className="mt-5 block text-sm">
-        Name
-      </label>
-      <input
-        id="settings-name"
-        value={displayName}
-        onChange={(event) => {
-          setDisplayName(event.target.value);
+        onDisplayNameChange={(value) => {
+          setDisplayName(value);
           setValidation('');
         }}
-        disabled={saving}
-        autoComplete="name"
-        className="mt-2 w-full rounded border border-slate-700 bg-slate-900 px-3 py-2"
       />
-      {(validation || error) && (
-        <p role="alert" className="mt-3 text-sm text-red-400">
-          {validation || error}
-        </p>
-      )}
-      <div className="mt-6 flex items-center gap-4">
-        <button
-          type="submit"
-          disabled={saving || !changed}
-          className="rounded border border-slate-700 px-4 py-2 disabled:opacity-50"
-        >
-          {saving ? 'Saving…' : 'Save'}
-        </button>
-        <a
-          href={`/~/${encodeURIComponent(profile.username)}`}
-          className="text-sm underline"
-        >
-          Back to profile
-        </a>
-      </div>
     </form>
   );
 }

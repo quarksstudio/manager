@@ -11,10 +11,14 @@ export function createHttpIdentityGateway(
   context: OperationContext,
 ): IdentityGateway {
   return {
-    exchange: (token, refreshToken): Promise<AuthSession> =>
+    exchange: (token, refreshToken, clientType): Promise<AuthSession> =>
       context.fetchJson('auth/exchange', {
         method: 'POST',
-        body: refreshToken ? { token, refreshToken } : { token },
+        body: {
+          token,
+          ...(refreshToken ? { refreshToken } : {}),
+          ...(clientType ? { clientType } : {}),
+        },
       }),
 
     me: (): Promise<CurrentUser> => context.fetchJson('auth/me'),

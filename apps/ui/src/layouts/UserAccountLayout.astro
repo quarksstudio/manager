@@ -1,0 +1,46 @@
+---
+import Layout from './Layout.astro';
+import { ConfiguredAccountNavigation } from '@quarks.studio/identity/web';
+import { registryBaseUrl as browserRegistryBaseUrl } from '../lib/registry-base';
+
+interface Props {
+  title: string;
+  description: string;
+  username: string;
+  profileId: string;
+  active: 'profile' | 'settings' | 'billing' | 'tokens' | 'integrations';
+}
+
+const { title, description, username, profileId, active } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <div
+    class="account-shell mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-4 py-8 sm:px-6 sm:py-12 lg:grid-cols-[16rem_minmax(0,1fr)]"
+  >
+    <aside class="account-navigation min-w-0">
+      <ConfiguredAccountNavigation
+        username={username}
+        profileId={profileId}
+        active={active}
+        apiBaseUrl={browserRegistryBaseUrl}
+        client:only="react"
+      />
+    </aside>
+    <main class="min-w-0 px-4 py-8 sm:px-6 sm:py-12">
+      <slot />
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .account-navigation:has(astro-island:empty) {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .account-shell:not(:has(.account-navigation nav)) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -111,7 +111,8 @@ test('business contracts have one owner and the domain kernel stays minimal', as
   const found = new Map();
   for (const file of await files('packages')) {
     if (
-      (file.endsWith('.d.ts') && file !== 'packages/registry/src/domain/package.d.ts') ||
+      (file.endsWith('.d.ts') &&
+        file !== 'packages/registry/src/domain/package.d.ts') ||
       !file.endsWith('.ts') ||
       !file.includes('/src/')
     )

@@ -1,3 +1,4 @@
+export * from './account-dashboard.port';
 export * from './identity.port';
 export * from './login-with-emulator';
 export * from './login-with-provider';

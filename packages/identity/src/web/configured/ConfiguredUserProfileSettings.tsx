@@ -18,6 +18,7 @@ export function ConfiguredUserProfileSettings({
   );
   return (
     <QuarkTheme>
+      <h1 className="mb-6 text-2xl font-semibold">Settings</h1>
       <UserProfileSettings
         username={username}
         services={services}

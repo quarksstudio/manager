@@ -4,11 +4,7 @@ import { QuarkTheme, TIER_META } from '@quarks.studio/web-ui';
 import { CERTIFICATION_TIERS } from '@quarks.studio/certification';
 import { ConfiguredMonthlyTotals } from '@quarks.studio/commerce/web';
 
-import {
-  highestVersion,
-  sortVersions,
-  type PackageDetails,
-} from '../../index';
+import { highestVersion, sortVersions, type PackageDetails } from '../../index';
 
 export interface SubscriptionsTabProps {
   detail: PackageDetails;

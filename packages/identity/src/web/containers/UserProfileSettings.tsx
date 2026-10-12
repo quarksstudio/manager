@@ -32,8 +32,7 @@ export function UserProfileSettings({
       onNavigate(profile.username, false);
   }, [profile, username, onNavigate]);
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
-      <h1 className="mb-6 text-2xl font-semibold">Profile settings</h1>
+    <>
       {sessionLoading ? (
         <p role="status">Loading session…</p>
       ) : sessionError ? (
@@ -80,9 +79,10 @@ export function UserProfileSettings({
             saving={saving}
             error={error}
             onSave={save}
+            checkEmail={services.checkEmail}
           />
         </>
       )}
-    </main>
+    </>
   );
 }

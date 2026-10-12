@@ -57,7 +57,7 @@ describe('loginWithProvider', () => {
     });
     expect(fetchJson).toHaveBeenCalledWith('auth/exchange', {
       method: 'POST',
-      body: { token: 'id-token' },
+      body: { token: 'id-token', clientType: 'cli' },
     });
     expect(createStorage).toHaveBeenCalledWith({
       namespace: APP_NAME,

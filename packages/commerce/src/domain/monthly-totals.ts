@@ -1,4 +1,7 @@
-import type { StoredSubscriptionStatus, SubscriptionRecord } from './subscription';
+import type {
+  StoredSubscriptionStatus,
+  SubscriptionRecord,
+} from './subscription';
 
 /** One subscription contributing to a calendar month. */
 export interface MonthlyTotalEntry {
@@ -53,13 +56,18 @@ export function buildMonthlyTotals(
 ): MonthlyTotal[] {
   const rows = new Map<string, MonthlyTotal>();
   for (const record of records) {
-    const start = instant(record.currentPeriodStart) ?? instant(record.createdAt);
+    const start =
+      instant(record.currentPeriodStart) ?? instant(record.createdAt);
     if (!start) continue;
     const end =
       instant(record.currentPeriodEnd) ??
       instant(record.cancelledAt) ??
       nextMonthStart(start);
-    for (let month = monthStart(start); month < end; month = nextMonthStart(month)) {
+    for (
+      let month = monthStart(start);
+      month < end;
+      month = nextMonthStart(month)
+    ) {
       const key = monthKey(month);
       const row = rows.get(key) ?? { month: key, entries: [], totals: {} };
       const entry: MonthlyTotalEntry = {

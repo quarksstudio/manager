@@ -78,7 +78,8 @@
     "@quarks.studio/registry": "workspace:*",
     "@quarks.studio/notifications": "workspace:*",
     "@quarks.studio/package-search": "workspace:*",
-    "@quarks.studio/web-ui": "workspace:*"
+    "@quarks.studio/web-ui": "workspace:*",
+    "@testing-library/react": "16.3.0"
   },
   "peerDependencies": {
     "react": "^19.0.0"

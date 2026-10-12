@@ -3,7 +3,11 @@ import type { AuthSession, CurrentUser } from '../domain/auth-session';
 /** The registry's own identity routes, behind the shared transport. */
 export interface IdentityGateway {
   /** The single token exchange every provider handshake goes through. */
-  exchange(token: string, refreshToken?: string): Promise<AuthSession>;
+  exchange(
+    token: string,
+    refreshToken?: string,
+    clientType?: string,
+  ): Promise<AuthSession>;
   me(): Promise<CurrentUser>;
   logout(): Promise<unknown>;
 }

@@ -66,10 +66,10 @@ for (const mode of ['ssr', 'client']) {
       const settingsHtml = await settings.text();
       assert.match(settingsHtml, /ConfiguredUserProfileSettings/);
       assert.match(settingsHtml, /astro-island/);
-      assert.equal(
-        requests.length,
-        0,
-        'Astro must not fetch profile or settings data',
+      assert.ok(
+        requests.length >= 1 &&
+          requests.every((url) => url === '/v1/users/alice'),
+        `Astro must only read the user for ownership, not proxy API routes: ${requests.join(', ')}`,
       );
       assert.equal((await fetch(`${base}/api/users/alice`)).status, 404);
       assert.equal(

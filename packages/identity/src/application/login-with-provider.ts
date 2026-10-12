@@ -60,7 +60,11 @@ export function createLoginWithProvider({
     token: string;
     refreshToken?: string;
   }): Promise<AuthSession> {
-    const session = await gateway.exchange(payload.token, payload.refreshToken);
+    const session = await gateway.exchange(
+      payload.token,
+      payload.refreshToken,
+      'cli',
+    );
     validateSession(session);
     return session;
   }

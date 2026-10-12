@@ -1,0 +1,25 @@
+---
+import UserAccountLayout from '../../../layouts/UserAccountLayout.astro';
+import { ConfiguredTokensAPISettingsDashboard } from '@quarks.studio/identity/web';
+import { registryBaseUrl } from '../../../lib/registry-base';
+import { getUser } from '../../../lib/registry';
+
+const username = decodeURIComponent(Astro.params.username ?? '');
+const user = await getUser(Astro.cookies, username).catch((e) =>
+  Astro.rewrite('/404'),
+);
+---
+
+<UserAccountLayout
+  title={`Tokens / Auth // ${username} // Quark`}
+  description="Manage your Quark access tokens."
+  username={username}
+  profileId={user.id}
+  active="tokens"
+>
+  <ConfiguredTokensAPISettingsDashboard
+    username={username}
+    apiBaseUrl={registryBaseUrl}
+    client:only="react"
+  />
+</UserAccountLayout>

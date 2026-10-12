@@ -4,8 +4,8 @@
 import { saveSession } from '@quarks.studio/config';
 
 import { loginWithProvider } from '../../src/configured';
-import { AUTH_MESSAGE } from '@quarks.studio/identity';
-import type { AuthSession } from '@quarks.studio/identity';
+import { AUTH_MESSAGE } from '../../src';
+import type { AuthSession } from '../../src';
 
 const close = jest.fn();
 

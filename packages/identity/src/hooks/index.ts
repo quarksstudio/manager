@@ -1,4 +1,5 @@
 export * from './useAuthLogin';
+export * from './useAccountDashboard';
 export * from './useIdentitySession';
 export * from './useAuthLogout';
 export * from './useCurrentUser';

@@ -4,6 +4,7 @@ import type {
   UserSettingsServices,
   UserSettings,
 } from '../application/user-settings.port';
+
 export function userSettingsServices(
   apiBaseUrl?: string,
 ): UserSettingsServices {
@@ -15,8 +16,22 @@ export function userSettingsServices(
         method: 'POST',
         body: changes,
       });
-      await persistProfileIdentity(profile);
-      return profile;
+      const updated = { ...profile, ...changes };
+      await persistProfileIdentity(updated);
+      return updated;
+    },
+    checkEmail: async (email) => {
+      const result = await context.fetchJson<{
+        email?: string;
+        available?: boolean;
+      }>('auth/emails/check', {
+        method: 'POST',
+        body: { email },
+      });
+      return {
+        email: typeof result?.email === 'string' ? result.email : '',
+        available: result?.available === true,
+      };
     },
   };
 }

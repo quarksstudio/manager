@@ -15,3 +15,8 @@ export {
 } from './infrastructure/user-profile-services';
 
 export { userSettingsServices } from './infrastructure/user-settings-services';
+
+export { createAccountDashboardServices } from './infrastructure/account-dashboard-services';
+export { createHttpAccountProfile } from './infrastructure/http-account-profile';
+export { createHttpAccountTokens } from './infrastructure/http-account-tokens';
+export { createPreviewAccountDashboardServices } from './infrastructure/account-dashboard-preview';

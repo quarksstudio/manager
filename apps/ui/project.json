@@ -31,8 +31,8 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --test test/*.spec.mjs",
-        "cwd": "apps/ui"
+        "command": "node --test apps/ui/test/*.spec.mjs",
+        "cwd": "{workspaceRoot}"
       }
     },
     "dev": {
