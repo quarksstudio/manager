@@ -1,33 +1,50 @@
-import { Spin } from 'antd';
+import { Spin, Menu } from 'antd';
+import { useNotifications } from '@quarks.studio/notifications/hooks';
 import { PublicUserInfo } from '../components/PublicUserInfo';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import type { UserProfileServices } from '../../application/user-profile.port';
-
-const links = [
-  { key: 'profile', label: 'Profile', suffix: '' },
-  { key: 'settings', label: 'Settings', suffix: '/settings' },
-  { key: 'billing', label: 'Purchases', suffix: '/billing' },
-  { key: 'tokens', label: 'Tokens / Auth', suffix: '/token' },
-  { key: 'integrations', label: 'AI Integrations', suffix: '/integrations' },
-] as const;
-
-export type AccountPage = (typeof links)[number]['key'];
-export type SettingsTab = AccountPage;
+import { useLogOutItems } from '../../hooks/useLogOutItems';
+import { useAuthLogin, useAuthLogout, useIdentitySession } from '../../hooks';
 
 /** The shared route navigation for an account's profile pages. */
 export function SettingsSidebar({
   active,
   username,
   services,
+  showMenu,
 }: {
-  active: AccountPage;
+  active: string;
   username: string;
+  showMenu: boolean;
   services: UserProfileServices;
 }) {
   const { profile, error, loading, load } = useUserProfile(username, services);
+  const { reset } = useAuthLogin();
+  const { reload } = useIdentitySession();
+  const { logout } = useAuthLogout();
+  const { notify } = useNotifications();
+
+  const links = useLogOutItems(() => {
+    void (async () => {
+      try {
+        await logout();
+        await reload();
+      } catch (reason) {
+        await notify({
+          level: 'error',
+          title: 'No se pudo cerrar sesión',
+          message:
+            reason instanceof Error ? reason.message : 'Inténtalo de nuevo.',
+        });
+        return;
+      }
+      reset();
+      await notify({ level: 'success', title: 'Sesión cerrada' });
+    })().catch(() => undefined);
+  }, profile);
 
   return (
-    <aside className="account-navigation min-w-0 space-y-6">
+    <>
       {profile && <PublicUserInfo profile={profile} />}
       {!profile && loading && (
         <div
@@ -39,7 +56,7 @@ export function SettingsSidebar({
           <span>Loading profile…</span>
         </div>
       )}
-      {!profile && error && (
+      {!profile && showMenu && error && (
         <div className="space-y-2" role="alert">
           <p className="text-sm text-slate-400">
             {error === 'not-found'
@@ -57,23 +74,18 @@ export function SettingsSidebar({
           )}
         </div>
       )}
-      {profile && (
+      {profile && showMenu && (
         <nav aria-label="Profile navigation" className="min-w-0 w-full">
-          <ul className="space-y-1 rounded-lg border border-slate-800 p-2">
-            {links.map(({ key, label, suffix }) => (
-              <li key={key}>
-                <a
-                  href={`/~/${encodeURIComponent(username)}${suffix}`}
-                  aria-current={active === key ? 'page' : undefined}
-                  className={`block rounded-md px-3 py-2 text-sm hover:bg-slate-800 ${active === key ? 'bg-slate-800 font-medium text-white' : 'text-slate-300'}`}
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <Menu
+            selectedKeys={[active]}
+            items={links}
+            style={{
+              background: 'transparent',
+              borderRight: 0,
+            }}
+          />
         </nav>
       )}
-    </aside>
+    </>
   );
 }

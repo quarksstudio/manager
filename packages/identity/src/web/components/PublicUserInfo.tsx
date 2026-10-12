@@ -7,7 +7,7 @@ export function PublicUserInfo({ profile }: { profile: PublicUserProfile }) {
   const joinDate = profile.createdAt;
   const validDate = joinDate !== null && !Number.isNaN(Date.parse(joinDate));
   return (
-    <section className="flex min-w-0 items-start gap-4 lg:flex-row lg:gap-0">
+    <section className="flex min-w-0 items-start gap-4">
       <div className="inline-block h-14 w-14 shrink-0 overflow-hidden rounded-full ant-avatar ant-avatar-circle ant-avatar-image">
         {profile.photoURL && failedImage !== profile.photoURL ? (
           <img
@@ -28,7 +28,7 @@ export function PublicUserInfo({ profile }: { profile: PublicUserProfile }) {
           </div>
         )}
       </div>
-      <div className="min-w-0">
+      <a href={`/~/${encodeURIComponent(profile.username)}`}>
         <h1 className="break-all font-mono text-xl font-semibold">
           {profile.username}
         </h1>
@@ -41,7 +41,7 @@ export function PublicUserInfo({ profile }: { profile: PublicUserProfile }) {
             'Join date unavailable'
           )}
         </p>
-      </div>
+      </a>
     </section>
   );
 }

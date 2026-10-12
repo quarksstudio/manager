@@ -4,7 +4,7 @@ import {
   SiteNavbar,
   type SiteFooterLink,
 } from '@quarks.studio/web-ui';
-import { ConfiguredUserAvatarMenu as UserAvatarMenu } from '@quarks.studio/identity/web';
+import { ConfiguredUserAvatarMenu } from '@quarks.studio/identity/web';
 import { NotificationHost } from '@quarks.studio/notifications/web';
 import '../styles.css';
 
@@ -59,7 +59,7 @@ const {
       searchValue={searchValue}
       loginUrl={loginUrl}
     >
-      <UserAvatarMenu client:only="react" />
+      <ConfiguredUserAvatarMenu client:only="react" />
     </SiteNavbar>
     <div class="flex-1">
       <slot />

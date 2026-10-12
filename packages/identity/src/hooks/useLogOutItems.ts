@@ -5,6 +5,8 @@ import {
   LogoutOutlined,
   SettingOutlined,
   CreditCardOutlined,
+  ApiFilled,
+  AppstoreAddOutlined,
 } from '@ant-design/icons';
 
 export function useLogOutItems(
@@ -38,6 +40,24 @@ export function useLogOutItems(
           'Mis pagos',
         ),
         icon: createElement(CreditCardOutlined),
+      },
+      {
+        key: 'tokens',
+        label: createElement(
+          'a',
+          { href: base ? `${base}/token` : undefined },
+          'Tokens & OAuth',
+        ),
+        icon: createElement(ApiFilled),
+      },
+      {
+        key: 'integrations',
+        label: createElement(
+          'a',
+          { href: base ? `${base}/integrations` : undefined },
+          'Integration',
+        ),
+        icon: createElement(AppstoreAddOutlined),
       },
       {
         type: 'divider',

@@ -16,12 +16,12 @@ export function ConfiguredBillingBoundary({
     <QuarkTheme>
       <CommerceProvider services={services}>
         <h1 className="mb-6 text-2xl font-semibold">Billing</h1>
-          <Card
-            title="Historical"
-            className="!bg-slate-900 !border-slate-800 mb-16"
-          >
-            <BillingView />
-          </Card>
+        <Card
+          title="Historical"
+          className="!bg-slate-900 !border-slate-800 mb-16"
+        >
+          <BillingView />
+        </Card>
       </CommerceProvider>
     </QuarkTheme>
   );

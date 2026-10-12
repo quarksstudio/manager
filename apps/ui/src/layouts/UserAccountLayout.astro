@@ -18,7 +18,7 @@ const { title, description, username, profileId, active } = Astro.props;
   <div
     class="account-shell mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-4 py-8 sm:px-6 sm:py-12 lg:grid-cols-[16rem_minmax(0,1fr)]"
   >
-    <aside class="account-navigation min-w-0">
+    <aside class="min-w-0 space-y-6 account-navigation">
       <ConfiguredAccountNavigation
         username={username}
         profileId={profileId}
@@ -27,7 +27,7 @@ const { title, description, username, profileId, active } = Astro.props;
         client:only="react"
       />
     </aside>
-    <main class="min-w-0 px-4 py-8 sm:px-6 sm:py-12">
+    <main class="min-w-0 px-4 py-8 sm:px-0 sm:py-0">
       <slot />
     </main>
   </div>

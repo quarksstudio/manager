@@ -5,6 +5,8 @@ import {
   type AccountPage,
 } from '../components/SettingsSidebar';
 import { useUserProfileServices } from '../../hooks/useUserProfileServices';
+import { IdentityProvider } from '../../presentation';
+import { useIdentityServices } from '../../hooks/useIdentityServices';
 
 export function ConfiguredAccountNavigation({
   username,
@@ -18,18 +20,19 @@ export function ConfiguredAccountNavigation({
   apiBaseUrl: string;
 }) {
   const { session, loading } = useIdentitySession();
+  const servicesId = useIdentityServices();
   const user = session?.user as { id?: string; uid?: string } | undefined;
   const services = useUserProfileServices(apiBaseUrl);
-
-  if (loading || (user?.id ?? user?.uid) !== profileId) return null;
-
   return (
     <QuarkTheme>
-      <SettingsSidebar
-        username={username}
-        active={active}
-        services={services}
-      />
+      <IdentityProvider services={servicesId}>
+        <SettingsSidebar
+          username={username}
+          active={active}
+          services={services}
+          showMenu={!(loading || (user?.id ?? user?.uid) !== profileId)}
+        />
+      </IdentityProvider>
     </QuarkTheme>
   );
 }
