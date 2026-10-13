@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { PackagesBoundary as PackagesView } from '../containers/PackagesBoundary';
+import { PackagesBoundary } from '../containers/PackagesBoundary';
 import { DistributionWebProvider } from '../../presentation/web-services';
 import { DistributionProvider } from '../../presentation/services';
 import { createDistributionServices } from '../../presentation/configured-services';
@@ -28,7 +28,7 @@ export function ConfiguredPackagesBoundary({
   return (
     <DistributionProvider services={distributionServices}>
       <DistributionWebProvider services={services}>
-        <PackagesView
+        <PackagesBoundary
           {...props}
           packageUrl={packageUrl}
           downloadUrl={downloadUrl}

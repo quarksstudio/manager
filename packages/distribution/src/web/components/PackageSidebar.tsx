@@ -76,9 +76,11 @@ export function PackageSidebar({
               ) : (
                 <Flex wrap gap={8}>
                   {tags.map((tag) => (
-                    <Tag bordered key={tag}>
-                      {tag}
-                    </Tag>
+                    <a href={`/?tags=${tag}`}>
+                      <Tag bordered key={tag}>
+                        {tag}
+                      </Tag>
+                    </a>
                   ))}
                 </Flex>
               )}
