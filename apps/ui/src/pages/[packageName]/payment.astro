@@ -34,7 +34,7 @@ await getPackage(Astro.cookies, name).catch((e) => Astro.rewrite('/404'));
     <PricingBoundary
       apiBaseUrl={registryBaseUrl}
       client:only="react"
-      mode="plans"
+      mode={mode}
       packageName={name}
     />
   </main>

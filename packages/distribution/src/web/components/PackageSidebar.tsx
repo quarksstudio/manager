@@ -1,6 +1,7 @@
 import { Card, Divider, Flex, Tag, Typography } from 'antd';
 import { formatCount, formatSinceDate } from '@quarks.studio/web-ui';
 import { QuarkTheme } from '@quarks.studio/web-ui';
+import { GroupAvatar } from '@quarks.studio/identity/web';
 import { FieldLabel } from './FieldLabel';
 import { InstallCommand } from './InstallCommand';
 
@@ -63,13 +64,7 @@ export function PackageSidebar({
                   No authors listed
                 </Typography.Text>
               ) : (
-                <ul className="space-y-1">
-                  {authors.map((author) => (
-                    <li key={author} className="text-sm">
-                      {author}
-                    </li>
-                  ))}
-                </ul>
+                <GroupAvatar people={authors} />
               )}
             </Flex>
             <Flex vertical gap={8}>

@@ -12,3 +12,4 @@ export { ProfileSettingsCard } from './ProfileSettingsCard';
 export { TokensTab } from './TokensTab';
 export { IntegrationsTab } from './IntegrationsTab';
 export { BillingTab } from './BillingTab';
+export { GroupAvatar } from './GroupAvatar';

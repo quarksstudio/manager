@@ -57,16 +57,12 @@ it('gets the embedded description with one package request and uses the latest p
   expect(get).toHaveBeenCalledTimes(1);
 });
 
-it('uses server-provided data without repeating the package request on hydration', async () => {
-  const get = jest.fn();
+it('uses the same React-fetched package data when the selected version changes', async () => {
+  const get = jest.fn().mockResolvedValue(detail);
+  const services = { get };
   const view = (version: string) => (
-    <DistributionWebProvider services={{ get }}>
-      <PackagesBoundary
-        packageName="demo"
-        initialDetail={detail}
-        version={version}
-        {...urls}
-      />
+    <DistributionWebProvider services={services}>
+      <PackagesBoundary packageName="demo" version={version} {...urls} />
     </DistributionWebProvider>
   );
   const { rerender } = render(view('1.0.0'));
@@ -75,5 +71,5 @@ it('uses server-provided data without repeating the package request on hydration
   await waitFor(() =>
     expect(screen.getByText('# Older publication')).toBeTruthy(),
   );
-  expect(get).not.toHaveBeenCalled();
+  expect(get).toHaveBeenCalledTimes(1);
 });

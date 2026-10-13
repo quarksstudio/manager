@@ -1,33 +1,18 @@
 ---
-import { loadConfig } from '@quarks.studio/config';
-import {
-  ConfiguredPackageDetails as PackageDetails,
-  ConfiguredPackagesBoundary as PackagesBoundary,
-} from '@quarks.studio/distribution/web';
+import { ConfiguredPackagesBoundary } from '@quarks.studio/distribution/web';
 
 import { registryBaseUrl as browserRegistryBaseUrl } from '../../../lib/registry-base';
-import { getPackage } from '../../../lib/registry';
 import Layout from '../../../layouts/Layout.astro';
 
 const name = decodeURIComponent(Astro.params.packageName ?? '');
 const versionSt = decodeURIComponent(Astro.params.versionPackage ?? '');
-
-const { detail, version } = await getPackage(
-  Astro.cookies,
-  name,
-  versionSt,
-).catch((e) => Astro.rewrite('/404'));
 ---
 
-<Layout
-  title={`${name} · ${version}`}
-  description={detail?.summary ?? undefined}
->
-  <PackagesBoundary
+<Layout title={`${name} · ${versionSt}`}>
+  <ConfiguredPackagesBoundary
     apiBaseUrl={browserRegistryBaseUrl}
     client:only="react"
-    initialDetail={detail}
     packageName={name}
-    version={version}
+    version={versionSt}
   />
 </Layout>

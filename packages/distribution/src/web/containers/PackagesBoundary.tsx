@@ -31,7 +31,6 @@ function detailUrls(
 export interface PackagesBoundaryProps {
   packageName: string;
   version?: string;
-  initialDetail?: Detail;
   packageUrl: (name: string, version?: string) => string;
   downloadUrl: (name: string, version: string) => string;
 }
@@ -41,7 +40,6 @@ export function PackagesBoundary({
   version,
   packageUrl,
   downloadUrl,
-  initialDetail,
 }: PackagesBoundaryProps) {
   const services = useDistributionWebServices();
   const [state, setState] = useState<{
@@ -50,8 +48,8 @@ export function PackagesBoundary({
     error?: string;
     notFound: boolean;
   }>({
-    detail: initialDetail ?? null,
-    loading: !initialDetail,
+    detail: null,
+    loading: true,
     notFound: false,
   });
 
@@ -59,10 +57,7 @@ export function PackagesBoundary({
     let cancelled = false;
     void (async () => {
       try {
-        const data =
-          initialDetail?.name === packageName
-            ? initialDetail
-            : await services.get(packageName);
+        const data = await services.get(packageName);
         if (cancelled) return;
         if (!cancelled)
           setState({ detail: data, loading: false, notFound: false });
@@ -81,7 +76,7 @@ export function PackagesBoundary({
     return () => {
       cancelled = true;
     };
-  }, [packageName, version, services, initialDetail]);
+  }, [packageName, services]);
 
   return (
     <PackageDetails

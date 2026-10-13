@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import type { PackageDetails } from '../../domain/package-details';
 import { PackagesBoundary as PackagesView } from '../containers/PackagesBoundary';
 import { DistributionWebProvider } from '../../presentation/web-services';
 import { DistributionProvider } from '../../presentation/services';
@@ -11,7 +10,6 @@ export interface PackagesBoundaryProps {
   apiBaseUrl: string;
   packageName: string;
   version?: string;
-  initialDetail?: PackageDetails;
 }
 
 export function ConfiguredPackagesBoundary({

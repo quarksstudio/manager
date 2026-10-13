@@ -75,7 +75,7 @@ export function SettingsSidebar({
         </div>
       )}
       {profile && showMenu && (
-        <nav aria-label="Profile navigation" className="min-w-0 w-full">
+        <nav aria-label="Profile navigation" className="min-w-0 w-full py-12">
           <Menu
             selectedKeys={[active]}
             items={links}
