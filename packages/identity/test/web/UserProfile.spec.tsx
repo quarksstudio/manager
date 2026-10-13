@@ -151,7 +151,7 @@ it('distinguishes an empty profile from a failed package request', async () => {
 it('falls back after an avatar fails and handles missing dates', async () => {
   getProfile.mockResolvedValue({
     ...profile,
-    photoURL: 'https://example.test/avatar',
+    photoURL: 'https://avatars.githubusercontent.com/avatar',
     createdAt: null,
   });
   show();

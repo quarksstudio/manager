@@ -30,7 +30,7 @@ it('restores the stored avatar after remount and returns to login after a 401', 
       uid: 'user',
       email: null,
       displayName: null,
-      photoURL: 'https://image.test/stored.png',
+      photoURL: 'https://avatars.githubusercontent.com/stored.png',
     },
   });
   const services: IdentityServices = {
@@ -52,14 +52,14 @@ it('restores the stored avatar after remount and returns to login after a 401', 
   );
   await waitFor(() =>
     expect(first.container.querySelector('img')?.getAttribute('src')).toBe(
-      'https://image.test/stored.png',
+      'https://avatars.githubusercontent.com/stored.png',
     ),
   );
   first.unmount();
   const second = render(menu);
   await waitFor(() =>
     expect(second.container.querySelector('img')?.getAttribute('src')).toBe(
-      'https://image.test/stored.png',
+      'https://avatars.githubusercontent.com/stored.png',
     ),
   );
   expect(services.loginWithProvider).not.toHaveBeenCalled();
@@ -153,7 +153,7 @@ it('authenticates from the menu, displays failures, and retries to show the avat
         uid: 'developer',
         email: 'developer@quark.local',
         displayName: 'developer',
-        photoURL: 'https://image.test/avatar.png',
+        photoURL: 'https://avatars.githubusercontent.com/avatar.png',
       },
     };
     await saveSession(session);
@@ -161,7 +161,7 @@ it('authenticates from the menu, displays failures, and retries to show the avat
   });
   await waitFor(() =>
     expect(container.querySelector('img')?.getAttribute('src')).toBe(
-      'https://image.test/avatar.png',
+      'https://avatars.githubusercontent.com/avatar.png',
     ),
   );
   expect(await screen.findByText('Sesión iniciada')).toBeTruthy();
@@ -171,7 +171,7 @@ it('authenticates from the menu, displays failures, and retries to show the avat
   await waitFor(() => expect(services.logout).toHaveBeenCalledTimes(1));
   expect(await screen.findByText('No se pudo terminar la sesión')).toBeTruthy();
   expect(container.querySelector('img')?.getAttribute('src')).toBe(
-    'https://image.test/avatar.png',
+    'https://avatars.githubusercontent.com/avatar.png',
   );
   fireEvent.click(container.querySelector('img') as HTMLImageElement);
   fireEvent.click(await screen.findByText('Cerrar Sesión'));
@@ -190,7 +190,7 @@ it('notifies once for provider failure and successful retry', async () => {
           uid: 'user',
           email: null,
           displayName: null,
-          photoURL: 'https://image.test/avatar.png',
+          photoURL: 'https://avatars.githubusercontent.com/avatar.png',
         },
         accessToken: 'token',
       };

@@ -8,12 +8,14 @@ jest.mock('../../src/hooks', () => ({
   useAuthLogin: () => ({
     login: mockLogin,
     isAuthenticated: mockAuthenticated,
-    user: { photoURL: 'https://image.test/avatar.png' },
+    user: { photoURL: 'https://avatars.githubusercontent.com/avatar.png' },
   }),
   useAuthLogout: () => ({ logout: mockLogout }),
   useIdentitySession: () => ({
     isAuthenticated: mockAuthenticated,
-    session: { user: { photoURL: 'https://image.test/avatar.png' } },
+    session: {
+      user: { photoURL: 'https://avatars.githubusercontent.com/avatar.png' },
+    },
     loading: false,
     reload: jest.fn(),
   }),
@@ -68,7 +70,7 @@ it('shows login or the authenticated avatar from identity hooks', () => {
   mockAuthenticated = true;
   rerender(<UserAvatarMenu />);
   expect(screen.getByRole('img').getAttribute('src')).toBe(
-    'https://image.test/avatar.png',
+    'https://avatars.githubusercontent.com/avatar.png',
   );
 });
 

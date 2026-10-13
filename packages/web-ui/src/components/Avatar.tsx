@@ -6,6 +6,31 @@ import { createConfiguredContext } from '@quarks.studio/config/http';
 
 const USERNAME_PATTERN = /^[a-z0-9_-]{3,30}$/;
 export const MAX_AVATAR_USERS = 50;
+const AVATAR_HOSTS = [
+  'gravatar.com',
+  'googleusercontent.com',
+  'githubusercontent.com',
+  'twimg.com',
+  'fbcdn.net',
+  'fbsbx.com',
+] as const;
+
+function normalizeUsernames(people: readonly string[]): string[] {
+  return [
+    ...new Set(
+      people
+        .map((name) => name.trim().toLowerCase())
+        .filter((name) => USERNAME_PATTERN.test(name)),
+    ),
+  ];
+}
+
+function isAllowedAvatarHost(hostname: string): boolean {
+  const host = hostname.toLowerCase();
+  return AVATAR_HOSTS.some(
+    (domain) => host === domain || host.endsWith(`.${domain}`),
+  );
+}
 
 export interface AvatarUser {
   id: string;
@@ -27,9 +52,8 @@ function safePhotoUrl(photoURL: string | null | undefined): string | undefined {
     if (
       !url.username &&
       !url.password &&
-      (url.protocol === 'https:' ||
-        (url.protocol === 'http:' &&
-          ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)))
+      url.protocol === 'https:' &&
+      isAllowedAvatarHost(url.hostname)
     )
       return url.href;
   } catch {
@@ -76,17 +100,13 @@ export function UserAvatar({
 
 /** Loads public avatar details for a group of usernames. */
 export function useAvatar(people: readonly string[] = [], apiBaseUrl?: string) {
-  const peopleKey = people.join('\u0000');
+  const peopleKey = JSON.stringify(people);
   const usernames = useMemo(
     () =>
-      [
-        ...new Set(
-          peopleKey
-            .split('\u0000')
-            .map((name) => name.trim().toLowerCase())
-            .filter((name) => USERNAME_PATTERN.test(name)),
-        ),
-      ].slice(0, MAX_AVATAR_USERS),
+      normalizeUsernames(JSON.parse(peopleKey) as string[]).slice(
+        0,
+        MAX_AVATAR_USERS,
+      ),
     [peopleKey],
   );
   const context = useMemo(
@@ -152,22 +172,42 @@ export function GroupAvatar({
   maxCount?: number;
 }) {
   const { data, loading } = useAvatar(people);
+  const peopleKey = JSON.stringify(people);
+  const usernames = useMemo(
+    () => normalizeUsernames(JSON.parse(peopleKey) as string[]),
+    [peopleKey],
+  );
+  const requestedMaxCount = Number.isFinite(maxCount)
+    ? Math.max(1, Math.floor(maxCount))
+    : MAX_AVATAR_USERS;
+  const displayLimit = Math.min(requestedMaxCount, MAX_AVATAR_USERS);
+  const hasOverflow = usernames.length > displayLimit;
+  const visibleCount = hasOverflow ? displayLimit - 1 : displayLimit;
+  const omittedCount = Math.max(0, usernames.length - visibleCount);
 
   return (
     <Spin spinning={loading} size="small">
-      <AntAvatar.Group
-        max={{
-          style: { backgroundColor: '#52c41a', color: '#fff' },
-          count: Math.max(1, maxCount - 1),
-        }}
-      >
-        {data.map(({ username, photoURL, displayName }) => (
-          <Tooltip key={username} title={displayName} placement="top">
-            <a href={`/~/${encodeURIComponent(username)}`}>
-              <UserAvatar username={username} size={32} src={photoURL} />
-            </a>
+      <AntAvatar.Group>
+        {data
+          .slice(0, visibleCount)
+          .map(({ username, photoURL, displayName }) => (
+            <Tooltip key={username} title={displayName} placement="top">
+              <a href={`/~/${encodeURIComponent(username)}`}>
+                <UserAvatar username={username} size={32} src={photoURL} />
+              </a>
+            </Tooltip>
+          ))}
+        {hasOverflow && (
+          <Tooltip title={`${omittedCount} more users`} placement="top">
+            <AntAvatar
+              style={{ backgroundColor: '#52c41a', color: '#fff' }}
+              size={32}
+              aria-label={`${omittedCount} more users`}
+            >
+              +{omittedCount}
+            </AntAvatar>
           </Tooltip>
-        ))}
+        )}
       </AntAvatar.Group>
     </Spin>
   );
