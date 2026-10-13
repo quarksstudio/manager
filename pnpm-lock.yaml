@@ -370,9 +370,6 @@ importers:
       '@quarks.studio/config':
         specifier: workspace:*
         version: link:../config
-      '@quarks.studio/identity':
-        specifier: workspace:*
-        version: link:../identity
       '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../registry
@@ -692,6 +689,9 @@ importers:
 
   packages/web-ui:
     dependencies:
+      '@quarks.studio/config':
+        specifier: workspace:*
+        version: link:../config
       '@ant-design/cssinjs':
         specifier: ^2.1.2
         version: 2.1.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)

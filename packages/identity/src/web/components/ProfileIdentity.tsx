@@ -1,4 +1,5 @@
-import { Avatar, Tag } from 'antd';
+import { Tag } from 'antd';
+import { UserAvatar } from '@quarks.studio/web-ui';
 import type { AccountProfile } from '../../application/account-dashboard.port';
 import { MonoValue } from './MonoValue';
 
@@ -9,13 +10,13 @@ export function ProfileIdentity({ profile }: { profile: AccountProfile }) {
     '?';
   return (
     <div className="flex min-w-0 items-center gap-4">
-      <Avatar
+      <UserAvatar
+        username={profile.username}
         size={56}
-        aria-label={`Avatar of ${profile.username}`}
         className="shrink-0 bg-slate-800 text-xl"
       >
         {initial}
-      </Avatar>
+      </UserAvatar>
       <div className="min-w-0">
         <p className="truncate text-lg font-semibold">{profile.displayName}</p>
         <p className="mt-1 flex min-w-0 flex-wrap items-center gap-2 text-sm text-slate-400">

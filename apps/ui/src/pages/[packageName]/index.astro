@@ -1,5 +1,5 @@
 ---
-import { ConfiguredPackagesBoundary as PackagesBoundary } from '@quarks.studio/distribution/web';
+import { ConfiguredPackagesBoundary } from '@quarks.studio/distribution/web';
 import Layout from '../../layouts/Layout.astro';
 import { registryBaseUrl as browserRegistryBaseUrl } from '../../lib/registry-base';
 
@@ -7,7 +7,7 @@ const name = decodeURIComponent(Astro.params.packageName ?? '');
 ---
 
 <Layout title={name}>
-  <PackagesBoundary
+  <ConfiguredPackagesBoundary
     apiBaseUrl={browserRegistryBaseUrl}
     client:only="react"
     packageName={name}

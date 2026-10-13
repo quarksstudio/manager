@@ -1,7 +1,6 @@
-import { Dropdown, Avatar, Space, Spin } from 'antd';
+import { Dropdown, Space, Spin } from 'antd';
 import { useNotifications } from '@quarks.studio/notifications/hooks';
-import { UserOutlined } from '@ant-design/icons';
-import { QuarkTheme } from '@quarks.studio/web-ui';
+import { QuarkTheme, UserAvatar } from '@quarks.studio/web-ui';
 
 import { useAuthLogin, useAuthLogout, useIdentitySession } from '../../hooks';
 
@@ -72,10 +71,10 @@ export function UserAvatarMenu({ environment }: UserAvatarMenuProps = {}) {
           </span>
         ) : isAuthenticated ? (
           <Space style={{ cursor: 'pointer' }}>
-            <Avatar
+            <UserAvatar
+              username={user?.username}
               size="large"
-              icon={<UserOutlined />}
-              src={user?.photoURL ?? undefined}
+              src={user?.photoURL}
               style={{
                 backgroundColor: '#ccc',
               }}

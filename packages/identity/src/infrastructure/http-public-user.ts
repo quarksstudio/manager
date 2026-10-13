@@ -7,9 +7,5 @@ export function createHttpPublicUsers(context: OperationContext) {
       context.fetchJson('auth/me', { method: 'POST', body: { username } }),
     get: (username: string): Promise<PublicUserProfile> =>
       context.fetchJson(`users/${encodeURIComponent(username)}`),
-    getMany: (usernames: string[]): Promise<PublicUserProfile[]> =>
-      context.fetchJson(
-        `users?usernames=${encodeURIComponent(usernames.join(','))}`,
-      ),
   };
 }

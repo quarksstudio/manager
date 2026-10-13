@@ -1,7 +1,7 @@
 import { Card, Divider, Flex, Tag, Typography } from 'antd';
 import { formatCount, formatSinceDate } from '@quarks.studio/web-ui';
 import { QuarkTheme } from '@quarks.studio/web-ui';
-import { GroupAvatar } from '@quarks.studio/identity/web';
+import { GroupAvatar } from '@quarks.studio/web-ui';
 import { FieldLabel } from './FieldLabel';
 import { InstallCommand } from './InstallCommand';
 

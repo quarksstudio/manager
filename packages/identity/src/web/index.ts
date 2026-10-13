@@ -7,4 +7,3 @@ export {
 } from '../hooks/useIdentitySession';
 export { useLogInItems } from '../hooks/useLogInItems';
 export { useLogOutItems } from '../hooks/useLogOutItems';
-export { useAvatar, type AvatarUser } from '../hooks/useAvatar';

@@ -19,6 +19,7 @@
     "**/*.css"
   ],
   "dependencies": {
+    "@quarks.studio/config": "workspace:*",
     "@ant-design/cssinjs": "^2.1.2",
     "@ant-design/icons": "^6.3.4",
     "antd": "^6.6.5",

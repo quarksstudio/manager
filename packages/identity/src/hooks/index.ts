@@ -9,7 +9,6 @@ export * from './useLogOutItems';
 export * from './useServices';
 export * from './useUserProfile';
 export * from './useUserProfileServices';
-export * from './useAvatar';
 export * from './useUpdateUsername';
 
 export * from './useUserSettings';
