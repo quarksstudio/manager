@@ -1,10 +1,11 @@
-export { certifyPackage, runAgentTests, runSkillTests } from './lib/runner';
+export { runAgentTests, runSkillTests } from './lib/runner';
 export { ProcessSandbox } from './lib/sandbox/process-sandbox';
+export { runMockInterceptionCanary } from './lib/sandbox/mock-proxy';
 export { CliSecurityRunner } from './lib/tiers/tier3/security';
-export { Ed25519Signer } from './lib/certifier/ed25519-signer';
 export { requestServerCertification } from './lib/server-client';
 export { canonicalDirectoryHash, structuralAudit } from './lib/tiers/tier1';
 export {
+  ARCHIVE_LIMITS,
   auditTarArchive,
   inspectPackageArchive,
 } from './lib/tiers/tier1/archive';
@@ -12,26 +13,31 @@ export type { PackageArchiveInspection } from './lib/tiers/tier1/archive';
 export type {
   AchievedTier,
   AgentTestContract,
-  AuditorVerifier,
   CertificationResult,
-  CertificationTier,
   CoverageReport,
   HttpMock,
   PackageManifest,
-  PaymentVerifier,
+  ProgressiveTier3Result,
   RunnerDependencies,
   SandboxAdapter,
   SandboxRequest,
   SandboxResult,
   SchemaResolver,
   SecurityRunner,
-  Signer,
   SkillTestContract,
   TestRunnerOptions,
-  TimestampProvider,
   ToolMock,
-  TrustLevel,
+  VerificationResult,
   ServerCertificationLaunch,
   ServerCertificationOptions,
   ServerCertificationResult,
 } from './lib/types';
+export { runLocalTests } from './infrastructure/local-tests';
+export {
+  createRunLocalTests,
+  normalizeTier,
+  type TestOptions,
+  type TestResult,
+  type LocalTestDependencies,
+} from './application/run-local-tests';
+export { readManifest } from './lib/contracts';

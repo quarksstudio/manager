@@ -21,7 +21,7 @@ export async function structuralAudit(
         assertExplicit(target, `mapper_files.${provider}.${kind} target`);
         assertExplicit(source, `mapper_files.${provider}.${kind} source`);
         await requireRegularFile(root, source);
-        sources.add(source.replace(/\\/g, '/'));
+        sources.add(path.posix.normalize(source.replace(/\\/g, '/')));
       }
     }
   }

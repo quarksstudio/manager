@@ -131,6 +131,7 @@ const skillContractSchema = z
               .strict(),
             http_mocks: z.array(httpMock).optional(),
             assertions: z.array(skillAssertion).min(1),
+            affected_files: z.array(z.string().min(1)).optional(),
           })
           .strict(),
       )
@@ -145,6 +146,7 @@ const skillContractSchema = z
             invariant_assertions: z
               .array(z.object({ expression: z.string().min(1) }).strict())
               .min(1),
+            affected_files: z.array(z.string().min(1)).optional(),
           })
           .strict(),
       )
@@ -173,6 +175,7 @@ const agentContractSchema = z
             input: z.object({ prompt: z.string() }).strict(),
             tool_mocks: z.array(toolMock).optional(),
             assertions: z.array(agentAssertion).min(1),
+            affected_files: z.array(z.string().min(1)).optional(),
           })
           .strict(),
       )
@@ -240,4 +243,48 @@ function assertUniqueIds(items: Array<{ id: string }>): void {
     if (seen.has(item.id)) throw new Error(`Duplicate test id: ${item.id}`);
     seen.add(item.id);
   }
+}
+
+export function validateAffectedFileCoverage(
+  mappedSources: string[],
+  tests: Array<{ id: string; affected_files?: string[] }>,
+): Record<string, string[]> {
+  const candidates = new Set(mappedSources.map(normalizePackagePath));
+  const coverage = new Map<string, string[]>();
+  for (const test of tests) {
+    for (const rawPath of test.affected_files ?? []) {
+      const file = normalizePackagePath(rawPath);
+      if (!candidates.has(file)) {
+        throw new Error(
+          `Test ${test.id} affected_files must reference mapper_files source files: ${rawPath}`,
+        );
+      }
+      const owners = coverage.get(file) ?? [];
+      owners.push(test.id);
+      coverage.set(file, owners);
+    }
+  }
+  const missing = [...candidates].filter((file) => !coverage.has(file));
+  if (missing.length) {
+    throw new Error(
+      `Tier 3 test coverage is missing mapper_files sources: ${missing.join(', ')}`,
+    );
+  }
+  return Object.fromEntries(
+    [...coverage.entries()].map(([file, ids]) => [
+      file,
+      [...new Set(ids)].sort(),
+    ]),
+  );
+}
+
+function normalizePackagePath(value: string): string {
+  const normalized = value.replace(/\\/g, '/');
+  if (
+    normalized.startsWith('/') ||
+    normalized.split('/').some((part) => !part || part === '.' || part === '..')
+  ) {
+    throw new Error(`Invalid affected_files package path: ${value}`);
+  }
+  return normalized;
 }

@@ -30,6 +30,33 @@ The runner writes one language-neutral JSON input document to stdin. The command
 
 HTTP and tool mocks are exposed as JSON through `MANAGER_HTTP_MOCKS` and `MANAGER_TOOL_MOCKS`, so they can be consumed with `JSON.parse` in Node or `json.loads` in Python. Production Tier 3/4 callers must inject a Docker or WASM-style `SandboxAdapter` for the selected runtime. The tester verifies evidence; server-only code owns payment validation, signing, timestamping, audit authorization, and certificate issuance.
 
+## Tier 3 file associations and progressive mutations
+
+Tests may declare `affected_files` as package-relative paths that also appear
+as sources in `mapper_files`. A Tier 3 run requires every `mapper_files` source
+to be associated with at least one regular or property test. Invalid paths,
+uncovered mapped files, and tests without `affected_files` fail Tier 3.
+
+The server starts Tier 3 at round `0` with no deleted files. Later invocations
+pass the round number and cumulative deletions through `TestRunnerOptions`.
+Each round uses a clean workspace copy. A test associated with a deleted file
+is expected to fail; a test whose associated files remain is expected to pass.
+`VerificationResult.progressive` reports candidates, cumulative deletions,
+per-file test coverage, and expected and observed outcomes for each test.
+
+```yaml
+tests:
+  - id: reads-agent-source
+    description: Reads the mapped agent instructions
+    affected_files:
+      - agents/researcher.md
+    input:
+      prompt: Find the requested fact
+    assertions:
+      - type: trajectory_sequence
+        steps: [lookup, answer]
+```
+
 ## Generated test variants
 
 The tester never decides which variants run: the runner generates them and

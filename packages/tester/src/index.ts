@@ -17,6 +17,7 @@ export type {
   CoverageReport,
   HttpMock,
   PackageManifest,
+  ProgressiveTier3Result,
   RunnerDependencies,
   SandboxAdapter,
   SandboxRequest,

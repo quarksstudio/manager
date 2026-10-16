@@ -1,6 +1,5 @@
-export type CertificationTier = 'TIER_1' | 'TIER_2' | 'TIER_3' | 'TIER_4';
+import type { CertificationTier } from '@quarks.studio/certification';
 export type AchievedTier = CertificationTier | 'FAILED';
-export type TrustLevel = 'S1' | 'S2' | 'S3' | 'S4';
 export interface CoverageReport {
   schemaCoverage: number;
   assertionCoverage: number;
@@ -8,19 +7,40 @@ export interface CoverageReport {
   evaluatedPaths: string[];
   missingPaths: string[];
 }
-export interface CertificationResult {
+export interface VerificationResult {
   packageName: string;
   version: string;
+  packageType: 'skill' | 'agent';
+  tierRequested: CertificationTier;
   tierAchieved: AchievedTier;
-  isCertified: boolean;
+  passed: boolean;
   sha256Hash: string;
-  skillTrustLevel: TrustLevel | null;
   coverage: CoverageReport;
   durationMs: number;
   errors: string[];
-  signature?: string;
-  timestampToken?: string;
+  progressive?: ProgressiveTier3Result;
 }
+export interface ProgressiveTier3Result {
+  round: number;
+  candidates: string[];
+  deletedFiles: string[];
+  coverage: Record<string, string[]>;
+  outcomes: Array<{
+    testId: string;
+    affectedFiles: string[];
+    expected: 'pass' | 'fail' | 'false';
+    actual: 'pass' | 'fail';
+    error?: string;
+  }>;
+  roundResults?: Array<{
+    round: number;
+    deletedFiles: string[];
+    passed: boolean;
+    outcomes: ProgressiveTier3Result['outcomes'];
+  }>;
+}
+/** @deprecated Use VerificationResult. A tester result is not a certificate. */
+export type CertificationResult = VerificationResult;
 export interface SandboxRequest {
   command: string;
   cwd: string;
@@ -52,36 +72,9 @@ export interface SchemaResolver {
     sha256: string;
   }>;
 }
-export interface Signer {
-  sign(payload: Buffer): Promise<{
-    signature: string;
-    keyId?: string;
-  }>;
-}
-export interface TimestampProvider {
-  timestamp(payloadHash: string): Promise<string>;
-}
-export interface PaymentVerifier {
-  verify(tier: CertificationTier): Promise<{
-    paymentId: string;
-  }>;
-}
-export interface AuditorVerifier {
-  verify(
-    audit: unknown,
-    payload: Buffer,
-  ): Promise<{
-    auditorSignature: string;
-  }>;
-}
 export interface RunnerDependencies {
   sandbox?: SandboxAdapter;
   schemaResolver?: SchemaResolver;
-  signer?: Signer;
-  timestampProvider?: TimestampProvider;
-  paymentVerifier?: PaymentVerifier;
-  auditorVerifier?: AuditorVerifier;
-  now?: () => Date;
   securityRunner?: SecurityRunner;
 }
 export interface TestRunnerOptions extends RunnerDependencies {
@@ -89,6 +82,8 @@ export interface TestRunnerOptions extends RunnerDependencies {
   tierRequested: CertificationTier;
   seed?: number;
   forceIsolatedSandbox?: boolean;
+  progressiveRound?: number;
+  progressiveDeletedFiles?: string[];
 }
 export interface ServerCertificationOptions {
   serverUrl: string;
@@ -122,6 +117,7 @@ export interface HttpMock {
     status: number;
     body?: unknown;
   };
+  times?: number;
 }
 export interface ToolMock {
   tool: string;
@@ -179,6 +175,7 @@ export interface SkillTestCase {
   };
   http_mocks?: HttpMock[];
   assertions: SkillAssertion[];
+  affected_files?: string[];
 }
 export interface PropertyTest {
   id: string;
@@ -187,6 +184,7 @@ export interface PropertyTest {
   invariant_assertions: Array<{
     expression: string;
   }>;
+  affected_files?: string[];
 }
 export interface SkillTestContract {
   version: '1.0';
@@ -220,6 +218,7 @@ export interface AgentTestContract {
     };
     tool_mocks?: ToolMock[];
     assertions: AgentAssertion[];
+    affected_files?: string[];
   }>;
 }
 export interface PackageManifest {

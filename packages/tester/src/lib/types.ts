@@ -20,6 +20,27 @@ export interface VerificationResult {
   coverage: CoverageReport;
   durationMs: number;
   errors: string[];
+  progressive?: ProgressiveTier3Result;
+}
+
+export interface ProgressiveTier3Result {
+  round: number;
+  candidates: string[];
+  deletedFiles: string[];
+  coverage: Record<string, string[]>;
+  outcomes: Array<{
+    testId: string;
+    affectedFiles: string[];
+    expected: 'pass' | 'fail' | 'false';
+    actual: 'pass' | 'fail';
+    error?: string;
+  }>;
+  roundResults?: Array<{
+    round: number;
+    deletedFiles: string[];
+    passed: boolean;
+    outcomes: ProgressiveTier3Result['outcomes'];
+  }>;
 }
 
 /** @deprecated Use VerificationResult. A tester result is not a certificate. */
@@ -65,6 +86,8 @@ export interface TestRunnerOptions extends RunnerDependencies {
   tierRequested: CertificationTier;
   seed?: number;
   forceIsolatedSandbox?: boolean;
+  progressiveRound?: number;
+  progressiveDeletedFiles?: string[];
 }
 
 export interface ServerCertificationOptions {
@@ -156,6 +179,7 @@ export interface SkillTestCase {
   input: { prompt: string; context?: Record<string, unknown> };
   http_mocks?: HttpMock[];
   assertions: SkillAssertion[];
+  affected_files?: string[];
 }
 
 export interface PropertyTest {
@@ -163,6 +187,7 @@ export interface PropertyTest {
   description: string;
   generator: Record<string, string>;
   invariant_assertions: Array<{ expression: string }>;
+  affected_files?: string[];
 }
 
 export interface SkillTestContract {
@@ -193,6 +218,7 @@ export interface AgentTestContract {
     input: { prompt: string };
     tool_mocks?: ToolMock[];
     assertions: AgentAssertion[];
+    affected_files?: string[];
   }>;
 }
 

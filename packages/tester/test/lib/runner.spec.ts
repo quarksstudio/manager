@@ -103,6 +103,126 @@ process.stdin.on('end', () => {
     expect(result.errors[0]).toContain('strong network isolation');
   });
 
+  it('requires every mapped source to be associated with a Tier 3 test', async () => {
+    const result = await runSkillTests({
+      targetDir: root,
+      tierRequested: 'TIER_3',
+      sandbox: {
+        ...sandbox,
+        strongNetworkIsolation: true,
+      },
+      securityRunner: { scan: async () => [] },
+    });
+    expect(result.passed).toBe(false);
+    expect(result.errors[0]).toContain('missing mapper_files sources');
+  });
+
+  it('returns the full-file baseline as Tier 3 round zero', async () => {
+    await fs.writeFile(
+      path.join(root, 'skill.test.yml'),
+      contract().replace(
+        '  - id: completes',
+        '  - id: completes\n    affected_files: [src/agent.md]',
+      ),
+    );
+    const result = await runSkillTests({
+      targetDir: root,
+      tierRequested: 'TIER_3',
+      sandbox: { ...sandbox, strongNetworkIsolation: true },
+      securityRunner: { scan: async () => [] },
+      progressiveRound: 0,
+      progressiveDeletedFiles: [],
+    });
+    expect(result).toMatchObject({ passed: true, tierAchieved: 'TIER_3' });
+    expect(result.progressive).toMatchObject({
+      round: 0,
+      candidates: ['src/agent.md'],
+      deletedFiles: [],
+    });
+  });
+
+  it('fails the Tier 3 baseline when a test has no affected_files association', async () => {
+    const unassociated = contract()
+      .replace(
+        '  - id: completes\n',
+        '  - id: completes\n    affected_files: [src/agent.md]\n',
+      )
+      .replace(
+        'property_tests: []',
+        `  - id: missing-association
+    description: unassociated test
+    input:
+      prompt: run
+    http_mocks:
+      - request:
+          method: POST
+          url: https://example.test/action
+        response:
+          status: 200
+          body:
+            ok: true
+    assertions:
+      - type: equals
+        path: $.status
+        value: completed
+property_tests: []`,
+      );
+    await fs.writeFile(path.join(root, 'skill.test.yml'), unassociated);
+    const result = await runSkillTests({
+      targetDir: root,
+      tierRequested: 'TIER_3',
+      sandbox: { ...sandbox, strongNetworkIsolation: true },
+      securityRunner: { scan: async () => [] },
+      progressiveRound: 0,
+      progressiveDeletedFiles: [],
+    });
+    expect(result.passed).toBe(false);
+    expect(result.errors[0]).toContain('must be associated');
+  });
+
+  it('runs a cumulative Tier 3 mutation round and accepts the expected test failure', async () => {
+    await fs.writeFile(
+      path.join(root, 'skill.test.yml'),
+      contract().replace(
+        '  - id: completes',
+        '  - id: completes\n    affected_files: [src/agent.md]',
+      ),
+    );
+    const isolatedSandbox: SandboxAdapter = {
+      ...sandbox,
+      strongNetworkIsolation: true,
+      async execute(request) {
+        try {
+          await fs.access(path.join(request.cwd, 'src/agent.md'));
+          return {
+            output: { status: 'completed' },
+            stdout: '',
+            stderr: '',
+            exitCode: 0,
+          };
+        } catch {
+          throw new Error('Mapped source was deleted');
+        }
+      },
+    };
+    const result = await runSkillTests({
+      targetDir: root,
+      tierRequested: 'TIER_3',
+      sandbox: isolatedSandbox,
+      securityRunner: { scan: async () => [] },
+      progressiveRound: 1,
+      progressiveDeletedFiles: ['src/agent.md'],
+    });
+    expect(result).toMatchObject({ passed: true, tierAchieved: 'TIER_3' });
+    expect(result.progressive?.outcomes).toEqual([
+      expect.objectContaining({
+        testId: 'completes',
+        expected: 'fail',
+        actual: 'fail',
+      }),
+    ]);
+  });
+
   it('never writes a certificate or lockfile', async () => {
     const result = await runSkillTests({
       targetDir: root,
