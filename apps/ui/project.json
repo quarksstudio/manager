@@ -30,8 +30,9 @@
     },
     "test": {
       "executor": "nx:run-commands",
+      "dependsOn": ["build"],
       "options": {
-        "command": "node --test apps/ui/test/*.spec.mjs",
+        "command": "node --test --test-concurrency=1 apps/ui/test/*.spec.mjs",
         "cwd": "{workspaceRoot}"
       }
     },
