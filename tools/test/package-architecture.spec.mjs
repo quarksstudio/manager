@@ -36,8 +36,7 @@ test('React presentation has no data transport or session access', async () => {
         [
           'packages/web-ui/src/components/Avatar.tsx',
           'packages/web-ui/src/components/index.ts',
-        ].includes(file) &&
-          match[1] === '../hooks/useAvatar',
+        ].includes(file) && match[1] === '../hooks/useAvatar',
         `${file} imports ${match[1]}`,
       );
   }
