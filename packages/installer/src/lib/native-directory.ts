@@ -35,7 +35,7 @@ export function loadNativeDirectory(): NativeDirectoryApi {
         throw new Error(`Missing native operation: ${method}`);
     cached = { platform, api };
     return api;
-  } catch (cause) {
+  } catch {
     throw new Error(
       `Native installer backend unavailable for ${platform}; reinstall the package with its prebuilt binaries`,
       // ToDo: { cause },

@@ -65,6 +65,7 @@ export function selectPackageVersion(
   detail: Pick<PackageDetails, 'versions' | 'latestVersion'>,
   selector = 'latest',
 ): PackageVersion | null {
+  if (!detail.versions?.length) return null;
   const target =
     !selector || selector === 'latest'
       ? detail.latestVersion || detail.versions[0].version

@@ -450,6 +450,9 @@ importers:
 
   packages/installer:
     dependencies:
+      '@quarks.studio/config':
+        specifier: workspace:*
+        version: link:../config
       '@quarks.studio/domain-kernel':
         specifier: workspace:*
         version: link:../domain-kernel
@@ -598,11 +601,7 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
-  packages/registry:
-    dependencies:
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
+  packages/registry: {}
 
   packages/runtime:
     dependencies:

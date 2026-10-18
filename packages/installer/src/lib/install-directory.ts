@@ -122,20 +122,24 @@ export class InstallDirectory {
     optionalParents = false,
   ): Promise<T | undefined> {
     const parts = this.components(relative);
-    let current: InstallDirectory = this;
+    let current: InstallDirectory | undefined;
     try {
       for (const component of parts.slice(0, -1)) {
-        const next = await current.directory(component, create);
-        if (current !== this) await current.close();
-        current = next ?? this;
+        const parent = current ?? this;
+        const next = await parent.directory(component, create);
+        await current?.close();
+        current = undefined;
         if (!next) {
           if (optionalParents) return undefined;
           throw new Error(`Missing installation directory: ${relative}`);
         }
+        current = next;
       }
-      return await action(current.entry(parts[parts.length - 1]));
+      const leaf = parts[parts.length - 1];
+      if (leaf === undefined) throw new Error('Installation path is empty');
+      return await action((current ?? this).entry(leaf));
     } finally {
-      if (current !== this) await current.close();
+      await current?.close();
     }
   }
 
@@ -146,12 +150,15 @@ export class InstallDirectory {
     optional = false,
   ): Promise<T | undefined> {
     const parts = this.components(relative);
-    let current: InstallDirectory = this;
+    const leaf = parts.pop();
+    if (leaf === undefined) throw new Error('Installation path is empty');
+    let current: InstallDirectory | undefined;
     try {
-      for (const component of parts.slice(0, -1)) {
-        const next = await current.directory(component, create);
-        if (current !== this) await current.close();
-        current = next ?? this;
+      for (const component of parts) {
+        const parent = current ?? this;
+        const next = await parent.directory(component, create);
+        await current?.close();
+        current = undefined;
         if (!next) {
           if (optional) return undefined;
           throw Object.assign(
@@ -159,10 +166,11 @@ export class InstallDirectory {
             { code: 'ENOENT' },
           );
         }
+        current = next;
       }
-      return await action(current, parts.at(-1)!);
+      return await action(current ?? this, leaf);
     } finally {
-      if (current !== this) await current.close();
+      await current?.close();
     }
   }
   async assertFile(relative: string): Promise<void> {

@@ -53,6 +53,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@quarks.studio/config": "workspace:*",
     "@quarks.studio/domain-kernel": "workspace:*",
     "@quarks.studio/logger": "workspace:*",
     "@quarks.studio/manifest": "workspace:*",
