@@ -1,7 +1,7 @@
 import { Card, Divider, Flex, Tag, Typography } from 'antd';
 import { formatCount, formatSinceDate } from '@quarks.studio/web-ui';
 import { QuarkTheme } from '@quarks.studio/web-ui';
-import { GroupAvatar } from '@quarks.studio/web-ui';
+import { GroupAvatar, type AvatarUserLoader } from '@quarks.studio/web-ui';
 import { FieldLabel } from './FieldLabel';
 import { InstallCommand } from './InstallCommand';
 
@@ -13,6 +13,7 @@ export interface PackageSidebarProps {
   authors?: string[];
   tags?: string[];
   installCommand: string;
+  loadAvatarUsers?: AvatarUserLoader;
 }
 
 export function PackageSidebar({
@@ -22,6 +23,7 @@ export function PackageSidebar({
   authors = [],
   tags = [],
   installCommand,
+  loadAvatarUsers,
 }: PackageSidebarProps) {
   return (
     <QuarkTheme>
@@ -64,7 +66,7 @@ export function PackageSidebar({
                   No authors listed
                 </Typography.Text>
               ) : (
-                <GroupAvatar people={authors} />
+                <GroupAvatar people={authors} loadUsers={loadAvatarUsers} />
               )}
             </Flex>
             <Flex vertical gap={8}>

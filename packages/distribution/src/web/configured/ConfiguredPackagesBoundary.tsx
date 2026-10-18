@@ -1,4 +1,6 @@
 import { useMemo } from 'react';
+import { createConfiguredContext } from '@quarks.studio/config/http';
+import type { AvatarUser } from '@quarks.studio/web-ui';
 import { PackagesBoundary } from '../containers/PackagesBoundary';
 import { DistributionWebProvider } from '../../presentation/web-services';
 import { DistributionProvider } from '../../presentation/services';
@@ -17,11 +19,19 @@ export function ConfiguredPackagesBoundary({
   ...props
 }: PackagesBoundaryProps) {
   const client = useDistributionClient(apiBaseUrl);
+  const userContext = useMemo(
+    () => createConfiguredContext(apiBaseUrl),
+    [apiBaseUrl],
+  );
   const services = useMemo(
     () => ({
       get: (name: string) => client.get(name),
+      getUsers: (usernames: readonly string[]) =>
+        userContext.fetchJson<AvatarUser[]>(
+          `users?usernames=${encodeURIComponent(usernames.join(','))}`,
+        ),
     }),
-    [client],
+    [client, userContext],
   );
   // The configuration tab issues its own writes against the registry.
   const distributionServices = useMemo(() => createDistributionServices(), []);

@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
-import { LandingHero } from '@quarks.studio/package-search/web';
-import { LandingTierMatrix } from '@quarks.studio/package-search/web';
+import { LandingHero } from '../../../../src/web/components/LandingHero';
+import { LandingTierMatrix } from '../../../../src/web/components/LandingTierMatrix';
 import { formatCount } from '@quarks.studio/web-ui';
 import type {
   LandingTier,
   LandingTierColumns,
-} from '@quarks.studio/package-search/web';
+} from '../../../../src/web/components/types';
 
 const tiers: Record<LandingTier, LandingTierColumns> = {
   TIER_1: {

@@ -51,6 +51,7 @@ const cache = storageMocks.__cache;
 describe('apiFetch', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env['QUARK_REGISTRY_URL'] = 'https://api.test/v1';
     // `loadConfig` is memoized, so every case must re-resolve the token.
     resetConfig();
     storageMocks.__reset();

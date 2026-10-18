@@ -2,7 +2,7 @@ import React from 'react';
 import {
   DistributionProvider,
   type DistributionServices,
-} from '@quarks.studio/distribution/presentation';
+} from '../../../src/presentation';
 import {
   act,
   waitFor,

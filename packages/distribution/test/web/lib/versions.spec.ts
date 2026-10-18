@@ -3,7 +3,7 @@ import {
   isValidVersion,
   newestVersion,
   sortVersionStrings,
-} from '@quarks.studio/distribution/web';
+} from '../../../src/web';
 
 describe('compareVersionStrings', () => {
   it('sorts by numeric core parts', () => {

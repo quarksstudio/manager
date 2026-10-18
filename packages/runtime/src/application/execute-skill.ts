@@ -13,7 +13,7 @@ export interface ProcessRunner {
  * Must enforce execution.permissions for filesystem, network and subprocesses,
  * or reject before starting anything. Merely declaring capabilities is insufficient.
  */
-export interface PermissionEnforcingHost extends ProcessRunner {}
+export type PermissionEnforcingHost = ProcessRunner;
 
 export class ExecuteSkillHandler {
   constructor(private readonly runner: ProcessRunner) {}

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { SubscriptionsTab } from '../../../../src/web';
+import { SubscriptionsTab } from '../../../src/web';
 
 jest.mock('@quarks.studio/commerce/web', () => ({
   ...jest.requireActual('@quarks.studio/commerce/web'),

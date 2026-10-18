@@ -70,14 +70,17 @@
   "dependencies": {
     "tslib": "^2.3.0",
     "@quarks.studio/storage": "workspace:*",
-    "@quarks.studio/logger": "workspace:*",
     "@quarks.studio/terminal-ui": "workspace:*",
     "ink": "^7.0.2",
     "@quarks.studio/web-ui": "workspace:*",
     "antd": "^6.6.5",
     "@ant-design/icons": "^6.3.4",
     "@quarks.studio/registry": "workspace:*",
-    "@quarks.studio/config": "workspace:*"
+    "@quarks.studio/config": "workspace:*",
+    "@testing-library/react": "^16.3.0",
+    "esbuild": "^0.27.0",
+    "commander": "^15.0.0",
+    "react-dom": "^19.0.0"
   },
   "peerDependencies": {
     "react": "^19.0.0"

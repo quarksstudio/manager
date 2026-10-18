@@ -301,9 +301,6 @@ importers:
 
   packages/commerce:
     dependencies:
-      '@ant-design/icons':
-        specifier: ^6.3.4
-        version: 6.3.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@quarks.studio/certification':
         specifier: workspace:*
         version: link:../certification
@@ -316,9 +313,6 @@ importers:
       '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../registry
-      '@quarks.studio/storage':
-        specifier: workspace:*
-        version: link:../storage
       '@quarks.studio/web-ui':
         specifier: workspace:*
         version: link:../web-ui
@@ -361,6 +355,9 @@ importers:
       '@ant-design/icons':
         specifier: ^6.3.4
         version: 6.3.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@testing-library/react':
+        specifier: ^16.3.0
+        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@quarks.studio/certification':
         specifier: workspace:*
         version: link:../certification
@@ -385,6 +382,9 @@ importers:
       antd:
         specifier: ^6.6.5
         version: 6.6.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      esbuild:
+        specifier: ^0.27.0
+        version: 0.27.7
       ink:
         specifier: ^7.0.2
         version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
@@ -394,6 +394,9 @@ importers:
       react:
         specifier: ^19.0.0
         version: 19.2.8
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.8(react@19.2.8)
       sanitize-html:
         specifier: 2.17.0
         version: 2.17.0
@@ -516,12 +519,12 @@ importers:
       '@ant-design/icons':
         specifier: ^6.3.4
         version: 6.3.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@testing-library/react':
+        specifier: ^16.3.0
+        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@quarks.studio/config':
         specifier: workspace:*
         version: link:../config
-      '@quarks.studio/logger':
-        specifier: workspace:*
-        version: link:../installer/logger
       '@quarks.studio/registry':
         specifier: workspace:*
         version: link:../registry
@@ -537,12 +540,21 @@ importers:
       antd:
         specifier: ^6.6.5
         version: 6.6.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      commander:
+        specifier: ^15.0.0
+        version: 15.0.0
+      esbuild:
+        specifier: ^0.27.0
+        version: 0.27.7
       ink:
         specifier: ^7.0.2
         version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
       react:
         specifier: ^19.0.0
         version: 19.2.8
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.8(react@19.2.8)
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
@@ -586,7 +598,11 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
-  packages/registry: {}
+  packages/registry:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
 
   packages/runtime:
     dependencies:

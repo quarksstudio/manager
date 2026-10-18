@@ -9,6 +9,7 @@ import type { ReactNode } from 'react';
 import { PackageSidebar } from './PackageSidebar';
 import { PackageTabs } from './PackageTabs';
 import { PackageDetailsSkeleton } from './PackageDetailsSkeleton';
+import type { AvatarUserLoader } from '@quarks.studio/web-ui';
 
 export interface PackageDetailsProps {
   packageName: string;
@@ -23,6 +24,7 @@ export interface PackageDetailsProps {
     downloads: Record<string, string>;
   };
   commercialPanel?: ReactNode;
+  loadAvatarUsers?: AvatarUserLoader;
 }
 export function PackageDetails({
   packageName,
@@ -33,6 +35,7 @@ export function PackageDetails({
   notFound,
   urls,
   commercialPanel,
+  loadAvatarUsers,
 }: PackageDetailsProps) {
   if (loading) return <PackageDetailsSkeleton />;
   const latest = detail?.latestVersion;
@@ -82,6 +85,7 @@ export function PackageDetails({
                   downloads={detail.stats?.downloads}
                   downloadsSince={detail.stats?.series[0]?.time}
                   authors={detail.authors}
+                  loadAvatarUsers={loadAvatarUsers}
                   tags={detail.tags}
                   installCommand={
                     version

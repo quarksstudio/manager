@@ -18,7 +18,7 @@ function setup(behavior = 'show', supported = true) {
     constructor(payload) {
       super();
       this.payload = payload;
-      notice = this;
+      notice = { click: () => this.emit('click') };
     }
     show() {
       if (behavior !== 'timeout') this.emit(behavior);
@@ -36,7 +36,9 @@ function setup(behavior = 'show', supported = true) {
         assert.equal(channel, 'quark:notifications:show');
         handler = fn;
       },
-      removeHandler() {},
+      removeHandler() {
+        return undefined;
+      },
     },
     Notification,
     origin: 'http://127.0.0.1:4210',
@@ -64,7 +66,7 @@ function setup(behavior = 'show', supported = true) {
 test('native delivery confirms once, focuses on click, and disposes', async () => {
   const runtime = setup();
   assert.equal(await runtime.send(), 'shown');
-  runtime.notice.emit('click');
+  runtime.notice.click();
   assert.equal(runtime.focused, 1);
   runtime.dispose();
 });

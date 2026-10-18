@@ -2,7 +2,7 @@ import { createHash } from 'crypto';
 import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { archive, modernManifest } from '../../../tools/test/archive-fixtures';
+import { archive, modernManifest } from './helpers/archive-fixtures';
 import { check, unpack, readArchiveResponse, ARCHIVE_LIMITS } from '../src';
 
 const expected = { name: 'audit', version: '1.0.0' };

@@ -2,7 +2,7 @@ import {
   createHttpContext,
   type OperationContext,
 } from '@quarks.studio/registry/http';
-import { createHttpCatalog } from '@quarks.studio/commerce/http';
+import { createHttpCatalog } from '../../src/http';
 
 const fetchMock = jest.fn();
 const BASE = 'https://registry.test/v1';

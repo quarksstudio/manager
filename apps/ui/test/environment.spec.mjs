@@ -1,5 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtemp, writeFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { loadUiEnvironment } from '../astro-env.mjs';
 
 test('Astro exposes QUARKS_ENV and omits the removed name and token', async () => {
   const keys = ['QUARKS_ENV', 'QUARK_ENV', 'QUARK_TOKEN'];
@@ -22,11 +26,6 @@ test('Astro exposes QUARKS_ENV and omits the removed name and token', async () =
 });
 
 // Fixtures avoid depending on or rewriting the developer's actual .env.
-import { mkdtemp, writeFile, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { loadUiEnvironment } from '../astro-env.mjs';
-
 test('dotenv endpoint reaches both island props and shared configuration, with process precedence', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'quark-ui-env-'));
   const original = process.env.QUARK_REGISTRY_URL;

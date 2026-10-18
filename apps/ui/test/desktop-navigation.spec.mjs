@@ -70,8 +70,12 @@ test('only the configured OAuth route can open an unprivileged authentication wi
     open = fn;
   };
   contents.session = {
-    setPermissionRequestHandler() {},
-    setPermissionCheckHandler() {},
+    setPermissionRequestHandler() {
+      return undefined;
+    },
+    setPermissionCheckHandler() {
+      return undefined;
+    },
   };
   registerNavigation(
     { webContents: contents },

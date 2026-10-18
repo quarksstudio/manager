@@ -86,6 +86,7 @@ export function PackagesBoundary({
       loading={state.loading}
       error={state.error}
       notFound={state.notFound}
+      loadAvatarUsers={services.getUsers}
       urls={detailUrls(
         packageName,
         version,

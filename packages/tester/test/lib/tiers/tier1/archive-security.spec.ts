@@ -1,4 +1,4 @@
-import { archive } from '../../../../../../tools/test/archive-fixtures';
+import { archive } from '../../../helpers/archive-fixtures';
 import {
   auditTarArchive,
   ARCHIVE_LIMITS,

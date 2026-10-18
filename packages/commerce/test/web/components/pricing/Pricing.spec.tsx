@@ -5,9 +5,9 @@ import {
   PricingModeNav,
   SystemHints,
   TierMatrix,
-} from '@quarks.studio/commerce/web';
-import type { CatalogProduct, TierOffer } from '@quarks.studio/commerce';
-import type { PaymentLinkRequest } from '@quarks.studio/commerce';
+} from '../../../../src/web';
+import type { CatalogProduct, TierOffer } from '../../../../src';
+import type { PaymentLinkRequest } from '../../../../src';
 
 const mockPay = jest.fn();
 const mockHook = {

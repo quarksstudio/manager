@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { PaymentHistory } from '@quarks.studio/commerce/web';
+import { PaymentHistory } from '../../../../src/web';
 it('shows recorded payments without inventing missing values', () => {
   const onLoadMore = jest.fn();
   render(

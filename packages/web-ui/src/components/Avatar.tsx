@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 import { Avatar as AntAvatar, Spin, Tooltip } from 'antd';
 import type { AvatarProps as AntAvatarProps } from 'antd/es/avatar';
 import { UserOutlined } from '@ant-design/icons';
-import { useAvatar, MAX_AVATAR_USERS } from '../hooks/useAvatar';
+import {
+  useAvatar,
+  MAX_AVATAR_USERS,
+  type AvatarUserLoader,
+} from '../hooks/useAvatar';
 
 const AVATAR_HOSTS = [
   'gravatar.com',
@@ -84,11 +88,13 @@ export function UserAvatar({
 export function GroupAvatar({
   people = [],
   maxCount = MAX_AVATAR_USERS,
+  loadUsers,
 }: {
   people?: readonly string[];
   maxCount?: number;
+  loadUsers?: AvatarUserLoader;
 }) {
-  const { data, loading } = useAvatar(people);
+  const { data, loading } = useAvatar(people, loadUsers);
   const peopleKey = JSON.stringify(people);
   const usernames = useMemo(
     () => [

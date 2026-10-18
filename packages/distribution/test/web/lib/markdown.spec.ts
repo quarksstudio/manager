@@ -1,4 +1,4 @@
-import { renderMarkdown } from '@quarks.studio/distribution/web';
+import { renderMarkdown } from '../../../src/web';
 
 describe('renderMarkdown', () => {
   it('renders basic markdown', () => {

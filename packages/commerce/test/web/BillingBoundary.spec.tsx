@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { CommerceProvider } from '@quarks.studio/commerce/presentation';
-import { BillingBoundary } from '@quarks.studio/commerce/web';
+import { CommerceProvider } from '../../src/presentation';
+import { BillingBoundary } from '../../src/web';
 
 it('loads payment history through the injected service without configuring a client', async () => {
   const listPayments = jest.fn().mockResolvedValue({

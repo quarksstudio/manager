@@ -1,16 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { createConfiguredContext } from '@quarks.studio/config/http';
 
 const USERNAME_PATTERN = /^[a-z0-9_-]{3,30}$/;
-const AVATAR_HOSTS = [
-  'gravatar.com',
-  'googleusercontent.com',
-  'githubusercontent.com',
-  'twimg.com',
-  'fbcdn.net',
-  'fbsbx.com',
-] as const;
-
 export const MAX_AVATAR_USERS = 50;
 
 function normalizeUsernames(people: readonly string[]): string[] {
@@ -30,8 +20,15 @@ export interface AvatarUser {
   photoURL: string | null;
 }
 
+export type AvatarUserLoader = (
+  usernames: readonly string[],
+) => Promise<AvatarUser[]>;
+
 /** Loads public avatar details for a group of usernames. */
-export function useAvatar(people: readonly string[] = [], apiBaseUrl?: string) {
+export function useAvatar(
+  people: readonly string[] = [],
+  loadUsers?: AvatarUserLoader,
+) {
   const peopleKey = JSON.stringify(people);
   const usernames = useMemo(
     () =>
@@ -41,19 +38,15 @@ export function useAvatar(people: readonly string[] = [], apiBaseUrl?: string) {
       ),
     [peopleKey],
   );
-  const context = useMemo(
-    () => createConfiguredContext(apiBaseUrl),
-    [apiBaseUrl],
-  );
   const [data, setData] = useState<AvatarUser[]>([]);
-  const [loading, setLoading] = useState(usernames.length > 0);
+  const [loading, setLoading] = useState(usernames.length > 0 && !!loadUsers);
   const [error, setError] = useState<unknown>(null);
   const [revision, setRevision] = useState(0);
   const requestId = useRef(0);
 
   useEffect(() => {
     const currentRequest = ++requestId.current;
-    if (!usernames.length) {
+    if (!usernames.length || !loadUsers) {
       setData([]);
       setError(null);
       setLoading(false);
@@ -63,9 +56,7 @@ export function useAvatar(people: readonly string[] = [], apiBaseUrl?: string) {
     let active = true;
     setLoading(true);
     setError(null);
-    const query = encodeURIComponent(usernames.join(','));
-    void context
-      .fetchJson<AvatarUser[]>(`users?usernames=${query}`)
+    void loadUsers(usernames)
       .then((users) => {
         if (!active || currentRequest !== requestId.current) return;
         const usersByUsername = new Map(
@@ -90,7 +81,7 @@ export function useAvatar(people: readonly string[] = [], apiBaseUrl?: string) {
     return () => {
       active = false;
     };
-  }, [usernames, context, revision]);
+  }, [usernames, loadUsers, revision]);
 
   const reload = useCallback(() => setRevision((value) => value + 1), []);
   return { data, loading, error, reload };

@@ -1,8 +1,4 @@
-import {
-  formatCount,
-  formatDate,
-  formatSinceDate,
-} from '@quarks.studio/web-ui';
+import { formatCount, formatDate, formatSinceDate } from '../../../src/format';
 
 describe('formatCount', () => {
   it('keeps small numbers as integers', () => {

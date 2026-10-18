@@ -2,7 +2,7 @@ import { act } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
-import { PackageDetails } from '@quarks.studio/distribution/web';
+import { PackageDetails } from '../../../src/web';
 const detail = {
   id: 'demo',
   name: 'demo',

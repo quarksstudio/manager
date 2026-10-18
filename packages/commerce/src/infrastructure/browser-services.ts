@@ -6,16 +6,15 @@ import { createHttpBillingGateway } from '../http';
 export function createBrowserCommerceServices(
   apiBaseUrl?: string,
 ): CommerceServices {
-  const register = createGlobalContext({
-    baseUrl: apiBaseUrl,
-  }).then(createHttpBillingGateway);
+  const gateway = () =>
+    createGlobalContext({ baseUrl: apiBaseUrl }).then(createHttpBillingGateway);
 
   return {
     createPaymentLink: async (system, target) => {
-      return (await register).createPaymentLink(system, target);
+      return (await gateway()).createPaymentLink(system, target);
     },
     listPayments: async (options) => {
-      return (await register).listPayments(options);
+      return (await gateway()).listPayments(options);
     },
   };
 }

@@ -2,13 +2,13 @@ import React from 'react';
 import {
   DistributionProvider,
   type DistributionServices,
-} from '@quarks.studio/distribution/presentation';
+} from '../../../src/presentation';
 import {
   act,
   renderHook as renderHookWithServices,
 } from '@testing-library/react';
 import { ApiError } from '@quarks.studio/registry/http';
-import type { PackageDetails } from '@quarks.studio/distribution';
+import type { PackageDetails } from '../../../src';
 
 import { apiCache, cacheKey } from '../../../src/presentation/storage';
 import { usePackageDetailsView } from '../../../src/hooks/usePackageDetailsView';
