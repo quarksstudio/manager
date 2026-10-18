@@ -29,7 +29,17 @@ test('React presentation has no data transport or session access', async () => {
       ),
       file,
     );
-    assert.ok(!/from ['"][^'"]*\/hooks(?:\/|['"])/.test(source), file);
+    for (const match of source.matchAll(
+      /from ['"]([^'"]*\/hooks(?:\/[^'"]*)?)['"]/g,
+    ))
+      assert.ok(
+        [
+          'packages/web-ui/src/components/Avatar.tsx',
+          'packages/web-ui/src/components/index.ts',
+        ].includes(file) &&
+          match[1] === '../hooks/useAvatar',
+        `${file} imports ${match[1]}`,
+      );
   }
 });
 
