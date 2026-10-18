@@ -1,4 +1,6 @@
 import type { PublicUserProfile } from '../domain/public-user-profile';
+import type { EmailAvailability } from './email-availability';
+export type { EmailAvailability } from './email-availability';
 export interface UserSettings extends PublicUserProfile {
   displayName: string;
   email?: string | null;
@@ -11,10 +13,6 @@ export type UserSettingsChanges = Partial<
     'username' | 'displayName' | 'linkedEmails' | 'publicEmail'
   >
 >;
-export interface EmailAvailability {
-  email: string;
-  available: boolean;
-}
 export interface UserSettingsServices {
   get(): Promise<UserSettings>;
   update(changes: UserSettingsChanges): Promise<UserSettings>;

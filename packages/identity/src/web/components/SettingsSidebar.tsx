@@ -6,6 +6,10 @@ import type { UserProfileServices } from '../../application/user-profile.port';
 import { useLogOutItems } from '../../hooks/useLogOutItems';
 import { useAuthLogin, useAuthLogout, useIdentitySession } from '../../hooks';
 
+export type AccountPage =
+  'profile' | 'settings' | 'billing' | 'tokens' | 'integrations';
+export type SettingsTab = AccountPage;
+
 /** The shared route navigation for an account's profile pages. */
 export function SettingsSidebar({
   active,
@@ -13,7 +17,7 @@ export function SettingsSidebar({
   services,
   showMenu,
 }: {
-  active: string;
+  active: AccountPage;
   username: string;
   showMenu: boolean;
   services: UserProfileServices;
@@ -41,7 +45,7 @@ export function SettingsSidebar({
       reset();
       await notify({ level: 'success', title: 'Sesión cerrada' });
     })().catch(() => undefined);
-  }, profile);
+  }, profile ?? { username });
 
   return (
     <>
@@ -74,7 +78,7 @@ export function SettingsSidebar({
           )}
         </div>
       )}
-      {profile && showMenu && (
+      {showMenu && (
         <nav aria-label="Profile navigation" className="min-w-0 w-full py-12">
           <Menu
             selectedKeys={[active]}

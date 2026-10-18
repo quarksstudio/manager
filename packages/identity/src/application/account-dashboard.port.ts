@@ -4,6 +4,8 @@ import type {
   PersonalAccessToken,
   TokenScope,
 } from '../domain/account-dashboard';
+import type { EmailAvailability } from './email-availability';
+export type { EmailAvailability } from './email-availability';
 
 /** The OAuth surface the identity provider knows about, plus the emulator. */
 export type AuthProviderLabel =
@@ -32,12 +34,6 @@ export interface AccountProfileChanges {
   displayName?: string;
   linkedEmails?: string[];
   publicEmail?: string | null;
-}
-
-/** Result of a uniqueness check on an email the account wants to link. */
-export interface EmailAvailability {
-  email: string;
-  available: boolean;
 }
 
 /**

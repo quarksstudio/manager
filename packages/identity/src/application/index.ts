@@ -4,4 +4,9 @@ export * from './login-with-emulator';
 export * from './login-with-provider';
 export * from './user-profile.port';
 
-export * from './user-settings.port';
+export {
+  type UserSettings,
+  type UserSettingsChanges,
+  type UserSettingsServices,
+} from './user-settings.port';
+export type { EmailAvailability } from './email-availability';

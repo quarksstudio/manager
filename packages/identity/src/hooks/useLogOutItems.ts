@@ -11,10 +11,9 @@ import {
 
 export function useLogOutItems(
   fn: () => void,
-  user?: Record<string, unknown> | undefined,
+  user?: { username?: string } | undefined,
 ) {
-  const username =
-    typeof user?.['username'] === 'string' ? user['username'] : undefined;
+  const username = user?.username;
   const base = username ? `/~/${encodeURIComponent(username)}` : undefined;
   const loggedInItems: MenuProps['items'] = useMemo(
     () => [
@@ -61,6 +60,7 @@ export function useLogOutItems(
       },
       {
         type: 'divider',
+        key: 'account-navigation-divider',
       },
       {
         key: 'logout',

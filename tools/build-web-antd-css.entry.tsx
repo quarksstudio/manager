@@ -13,6 +13,7 @@ import { Modal, Popconfirm } from 'antd';
 import { CommerceProvider } from '../packages/commerce/src/presentation';
 import { DistributionProvider } from '../packages/distribution/src/presentation/services';
 import { createDistributionServices } from '../packages/distribution/src/presentation/configured-services';
+import { IdentityProvider } from '../packages/identity/src/presentation';
 const UI = {
   ...Shared,
   ...Identity,
@@ -24,6 +25,35 @@ const distributionServices = createDistributionServices();
 const commerceServices = {
   createPaymentLink: async () => ({ url: '/' }),
   listPayments: async () => ({ items: [], nextCursor: null }),
+};
+const identityServices = {
+  loginWithProvider: async () => {
+    throw new Error('Not used by the CSS fixture');
+  },
+  loginWithLocalEmulator: async () => {
+    throw new Error('Not used by the CSS fixture');
+  },
+  submitManualLoginCode: () => undefined,
+  me: async () => null,
+  logout: async () => undefined,
+  clearSession: async () => undefined,
+};
+const accountProfileServices = {
+  getProfile: async () => ({
+    id: 'css-fixture',
+    username: 'css-fixture',
+    displayName: 'CSS fixture',
+    photoURL: null,
+    createdAt: null,
+  }),
+  getPackages: async () => ({ items: [], nextCursor: null }),
+  updateUsername: async () => ({
+    id: 'css-fixture',
+    username: 'css-fixture',
+    displayName: 'CSS fixture',
+    photoURL: null,
+    createdAt: null,
+  }),
 };
 
 const HEX = '0123456789abcdef';
@@ -310,7 +340,14 @@ renderToStaticMarkup(
             { label: 'Blog', href: 'https://blog.quarks.studio' },
           ]}
         />
-        <UI.SettingsSidebar active="profile" onSelect={() => undefined} />
+        <IdentityProvider services={identityServices}>
+          <UI.SettingsSidebar
+            active="profile"
+            username="css-fixture"
+            services={accountProfileServices}
+            showMenu
+          />
+        </IdentityProvider>
         <UI.TokensTab
           tokens={[
             {
