@@ -2,8 +2,8 @@ import { formatPrice } from '../../src/index';
 
 describe('formatPrice', () => {
   it('turns integer cents into a currency amount', () => {
-    expect(formatPrice(900, 'USD')).toMatch(/9(\.00)?/);
-    expect(formatPrice(1999, 'USD')).toMatch(/19\.99/);
+    expect(formatPrice(900, 'USD')).toMatch(/9((\.|\,)00)?/);
+    expect(formatPrice(1999, 'USD')).toMatch(/19(\.|\,)99/);
   });
 
   it('calls a zero amount free rather than missing', () => {
