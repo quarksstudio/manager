@@ -2,18 +2,18 @@ import { formatPrice } from '../../src/index';
 
 describe('formatPrice', () => {
   it('turns integer cents into a currency amount', () => {
-    expect(formatPrice(900, 'USD')).toMatch(/9((\.|\,)00)?/);
-    expect(formatPrice(1999, 'USD')).toMatch(/19(\.|\,)99/);
+    expect(formatPrice(900, 'USD')).toMatch(/9(\.00)?/);
+    expect(formatPrice(1999, 'USD')).toMatch(/19\.99/);
   });
 
   it('calls a zero amount free rather than missing', () => {
-    expect(formatPrice(0, 'USD')).toBe('Gratis');
+    expect(formatPrice(0, 'USD')).toBe('Free');
   });
 
   /** A negative or NaN amount is bad data, not a discount. */
   it('never renders a negative price', () => {
-    expect(formatPrice(-100, 'USD')).toBe('Gratis');
-    expect(formatPrice(Number.NaN, 'USD')).toBe('Gratis');
+    expect(formatPrice(-100, 'USD')).toBe('Free');
+    expect(formatPrice(Number.NaN, 'USD')).toBe('Free');
   });
 
   it('survives a currency the runtime rejects', () => {

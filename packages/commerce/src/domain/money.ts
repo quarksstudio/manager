@@ -1,4 +1,4 @@
-const FREE = 'Gratis';
+const FREE = 'Free';
 
 /**
  * The server sends integer cents; no float ever reaches the domain. `0` is a
@@ -8,7 +8,7 @@ export function formatPrice(amountCents: number, currency: string): string {
   if (!Number.isFinite(amountCents) || amountCents <= 0) return FREE;
   const code = (currency ?? '').toUpperCase();
   try {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: code,
     }).format(amountCents / 100);
