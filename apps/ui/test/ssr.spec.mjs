@@ -232,7 +232,9 @@ test('Astro serves package routes, downloads and request-scoped sessions', async
     assert.equal(orphan.headers.get('location'), '/');
     const cleared = orphan.headers.get('set-cookie') ?? '';
     assert.ok(
-      ['', 'deleted'].includes(cleared.match(/quark-session=([^;]*)/)?.[1] ?? ''),
+      ['', 'deleted'].includes(
+        cleared.match(/quark-session=([^;]*)/)?.[1] ?? '',
+      ),
       cleared,
     );
     assert.match(cleared, /max-age=0|expires=/i, cleared);
