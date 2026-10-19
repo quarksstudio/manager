@@ -95,7 +95,7 @@ test('QUARK_RENDER_MODE=client serves shells with islands instead of server data
       !html.includes('Tier 1 - Basic Certification'),
       'server rendering must be disabled under QUARK_RENDER_MODE=client',
     );
-    const page = await request('/packages/%40scope%2Fdemo/1.0.0');
+    const page = await request('/%40scope%2Fdemo/1.0.0');
     assert.equal(page.status, 200);
     const packagesHtml = await page.text();
     assert.match(packagesHtml, /data-slot="site-navbar"/);

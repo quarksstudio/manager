@@ -1,5 +1,6 @@
 import type { AstroCookies } from 'astro';
 import { loadConfig } from '@quarks.studio/config';
+import { createHttpContext } from '@quarks.studio/registry/http';
 import { createAppApi } from './api';
 import { RegistryHttpError } from '@quarks.studio/registry/http';
 import { selectPackageVersion } from '@quarks.studio/distribution';
@@ -56,4 +57,13 @@ export async function getUser(cookies: AstroCookies, name: string) {
   }
 
   return detail;
+}
+
+export async function getLandingPackages(cookies: AstroCookies) {
+  const { registryUrl } = (await loadConfig()).config;
+  const context = createHttpContext({
+    baseUrl: registryUrl,
+    token: cookies.get(sessionCookie)?.value,
+  });
+  return context.fetchJson<{ items: Array<{ id: string }> }>('package?query=');
 }

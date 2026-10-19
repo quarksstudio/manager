@@ -8,9 +8,21 @@ import {
 } from '@quarks.studio/package-search/web';
 
 import { registryBaseUrl } from '../lib/registry-base';
+import { landingTiers } from '../lib/landing';
+import { getLandingPackages, packageUrl } from '../lib/registry';
 import Layout from '../layouts/Layout.astro';
 const search = packageSearchParams(Astro.url.searchParams);
 const blogUrl = 'https://blog.quarks.studio';
+const clientMode = process.env.QUARK_RENDER_MODE === 'client';
+let tiers = null;
+if (!search.active && !clientMode) {
+  try {
+    const result = await getLandingPackages(Astro.cookies);
+    tiers = landingTiers(result.items);
+  } catch {
+    tiers = null;
+  }
+}
 ---
 
 <Layout title={search.active ? 'Search packages // Quark' : 'Quark // Skills'}>
@@ -24,11 +36,18 @@ const blogUrl = 'https://blog.quarks.studio';
         />
       ) : (
         <main>
-          <LandingBoundary
-            apiBaseUrl={registryBaseUrl}
-            client:only="react"
-            blogUrl={blogUrl}
-          />
+          {clientMode ? (
+            <LandingBoundary
+              apiBaseUrl={registryBaseUrl}
+              client:only="react"
+              blogUrl={blogUrl}
+            />
+          ) : (
+            <>
+              <LandingHero exploreUrl="/?query=" blogUrl={blogUrl} />
+              {tiers && <LandingTierMatrix tiers={tiers} />}
+            </>
+          )}
         </main>
       )
     }

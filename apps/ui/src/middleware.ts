@@ -1,5 +1,11 @@
 import { defineMiddleware } from 'astro:middleware';
 export const onRequest = defineMiddleware(async (context, next) => {
+  if (
+    context.url.pathname === '/api' ||
+    context.url.pathname.startsWith('/api/')
+  ) {
+    return new Response('Not Found', { status: 404 });
+  }
   try {
     for (const value of Object.values(context.params))
       decodeURIComponent(value ?? '');

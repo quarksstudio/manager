@@ -1,4 +1,5 @@
-import { Input } from 'antd';
+import { Button, Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 import { QuarkTheme } from '../theme';
 import { PropsWithChildren } from 'react';
@@ -37,15 +38,23 @@ export function SiteNavbar({
             action={searchAction}
             method="get"
           >
-            <Input.Search
-              name="query"
-              type="search"
-              value={searchValue}
-              aria-label={searchPlaceholder}
-              placeholder={searchPlaceholder}
-              className="flex-1 flex"
-              variant="filled"
-            />
+            <div className="flex min-w-0 flex-1">
+              <Input
+                name="query"
+                type="search"
+                defaultValue={searchValue}
+                aria-label={searchPlaceholder}
+                placeholder={searchPlaceholder}
+                className="min-w-0 flex-1"
+                variant="filled"
+              />
+              <Button
+                htmlType="submit"
+                aria-label="Search"
+                icon={<SearchOutlined />}
+                className="!rounded-l-none"
+              />
+            </div>
           </form>
           <div className="shrink-0">{children}</div>
         </div>

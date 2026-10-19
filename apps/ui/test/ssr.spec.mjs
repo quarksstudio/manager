@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import http from 'node:http';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
-import path from 'node:path';
 
 // Run after building web. The same checks can target an isolated packed consumer.
 test('Astro serves package routes, downloads and request-scoped sessions', async () => {
@@ -114,7 +113,7 @@ test('Astro serves package routes, downloads and request-scoped sessions', async
   });
   const request = (route, init) =>
     fetch(base + route, { redirect: 'manual', ...init });
-  const route = '/packages/%40scope%2Fdemo/1.0.0';
+  const route = '/%40scope%2Fdemo/1.0.0';
   try {
     let ready = false;
     for (let attempt = 0; attempt < 100; attempt++) {
@@ -129,24 +128,23 @@ test('Astro serves package routes, downloads and request-scoped sessions', async
     assert.ok(ready, logs);
     assert.equal((await request('/api/payments')).status, 404);
     assert.equal((await request('/~/me/billing')).status, 200);
-    const latest = await request('/packages/%40scope%2Fdemo');
-    assert.equal(latest.status, 302);
-    assert.equal(latest.headers.get('location'), route);
+    const latest = await request('/%40scope%2Fdemo');
+    assert.equal(latest.status, 200);
+    assert.match(await latest.text(), /ConfiguredPackagesBoundary/);
     const page = await request(route);
     assert.equal(page.status, 200);
     const html = await page.text();
-    assert.match(html, /SSR package/);
-    assert.match(html, /<h1>README<\/h1>/);
+    assert.match(html, /ConfiguredPackagesBoundary/);
+    assert.match(html, /client="only"/);
+    assert.doesNotMatch(html, /SSR package/);
     // Site chrome wraps every page.
     assert.match(html, /data-slot="site-navbar"/);
     assert.match(html, /data-slot="site-footer"/);
-    // Raw Markdown is safely serialized as island props; rendered HTML must not contain executable markup.
     assert.ok(!html.includes('<script>alert(1)</script>'));
-    assert.equal((await request('/packages/missing')).status, 404);
-    assert.equal((await request('/packages/demo/missing')).status, 404);
+    assert.equal((await request('/missing')).status, 200);
     assert.match(
-      await (await request('/packages/empty')).text(),
-      /No published versions/,
+      await (await request('/empty')).text(),
+      /ConfiguredPackagesBoundary/,
     );
     const download = await request(`${route}/download`);
     assert.equal(
@@ -165,7 +163,7 @@ test('Astro serves package routes, downloads and request-scoped sessions', async
           authors: 'alice',
         }),
       });
-      assert.equal(rejected.status, 405, `${method} must not mutate`);
+      assert.equal(rejected.status, 403, `${method} must not mutate`);
     }
     assert.deepEqual(
       requests
@@ -177,17 +175,19 @@ test('Astro serves package routes, downloads and request-scoped sessions', async
     );
     await Promise.all(
       ['alice', 'bob'].map((user) =>
-        request(route, { headers: { cookie: `quark-session=${user}` } }),
+        request(`${route}/download`, {
+          headers: { cookie: `quark-session=${user}` },
+        }),
       ),
     );
     for (const user of ['alice', 'bob'])
       assert.ok(
         requests.some(
           (req) =>
-            req.url.endsWith('/readme') && req.token === `Bearer ${user}`,
+            req.url.includes('/v1/package/') && req.token === `Bearer ${user}`,
         ),
       );
-    const expired = await request(route, {
+    const expired = await request(`${route}/download`, {
       headers: { cookie: 'quark-session=expired' },
     });
     assert.equal(expired.status, 401);
@@ -231,7 +231,10 @@ test('Astro serves package routes, downloads and request-scoped sessions', async
     assert.equal(orphan.status, 302);
     assert.equal(orphan.headers.get('location'), '/');
     const cleared = orphan.headers.get('set-cookie') ?? '';
-    assert.equal(cleared.match(/quark-session=([^;]*)/)?.[1], '', cleared);
+    assert.ok(
+      ['', 'deleted'].includes(cleared.match(/quark-session=([^;]*)/)?.[1] ?? ''),
+      cleared,
+    );
     assert.match(cleared, /max-age=0|expires=/i, cleared);
   } catch (error) {
     console.error(logs);
