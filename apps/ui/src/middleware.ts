@@ -18,6 +18,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
   ) {
     return new Response('Forbidden origin', { status: 403 });
   }
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(context.request.method)) {
+    return new Response('This route does not accept mutations', {
+      status: 403,
+    });
+  }
   const response = await next();
   response.headers.set('Cache-Control', 'private, no-store');
   return response;
